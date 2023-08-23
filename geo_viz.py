@@ -26,7 +26,7 @@ trait_names = {
 
 traits = ['o', 'c', 'e', 'a', 'n']
 
-col1, col2, col3 = st.beta_columns(3)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     us_or_global = st.selectbox('Data Scope:', ['Choose an option', 'US only', 'Global'])
