@@ -27,67 +27,7 @@ trait_names = {
 traits = ['o', 'c', 'e', 'a', 'n']
 us_or_global = st.radio('Data Scope:', ['US only', 'Global'])
 
-def plot_us_trait_location(state_or_city, trait):
-    if state_or_city == 'State':
-        data_state_renamed = pd.read_csv("us_state_viz.csv")
-
-        # Adjust the plotting code to use the renamed DataFrame and columns
-        for trait, full_trait_name in trait_names.items():
-            fig = px.choropleth(data_state_renamed, 
-                                locations="State_Abbrev", 
-                                locationmode="USA-states",
-                                color=full_trait_name,
-                                hover_name="State",
-                                hover_data=[full_trait_name, 'Count', trait + "_std"],  # Order matters
-                                color_continuous_scale='Viridis',
-                                scope="usa",
-                                title=f"US Map of Average {full_trait_name} Score by State")
-
-            fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
-                              "<br>" +
-                              f"<b>Average: %{{customdata[0]:.2f}}</b><br>" +   # Index based on order in hover_data
-                              f"Standard Dev.: %{{customdata[2]:.2f}}<br>" +   # Index based on order in hover_data
-                              "User count: %{customdata[1]}"                 # Index based on order in hover_data
-            )
-            st.plotly_chart(fig)
-    else:
-        cluster_aggregates = pd.read_csv("us_city_viz.csv")
-        # Map the traits to their full names for the color column
-        for trait, full_name in trait_names.items():
-            cluster_aggregates[full_name] = cluster_aggregates[trait]
-
-        # Step 3: Plotting
-        for trait, full_name in trait_names.items():
-            fig = px.scatter_geo(cluster_aggregates, 
-                                 locationmode='USA-states', 
-                                 scope='usa',
-                                 lat='Latitude',
-                                 lon='Longitude',
-                                 size='Count',
-                                 color=full_name,
-                                 hover_name='City',
-                                 hover_data={full_name: True, 'Count': True, f"{trait}_std": True},
-        #                          color_continuous_scale='Viridis',
-                                 title=f"Bubble Map of {full_name} by Clustered US Cities",
-                                 size_max=40
-                                )
-
-            fig.update_traces(
-                hovertemplate=(
-                    f"<b>%{{hovertext}} {full_name}:</b><br>" +
-                    "<b>Average: %{customdata[0]:.2f}</b><br>" +
-                    "Standard Dev.: %{customdata[2]:.2f}<br>" +
-                    "User count: %{customdata[1]}")
-            )
-
-
-            fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
-            st.plotly_chart(fig)
-
-
-def plot_globe_trait_location(level, trait):
-    # Function to aggregate data based on the selected level (Country or City)
-    def generate_map_v2(trait, level, threshold_users=500):
+def plot_globe_trait_location(trait, level, threshold_users=500):
         if level == "Country":
             data = pd.read_csv('country_data.csv')
         else:
@@ -156,11 +96,62 @@ def plot_globe_trait_location(level, trait):
             fig.update_geos(countrywidth=0.5, countrycolor="Black", showcountries=True)
             st.plotly_chart(fig)
 
+def plot_us_trait_location(state_or_city, trait):
+    if state_or_city == 'State':
+        data_state_renamed = pd.read_csv("us_state_viz.csv")
 
-#         fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
-#         st.plotly_chart(fig)
-    generate_map_v2(trait=trait_dropdown.value, level=level_radio.value)
+        # Adjust the plotting code to use the renamed DataFrame and columns
+        for trait, full_trait_name in trait_names.items():
+            fig = px.choropleth(data_state_renamed, 
+                                locations="State_Abbrev", 
+                                locationmode="USA-states",
+                                color=full_trait_name,
+                                hover_name="State",
+                                hover_data=[full_trait_name, 'Count', trait + "_std"],  # Order matters
+                                color_continuous_scale='Viridis',
+                                scope="usa",
+                                title=f"US Map of Average {full_trait_name} Score by State")
 
+            fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
+                              "<br>" +
+                              f"<b>Average: %{{customdata[0]:.2f}}</b><br>" +   # Index based on order in hover_data
+                              f"Standard Dev.: %{{customdata[2]:.2f}}<br>" +   # Index based on order in hover_data
+                              "User count: %{customdata[1]}"                 # Index based on order in hover_data
+            )
+            st.plotly_chart(fig)
+    else:
+        cluster_aggregates = pd.read_csv("us_city_viz.csv")
+        # Map the traits to their full names for the color column
+        for trait, full_name in trait_names.items():
+            cluster_aggregates[full_name] = cluster_aggregates[trait]
+
+        # Step 3: Plotting
+        for trait, full_name in trait_names.items():
+            fig = px.scatter_geo(cluster_aggregates, 
+                                 locationmode='USA-states', 
+                                 scope='usa',
+                                 lat='Latitude',
+                                 lon='Longitude',
+                                 size='Count',
+                                 color=full_name,
+                                 hover_name='City',
+                                 hover_data={full_name: True, 'Count': True, f"{trait}_std": True},
+        #                          color_continuous_scale='Viridis',
+                                 title=f"Bubble Map of {full_name} by Clustered US Cities",
+                                 size_max=40
+                                )
+
+            fig.update_traces(
+                hovertemplate=(
+                    f"<b>%{{hovertext}} {full_name}:</b><br>" +
+                    "<b>Average: %{customdata[0]:.2f}</b><br>" +
+                    "Standard Dev.: %{customdata[2]:.2f}<br>" +
+                    "User count: %{customdata[1]}")
+            )
+
+
+            fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
+            st.plotly_chart(fig)
 
 if us_or_global == 'US only':
     state_or_city = st.radio('US Level:', ['State', 'City'])
