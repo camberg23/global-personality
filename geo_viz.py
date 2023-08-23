@@ -161,4 +161,4 @@ if us_or_global == 'US only':
 else:
     level = st.radio('View by:', ['Country', 'City'])
     trait = st.selectbox('Trait:', list(trait_names.values()))
-    plot_globe_trait_location(level, trait)
+    plot_globe_trait_location(trait, level)
