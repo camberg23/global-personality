@@ -107,63 +107,66 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             st.plotly_chart(fig)
 
 def plot_us_trait_location(state_or_city, trait):
+    inv_trait_names = {v: k for k, v in trait_names.items()}
+    trait_abbrev = inv_trait_names[trait]
+    
     if state_or_city == 'State':
         data_state_renamed = pd.read_csv("us_state_viz.csv")
-
+        full_trait_name = trait
+        trait = inv_trait_names[trait]
+        
         # Adjust the plotting code to use the renamed DataFrame and columns
-        for trait, full_trait_name in trait_names.items():
-            fig = px.choropleth(data_state_renamed, 
-                                locations="State_Abbrev", 
-                                locationmode="USA-states",
-                                color=full_trait_name,
-                                hover_name="State",
-                                hover_data=[full_trait_name, 'Count', trait + "_std"],  # Order matters
-                                color_continuous_scale=px.colors.sequential.Plasma,
-                                scope="usa",
-                                title=f"US Map of Average {full_trait_name} Score by State")
+        fig = px.choropleth(data_state_renamed, 
+                            locations="State_Abbrev", 
+                            locationmode="USA-states",
+                            color=full_trait_name,
+                            hover_name="State",
+                            hover_data=[full_trait_name, 'Count', trait + "_std"],  # Order matters
+                            color_continuous_scale=px.colors.sequential.Plasma,
+                            scope="usa",
+                            title=f"US Map of Average {full_trait_name} Score by State")
 
-            fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
-                              "<br>" +
-                              f"<b>Average: %{{customdata[0]:.2f}}</b><br>" +   # Index based on order in hover_data
-                              f"Standard Dev.: %{{customdata[2]:.2f}}<br>" +   # Index based on order in hover_data
-                              "User count: %{customdata[1]}"                 # Index based on order in hover_data
-            )
-            fig.update_layout(width=1200, height=800)
-            st.plotly_chart(fig)
+        fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
+                          "<br>" +
+                          f"<b>Average: %{{customdata[0]:.2f}}</b><br>" +   # Index based on order in hover_data
+                          f"Standard Dev.: %{{customdata[2]:.2f}}<br>" +   # Index based on order in hover_data
+                          "User count: %{customdata[1]}"                 # Index based on order in hover_data
+        )
+        fig.update_layout(width=1200, height=800)
+        st.plotly_chart(fig)
     else:
         cluster_aggregates = pd.read_csv("us_city_viz.csv")
         # Map the traits to their full names for the color column
-        for trait, full_name in trait_names.items():
-            cluster_aggregates[full_name] = cluster_aggregates[trait]
+        
+        cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
 
         # Step 3: Plotting
-        for trait, full_name in trait_names.items():
-            fig = px.scatter_geo(cluster_aggregates, 
-                                 locationmode='USA-states', 
-                                 scope='usa',
-                                 lat='Latitude',
-                                 lon='Longitude',
-                                 size='Count',
-                                 color=full_name,
-                                 hover_name='City',
-                                 hover_data={full_name: True, 'Count': True, f"{trait}_std": True},
-                                 color_continuous_scale=px.colors.sequential.Plasma,
-                                 title=f"Bubble Map of {full_name} by Clustered US Cities",
-                                 size_max=60
-                                )
+        fig = px.scatter_geo(cluster_aggregates, 
+                             locationmode='USA-states', 
+                             scope='usa',
+                             lat='Latitude',
+                             lon='Longitude',
+                             size='Count',
+                             color=full_name,
+                             hover_name='City',
+                             hover_data={full_name: True, 'Count': True, f"{trait}_std": True},
+                             color_continuous_scale=px.colors.sequential.Plasma,
+                             title=f"Bubble Map of {full_name} by Clustered US Cities",
+                             size_max=60
+                            )
 
-            fig.update_traces(
-                hovertemplate=(
-                    f"<b>%{{hovertext}} {full_name}:</b><br>" +
-                    "<b>Average: %{customdata[0]:.2f}</b><br>" +
-                    "Standard Dev.: %{customdata[2]:.2f}<br>" +
-                    "User count: %{customdata[1]}")
-            )
+        fig.update_traces(
+            hovertemplate=(
+                f"<b>%{{hovertext}} {full_name}:</b><br>" +
+                "<b>Average: %{customdata[0]:.2f}</b><br>" +
+                "Standard Dev.: %{customdata[2]:.2f}<br>" +
+                "User count: %{customdata[1]}")
+        )
 
 
-            fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
-            fig.update_layout(width=1200, height=800)
-            st.plotly_chart(fig)
+        fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
+        fig.update_layout(width=1200, height=800)
+        st.plotly_chart(fig)
 
 # Conditionally display based on the first selection
 if us_or_global == 'US only':
