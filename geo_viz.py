@@ -145,7 +145,7 @@ def plot_us_trait_location(state_or_city, trait):
                                  hover_data={full_name: True, 'Count': True, f"{trait}_std": True},
                                  color_continuous_scale=px.colors.sequential.Plasma,
                                  title=f"Bubble Map of {full_name} by Clustered US Cities",
-                                 size_max=40
+                                 size_max=60
                                 )
 
             fig.update_traces(
