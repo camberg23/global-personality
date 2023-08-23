@@ -47,7 +47,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                                 color=full_trait_name,
                                 hover_name="Country",
                                 hover_data={"Count": True, trait: f"Mean {full_trait_name} Score", f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
-    #                             color_continuous_scale=["black", "lightgreen"],
+                                color_continuous_scale=px.colors.sequential.Plasma,
                                 title=f"Map of Average {full_trait_name} Score by {level}")
 
             fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}</b><br>Mean: %{{customdata[1]:.2f}}<br>Std Dev: %{{customdata[2]:.2f}}<br>Count: %{{customdata[0]}}")
@@ -83,7 +83,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                                  color=full_trait_name,
                                  hover_name='CityState',
                                  hover_data={trait: True, 'Count': True, 'Country': True, f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
-    #                              color_continuous_scale='Viridis',
+                                 color_continuous_scale=px.colors.sequential.Plasma,
                                  title=f"World Map of {full_trait_name} by Clustered Major Cities")
             fig.update_traces(marker=dict(size=9))
 
@@ -112,7 +112,7 @@ def plot_us_trait_location(state_or_city, trait):
                                 color=full_trait_name,
                                 hover_name="State",
                                 hover_data=[full_trait_name, 'Count', trait + "_std"],  # Order matters
-                                color_continuous_scale='Viridis',
+                                color_continuous_scale=px.colors.sequential.Plasma,
                                 scope="usa",
                                 title=f"US Map of Average {full_trait_name} Score by State")
 
@@ -122,6 +122,7 @@ def plot_us_trait_location(state_or_city, trait):
                               f"Standard Dev.: %{{customdata[2]:.2f}}<br>" +   # Index based on order in hover_data
                               "User count: %{customdata[1]}"                 # Index based on order in hover_data
             )
+            fig.update_layout(width=1000, height=600)
             st.plotly_chart(fig)
     else:
         cluster_aggregates = pd.read_csv("us_city_viz.csv")
@@ -140,7 +141,7 @@ def plot_us_trait_location(state_or_city, trait):
                                  color=full_name,
                                  hover_name='City',
                                  hover_data={full_name: True, 'Count': True, f"{trait}_std": True},
-        #                          color_continuous_scale='Viridis',
+                                 color_continuous_scale=px.colors.sequential.Plasma,
                                  title=f"Bubble Map of {full_name} by Clustered US Cities",
                                  size_max=40
                                 )
