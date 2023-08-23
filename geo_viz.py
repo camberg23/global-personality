@@ -122,7 +122,7 @@ def plot_us_trait_location(state_or_city, trait):
                               f"Standard Dev.: %{{customdata[2]:.2f}}<br>" +   # Index based on order in hover_data
                               "User count: %{customdata[1]}"                 # Index based on order in hover_data
             )
-            fig.update_layout(width=1000, height=600)
+            fig.update_layout(width=1400, height=900)
             st.plotly_chart(fig)
     else:
         cluster_aggregates = pd.read_csv("us_city_viz.csv")
