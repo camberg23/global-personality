@@ -147,17 +147,17 @@ def plot_us_trait_location(state_or_city, trait):
                              lat='Latitude',
                              lon='Longitude',
                              size='Count',
-                             color=full_name,
+                             color=trait,
                              hover_name='City',
-                             hover_data={full_name: True, 'Count': True, f"{trait}_std": True},
+                             hover_data={full_name: True, 'Count': True, f"{trait_abbrev}_std": True},
                              color_continuous_scale=px.colors.sequential.Plasma,
-                             title=f"Bubble Map of {full_name} by Clustered US Cities",
+                             title=f"Bubble Map of {trait} by Clustered US Cities",
                              size_max=60
                             )
 
         fig.update_traces(
             hovertemplate=(
-                f"<b>%{{hovertext}} {full_name}:</b><br>" +
+                f"<b>%{{hovertext}} {trait}:</b><br>" +
                 "<b>Average: %{customdata[0]:.2f}</b><br>" +
                 "Standard Dev.: %{customdata[2]:.2f}<br>" +
                 "User count: %{customdata[1]}")
