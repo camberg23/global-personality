@@ -82,7 +82,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                                  lon='Longitude',
                                  color=full_trait_name,
                                  hover_name='CityState',
-                                 hover_data={trait: True, 'Count': True, 'Country': True, f"{trait}_std": f"Std Dev {full_trait_name}"},
+                                 hover_data={trait: True, 'Count': True, 'Country': True, f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
     #                              color_continuous_scale='Viridis',
                                  title=f"World Map of {full_trait_name} by Clustered Major Cities")
             fig.update_traces(marker=dict(size=9))
