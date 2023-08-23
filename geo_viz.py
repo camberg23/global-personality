@@ -15,9 +15,6 @@ import plotly.graph_objects as go
 from sklearn.cluster import DBSCAN
 import streamlit as st
 
-import plotly.offline as pyo
-pyo.init_notebook_mode(connected=True)
-
 # Trait name mapping
 trait_names = {
     'o': 'Openness',
