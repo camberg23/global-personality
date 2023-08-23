@@ -32,8 +32,11 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             data = pd.read_csv('country_data.csv')
         else:
             data = pd.read_csv('city_data.csv')
-        full_trait_name = trait_names[trait]
-        data[full_trait_name] = data[trait]
+        
+        inv_trait_names = {v: k for k, v in trait_names.items()}
+
+        trait_abbrev = inv_trait_names[trait]
+        data[trait] = data[trait_abbrev]
 
         if level == "Country":
             # Choropleth map for countries
