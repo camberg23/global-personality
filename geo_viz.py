@@ -25,7 +25,11 @@ trait_names = {
 }
 
 traits = ['o', 'c', 'e', 'a', 'n']
-us_or_global = st.radio('Data Scope:', ['US only', 'Global'])
+
+col1, col2, col3 = st.beta_columns(3)
+
+with col1:
+    us_or_global = st.selectbox('Data Scope:', ['Choose an option', 'US only', 'Global'])
 
 def plot_globe_trait_location(trait, level, threshold_users=500):
         if level == "Country":
@@ -161,12 +165,20 @@ def plot_us_trait_location(state_or_city, trait):
             fig.update_layout(width=1200, height=800)
             st.plotly_chart(fig)
 
+# Conditionally display based on the first selection
 if us_or_global == 'US only':
-    state_or_city = st.radio('US Level:', ['State', 'City'])
-    trait = st.selectbox('Trait:', list(trait_names.values()))
-    plot_us_trait_location(state_or_city, trait)
-    
-else:
-    level = st.radio('View by:', ['Country', 'City'])
-    trait = st.selectbox('Trait:', list(trait_names.values()))
-    plot_globe_trait_location(trait, level)
+    with col2:
+        state_or_city = st.selectbox('US Level:', ['Choose an option', 'State', 'City'])
+elif us_or_global == 'Global':
+    with col2:
+        level = st.selectbox('View by:', ['Choose an option', 'Country', 'City'])
+
+with col3:
+    trait = st.selectbox('Trait:', ['Choose an option'] + list(trait_names.values()))
+
+# Only render when the Submit button is pressed
+if st.button('Submit'):
+    if us_or_global == 'US only' and trait != 'Choose an option':
+        plot_us_trait_location(state_or_city, trait)
+    elif us_or_global == 'Global' and trait != 'Choose an option':
+        plot_globe_trait_location(trait, level)
