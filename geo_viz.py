@@ -149,7 +149,7 @@ def plot_us_trait_location(state_or_city, trait):
                              size='Count',
                              color=trait,
                              hover_name='City',
-                             hover_data={full_name: True, 'Count': True, f"{trait_abbrev}_std": True},
+                             hover_data={trait: True, 'Count': True, f"{trait_abbrev}_std": True},
                              color_continuous_scale=px.colors.sequential.Plasma,
                              title=f"Bubble Map of {trait} by Clustered US Cities",
                              size_max=60
