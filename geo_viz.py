@@ -92,30 +92,11 @@ def plot_us_trait_location(state_or_city, trait):
 
 def plot_globe_trait_location(level, trait):
     # Function to aggregate data based on the selected level (Country or City)
-    def aggregate_data(level, df=filtered_df):
-        # Use location_df as filtered_df for now
-        filtered_df = pd.read_csv('location_data.csv')
-        if level == "Country":
-            mean_scores = filtered_df.groupby('Country')[traits].mean().reset_index()
-            std_devs = filtered_df.groupby('Country')[traits].std().reset_index()
-            counts = filtered_df['Country'].value_counts().reset_index()
-            counts.columns = ['Country', 'Count']
-            data = pd.merge(mean_scores, counts, on='Country', how='left')
-            data = pd.merge(data, std_devs, on='Country', how='left', suffixes=('', '_std'))
-        elif level == "City":
-            # Differentiating US cities by their state
-            filtered_df['CityState'] = np.where(filtered_df['Country'] == 'United States', filtered_df['City'] + ", " + filtered_df['State'], filtered_df['City'])
-            # Including Latitude and Longitude for city-level aggregation
-            mean_scores = filtered_df.groupby(['CityState', 'Country', 'Latitude', 'Longitude'])[traits].mean().reset_index()
-            std_devs = filtered_df.groupby(['CityState', 'Country'])[traits].std().reset_index()
-            counts = filtered_df.groupby(['CityState', 'Country']).size().reset_index(name='Count')
-            data = pd.merge(mean_scores, counts, on=['CityState', 'Country'], how='left')
-            data = pd.merge(data, std_devs, on=['CityState', 'Country'], how='left', suffixes=('', '_std'))
-
-        return data
-
     def generate_map_v2(trait, level, threshold_users=500):
-        data = aggregate_data(level)
+        if level == "Country":
+            data = pd.read_csv('country_data.csv')
+        else:
+            data = pd.read_csv('city_data.csv')
         full_trait_name = trait_names[trait]
         data[full_trait_name] = data[trait]
 
