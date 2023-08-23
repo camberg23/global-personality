@@ -37,6 +37,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
 
         trait_abbrev = inv_trait_names[trait]
         data[trait] = data[trait_abbrev]
+        full_trait_name = trait
 
         if level == "Country":
             # Choropleth map for countries
