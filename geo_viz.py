@@ -13,8 +13,6 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.cluster import DBSCAN
-from ipywidgets import widgets, interact_manual, Dropdown, RadioButtons
-from IPython.display import display, clear_output
 import streamlit as st
 
 import plotly.offline as pyo
