@@ -46,7 +46,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                                 locationmode="country names",
                                 color=full_trait_name,
                                 hover_name="Country",
-                                hover_data={"Count": True, trait: f"Mean {full_trait_name} Score", f"{trait}_std": f"Std Dev {full_trait_name}"},
+                                hover_data={"Count": True, trait: f"Mean {full_trait_name} Score", f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
     #                             color_continuous_scale=["black", "lightgreen"],
                                 title=f"Map of Average {full_trait_name} Score by {level}")
 
