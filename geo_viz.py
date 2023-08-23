@@ -179,6 +179,7 @@ with col3:
 # Only render when the Submit button is pressed
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option':
+        print(state_or_city, trait)
         plot_us_trait_location(state_or_city, trait)
     elif us_or_global == 'Global' and trait != 'Choose an option':
         plot_globe_trait_location(trait, level)
