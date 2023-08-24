@@ -66,10 +66,10 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                             title={
                             'text': f"Map of Average {full_trait_name} Score by Country",
                             'x': 0.5,
-                            'y': 0.95,
+                            'y': 0.92,
                             'xanchor': 'center',
                             'font': {
-                                'size': 24  # Adjust this value for desired font size
+                                'size': 30  # Adjust this value for desired font size
                                 }
                             })
             st.plotly_chart(fig, use_container_width=True)
@@ -123,10 +123,10 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                             title={
                             'text': f"World Map of {full_trait_name} by Major Cities",
                             'x': 0.5,
-                            'y': 0.95,
+                            'y': 0.92,
                             'xanchor': 'center',
                             'font': {
-                                'size': 24  # Adjust this value for desired font size
+                                'size': 30  # Adjust this value for desired font size
                                 }
                             })
             st.plotly_chart(fig, use_container_width=True)
@@ -161,10 +161,10 @@ def plot_us_trait_location(state_or_city, trait):
                             title={
                             'text': f"US Map of Average {full_trait_name} Score by State",
                             'x': 0.5,
-                            'y': 0.95,
+                            'y': 0.92,
                             'xanchor': 'center',
                             'font': {
-                                'size': 24  # Adjust this value for desired font size
+                                'size': 30  # Adjust this value for desired font size
                                 }
                             })
         st.plotly_chart(fig, use_container_width=True)
@@ -203,10 +203,10 @@ def plot_us_trait_location(state_or_city, trait):
                             title={
                             'text': f"US Bubble Map of Average {full_trait_name} Score by Major Cities",
                             'x': 0.5,
-                            'y': 0.95,
+                            'y': 0.92,
                             'xanchor': 'center',
                             'font': {
-                                'size': 24  # Adjust this value for desired font size
+                                'size': 30  # Adjust this value for desired font size
                                 }
                             })
         st.plotly_chart(fig, use_container_width=True)
