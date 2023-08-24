@@ -224,7 +224,14 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
 
     # Update layout for better visualization
     fig.update_layout(
-        title="Trait Comparison",
+        title={
+        'text': f"Trait Comparison: <span style='color:blue'>{label1}</span> and <span style='color:red'>{label2}</span>",
+        'x': 0.5,
+        'xanchor': 'center',
+        'font': {
+            'size': 24  # Adjust this value for desired font size
+            }
+        },
         xaxis_title="Traits",
         yaxis_title="Scores (normalized)",
         barmode='group',
