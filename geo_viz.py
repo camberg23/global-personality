@@ -191,21 +191,25 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
     inv_trait_names = {v: k for k, v in trait_names.items()}
     
     if scope != 'states':
+        full_name = trait
         trait = inv_trait_names[trait]
+    else:
+        full_name = trait_names[trait]
     
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
     bottom_places = data.sort_values(by=trait, ascending=True).head(N)
 
     col1, col2 = st.columns(2)
+
     
     with col1:
-        st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {trait_names[trait]}:</b></span>", unsafe_allow_html=True)
+        st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, row in top_places.iterrows():
             st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
     
     with col2:
-        st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {trait_names[trait]}:</b></span>", unsafe_allow_html=True)
+        st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, row in bottom_places.iterrows():
             st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
 
