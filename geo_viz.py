@@ -193,18 +193,34 @@ if st.button('Submit'):
     elif us_or_global == 'Global' and trait != 'Choose an option':
         plot_globe_trait_location(trait, level)
 
-def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
+from scipy.stats import mannwhitneyu
+
+def compute_effect_size(mean1, mean2, std1, std2, n1, n2):
+    """Compute Cohen's d for effect size."""
+    pooled_std = np.sqrt(((n1 - 1) * std1**2 + (n2 - 1) * std2**2) / (n1 + n2 - 2))
+    return (mean1 - mean2) / pooled_std
+
+def effect_size_interpretation(d_value):
+    """Provide a non-stats friendly interpretation of effect size."""
+    if abs(d_value) < 0.2:
+        return 'very small'
+    elif abs(d_value) < 0.5:
+        return 'small'
+    elif abs(d_value) < 0.8:
+        return 'medium'
+    else:
+        return 'large'
+
+def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits, data1, data2):
     """Plot a side-by-side comparison of two entities over multiple traits."""
     
-    # Organize data for grouped bar chart
     x_labels = traits
     y_values_1 = scores1
     y_values_2 = scores2
 
-    # Create a grouped bar chart
     fig = go.Figure()
 
-    # Bars for first entity
+    # Add bars for first entity
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_1,
@@ -213,7 +229,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         marker_color='blue'
     ))
 
-    # Bars for second entity
+    # Add bars for second entity
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_2,
@@ -221,6 +237,26 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         error_y=dict(type='data', array=std2),
         marker_color='red'
     ))
+
+    # Calculate effect sizes and p-values, then annotate the plot
+    for i, trait in enumerate(traits):
+        d_value = compute_effect_size(scores1[i], scores2[i], std1[i], std2[i], count1, count2)
+        _, p_value = mannwhitneyu(data1[trait], data2[trait], alternative='two-sided')
+        
+        significance = "significant" if p_value < 0.05 else "not significant"
+        interpretation = effect_size_interpretation(d_value)
+        
+        annotation_text = (f"Effect size ({trait}): {d_value:.3f} ({interpretation})<br>"
+                           f"p-value ({trait}): {p_value:.6f} ({significance})")
+        
+        fig.add_annotation(
+            text=annotation_text,
+            x=trait,
+            y=max(y_values_1[i], y_values_2[i]) + 0.1,
+            showarrow=False,
+            align="left",
+            font=dict(size=10)
+        )
 
     # Update layout for better visualization
     fig.update_layout(
@@ -242,7 +278,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     )
     
     st.plotly_chart(fig)
-
+    
 # Create a section title and space
 st.title("Population comparison tool")
 st.write("Compare the average Big Five personality profiles of any two countries or cities.")
@@ -273,7 +309,7 @@ if comparison_type == "Compare cities":
 
     # Plot the comparison
     st.write("Note: there are almost always greater personality differences (higher trait variance) *within* any given location than *across* locations. See error bars (within-location trait diversity).")
-    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
+    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), city1_data, city2_data)
 
 # Handle Country vs. Country comparison
 elif comparison_type == "Compare countries":
@@ -297,4 +333,4 @@ elif comparison_type == "Compare countries":
 
     # Plot the comparison
     st.write("Note: there are almost always greater personality differences (higher trait variance) *within* any given location than *across* locations. See error bars (within-location trait diversity).")
-    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
+    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), country1_data, country2_data)
