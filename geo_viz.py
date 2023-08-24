@@ -188,7 +188,9 @@ with col3:
 
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
-
+    inv_trait_names = {v: k for k, v in trait_names.items()}
+    trait_abbrev = inv_trait_names[trait]
+    
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
     bottom_places = data.sort_values(by=trait, ascending=True).head(N)
@@ -212,19 +214,19 @@ if st.button('Submit'):
         plot_us_trait_location(state_or_city, trait)
         if state_or_city == 'State view':
             data_state_renamed = pd.read_csv("us_state_viz.csv")
-            display_top_bottom_places(data_state_renamed, trait_abbrev, 'states', 'State')
+            display_top_bottom_places(data_state_renamed, trait, 'states', 'State')
         else:
             cluster_aggregates = pd.read_csv("us_city_viz.csv")
-            display_top_bottom_places(cluster_aggregates, trait_abbrev, 'cities', 'City')
+            display_top_bottom_places(cluster_aggregates, trait, 'cities', 'City')
 
     elif us_or_global == 'Global' and trait != 'Choose an option':
         plot_globe_trait_location(trait, level)
         if level == "Country view":
             country_scores = pd.read_csv('country_data.csv')
-            display_top_bottom_places(country_scores, trait_abbrev, 'countries', 'Country')
+            display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         else:
             city_scores = pd.read_csv('city_data.csv')
-            display_top_bottom_places(city_scores, trait_abbrev, 'cities', 'CityState')
+            display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
     """Plot a side-by-side comparison of two entities over multiple traits."""
