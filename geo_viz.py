@@ -209,19 +209,21 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         x=x_labels,
         y=y_values_1,
         name=f"{label1} (n={count1:,})",
-        error_y=dict(type='data', array=std1),
+        error_y=dict(type='data', array=std1, visible=True),
         marker_color='blue',
-        hovertemplate=f"{label1}<br>Trait: {{x}}<br>Score: {{y:.3f}}<br>Std. Dev: {{error_y:.3f}}<extra></extra>"
+        hoverinfo="y+name",
+        hovertemplate=f"{label1}<br>Trait: %{{x}}<br>Score: %{{y:.3f}}<br>Std. Dev: %{{error_y:.3f}}"
     ))
-    
+
     # Bars for second entity
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_2,
         name=f"{label2} (n={count2:,})",
-        error_y=dict(type='data', array=std2),
+        error_y=dict(type='data', array=std2, visible=True),
         marker_color='red',
-        hovertemplate=f"{label2}<br>Trait: {{x}}<br>Score: {{y:.3f}}<br>Std. Dev: {{error_y:.3f}}<extra></extra>"
+        hoverinfo="y+name",
+        hovertemplate=f"{label2}<br>Trait: %{{x}}<br>Score: %{{y:.3f}}<br>Std. Dev: %{{error_y:.3f}}"
     ))
 
     # Update layout for better visualization
