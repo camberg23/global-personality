@@ -222,13 +222,17 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, traits):
         xaxis_title="Traits",
         yaxis_title="Scores",
         barmode='group',
-        legend_title_text="Entity",
         legend=dict(
             yanchor="top",
-            y=0.99,
-            xanchor="left",
-            x=0.01
-        )
+            y=1,
+            xanchor="right",
+            x=1
+        ),
+        font=dict(
+            family="Roboto, monospace",
+            size=16
+        ),
+        margin=dict(t=100)  # Add more space at the top
     )
     
     st.plotly_chart(fig)
