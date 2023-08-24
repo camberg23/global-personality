@@ -224,12 +224,12 @@ if comparison_type == "City vs. City":
     st.header("City Comparison")
     city_scores = pd.read_csv('city_data.csv')    
     # City selectors
-    city1_selected = st.selectbox("Select the first city:", city_scores['City'].unique())
-    city2_selected = st.selectbox("Select the second city:", city_scores['City'].unique(), index=1)
+    city1_selected = st.selectbox("Select the first city:", city_scores['CityState'].unique())
+    city2_selected = st.selectbox("Select the second city:", city_scores['CityState'].unique(), index=1)
     
     # Fetch data for the selected cities
-    city1_data = city_scores[city_scores['City'] == city1_selected].iloc[0]
-    city2_data = city_scores[city_scores['City'] == city2_selected].iloc[0]
+    city1_data = city_scores[city_scores['CityState'] == city1_selected].iloc[0]
+    city2_data = city_scores[city_scores['CityState'] == city2_selected].iloc[0]
     
     city1_scores = [city1_data[trait] for trait in trait_names]
     city2_scores = [city2_data[trait] for trait in trait_names]
