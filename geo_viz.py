@@ -260,8 +260,9 @@ if comparison_type == "City vs. City":
     city2_scores = [city2_data[trait] for trait in trait_names]
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
-    city1_count = [city1_data['Count'] for trait in trait_names]
-    city2_count = [city2_data['Count'] for trait in trait_names]
+    
+    city1_count = city_scores[city_scores['City'] == city1_selected]['Count'].values[0]
+    city2_count = city_scores[city_scores['City'] == city2_selected]['Count'].values[0]
 
     # Plot the comparison
     plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
@@ -282,8 +283,9 @@ elif comparison_type == "Country vs. Country":
     country2_scores = [country2_data[trait] for trait in trait_names]
     country1_std = [country1_data[trait+'_std'] for trait in trait_names]
     country2_std = [country2_data[trait+'_std'] for trait in trait_names]
-    country1_count = [country1_data['Count'] for trait in trait_names]
-    country2_count = [country2_data['Count'] for trait in trait_names]
-    
+
+    country1_count = country_data[country_data['Country'] == country1_selected]['Count'].values[0]
+    country2_count = country_data[country_data['Country'] == country2_selected]['Count'].values[0]
+
     # Plot the comparison
     plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
