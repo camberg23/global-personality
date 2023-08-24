@@ -218,21 +218,22 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option':
         if state_or_city == 'State view':
-            data_state_renamed = pd.read_csv("us_state_viz.csv")
-            display_top_bottom_places(data_state_renamed, trait, 'states', 'State')
+            # data_state_renamed = pd.read_csv("us_state_viz.csv")
+            # display_top_bottom_places(data_state_renamed, trait, 'states', 'State')
         else:
-            cluster_aggregates = pd.read_csv("us_city_viz.csv")
-            display_top_bottom_places(cluster_aggregates, trait, 'cities', 'City')
+            # cluster_aggregates = pd.read_csv("us_city_viz.csv")
+            # display_top_bottom_places(cluster_aggregates, trait, 'cities', 'City')
             
         plot_us_trait_location(state_or_city, trait)
 
     elif us_or_global == 'Global' and trait != 'Choose an option':
         if level == "Country view":
-            country_scores = pd.read_csv('country_data.csv')
+            # country_scores = pd.read_csv('country_data.csv')
+            # this is the only one that seems to work right now so we'll revisit this later
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         else:
             city_scores = pd.read_csv('city_data.csv')
-            display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+            # display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
             
         plot_globe_trait_location(trait, level)
 
