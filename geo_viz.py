@@ -30,7 +30,7 @@ st.set_page_config(layout="wide")
 
 # Create a section title and space
 st.title("Personality Atlas")
-st.write("Explore and compare the Big Five personality traits across the globe using Truity's 3.8M person database.")
+st.write("Explore and compare the Big Five personality traits across the globe using Truity's 4M person database.")
 st.write("---")
 
 col1, col2, col3 = st.columns(3)
