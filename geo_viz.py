@@ -26,6 +26,8 @@ trait_names = {
 
 traits = ['o', 'c', 'e', 'a', 'n']
 
+st.set_page_config(layout="wide")
+
 # Create a section title and space
 st.title("Personality Atlas")
 st.write("Explore and compare the Big Five personality traits on planet Earth using Truity's 3.8M person database.")
