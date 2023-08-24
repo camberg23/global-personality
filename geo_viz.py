@@ -63,7 +63,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
 
             fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}</b><br>Mean: %{{customdata[1]:.3f}}<br>Std Dev: %{{customdata[2]:.3f}}<br>Count: %{{customdata[0]}}")
             fig.update_layout(width=1000, height=700)
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True)
 
         elif level == "City view":
             # Clustering for cities
@@ -111,7 +111,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             # Add the extracted country boundaries to the cities' scatter map
             fig.update_geos(countrywidth=0.5, countrycolor="Black", showcountries=True)
             fig.update_layout(width=1000, height=700)
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True)
 
 def plot_us_trait_location(state_or_city, trait):
     inv_trait_names = {v: k for k, v in trait_names.items()}
@@ -140,7 +140,7 @@ def plot_us_trait_location(state_or_city, trait):
                           "User count: %{customdata[1]}"                 # Index based on order in hover_data
         )
         fig.update_layout(width=1000, height=700)
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
     else:
         cluster_aggregates = pd.read_csv("us_city_viz.csv")
         # Map the traits to their full names for the color column
@@ -173,7 +173,7 @@ def plot_us_trait_location(state_or_city, trait):
 
         fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
         fig.update_layout(width=1000, height=700)
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
 # Conditionally display based on the first selection
 if us_or_global == 'US only':
