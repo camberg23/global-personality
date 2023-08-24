@@ -130,8 +130,7 @@ def plot_us_trait_location(state_or_city, trait):
                             hover_name="State",
                             hover_data=[full_trait_name, 'Count', trait + "_std"],  # Order matters
                             color_continuous_scale=px.colors.sequential.Plasma,
-                            scope="usa",
-                            title=f"US Map of Average {full_trait_name} Score by State")
+                            scope="usa")
 
         fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
                           "<br>" +
@@ -139,7 +138,16 @@ def plot_us_trait_location(state_or_city, trait):
                           f"Standard Dev.: %{{customdata[2]:.3f}}<br>" +   # Index based on order in hover_data
                           "User count: %{customdata[1]}"                 # Index based on order in hover_data
         )
-        fig.update_layout(width=1000, height=700)
+        fig.update_layout(width=1000, 
+                          height=700,
+                            title={
+                            'text': f"US Map of Average {full_trait_name} Score by State",
+                            'x': 0.5,
+                            'xanchor': 'center',
+                            'font': {
+                                'size': 24  # Adjust this value for desired font size
+                                }
+                            })
         st.plotly_chart(fig, use_container_width=True)
     else:
         cluster_aggregates = pd.read_csv("us_city_viz.csv")
