@@ -186,3 +186,75 @@ if st.button('Submit'):
         plot_us_trait_location(state_or_city, trait)
     elif us_or_global == 'Global' and trait != 'Choose an option':
         plot_globe_trait_location(trait, level)
+
+def plot_comparison(scores1, scores2, std1, std2, label1, label2, traits):
+    """Plot a side-by-side comparison of two entities over multiple traits."""
+    
+    fig = go.Figure()
+    
+    for i, trait in enumerate(traits):
+        fig.add_trace(go.Bar(
+            x=[label1],
+            y=[scores1[i]],
+            name=f"{label1} {trait}",
+            error_y=dict(type='data', array=[std1[i]]),
+            marker_color='blue'
+        ))
+        
+        fig.add_trace(go.Bar(
+            x=[label2],
+            y=[scores2[i]],
+            name=f"{label2} {trait}",
+            error_y=dict(type='data', array=[std2[i]]),
+            marker_color='red'
+        ))
+    
+    fig.update_layout(barmode='group', title="Trait Comparison")
+    st.plotly_chart(fig)
+
+# Create a section title and space
+st.title("City and Country Trait Comparison")
+st.write("---")
+
+# Select comparison type: City vs. City or Country vs. Country
+comparison_type = st.radio("Choose comparison type", ["City vs. City", "Country vs. Country"])
+
+# Handle City vs. City comparison
+if comparison_type == "City vs. City":
+    st.header("City Comparison")
+    city_scores = pd.read_csv('city_data.csv')    
+    # City selectors
+    city1_selected = st.selectbox("Select the first city:", city_scores['City'].unique())
+    city2_selected = st.selectbox("Select the second city:", city_scores['City'].unique(), index=1)
+    
+    # Fetch data for the selected cities
+    city1_data = city_scores[city_scores['City'] == city1_selected].iloc[0]
+    city2_data = city_scores[city_scores['City'] == city2_selected].iloc[0]
+    
+    city1_scores = [city1_data[trait] for trait in trait_names]
+    city2_scores = [city2_data[trait] for trait in trait_names]
+    city1_std = [city1_data[trait+'_std'] for trait in trait_names]
+    city2_std = [city2_data[trait+'_std'] for trait in trait_names]
+
+    # Plot the comparison
+    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, list(trait_names.values()))
+
+# Handle Country vs. Country comparison
+elif comparison_type == "Country vs. Country":
+    st.header("Country Comparison")
+    country_scores = pd.read_csv('country_data.csv')
+    # Country selectors
+    country1_selected = st.selectbox("Select the first country:", country_scores['Country'].unique())
+    country2_selected = st.selectbox("Select the second country:", country_scores['Country'].unique(), index=1)
+    
+    # Fetch data for the selected countries
+    country1_data = country_scores[country_scores['Country'] == country1_selected].iloc[0]
+    country2_data = country_scores[country_scores['Country'] == country2_selected].iloc[0]
+    
+    country1_scores = [country1_data[trait] for trait in trait_names]
+    country2_scores = [country2_data[trait] for trait in trait_names]
+    country1_std = [country1_data[trait+'_std'] for trait in trait_names]
+    country2_std = [country2_data[trait+'_std'] for trait in trait_names]
+
+    # Plot the comparison
+    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, list(trait_names.values()))
