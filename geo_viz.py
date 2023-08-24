@@ -64,7 +64,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             fig.update_layout(width=1000, 
                              height=700,
                             title={
-                            'text'= f"Map of Average {full_trait_name} Score by Country",
+                            'text': f"Map of Average {full_trait_name} Score by Country",
                             'x': 0.5,
                             'xanchor': 'center',
                             'font': {
@@ -120,7 +120,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             fig.update_layout(width=1000, 
                              height=700,
                             title={
-                            'text'= f"World Map of {full_trait_name} by Major Cities",
+                            'text': f"World Map of {full_trait_name} by Major Cities",
                             'x': 0.5,
                             'xanchor': 'center',
                             'font': {
