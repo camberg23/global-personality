@@ -211,7 +211,6 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         name=f"{label1} (n={count1:,})",
         error_y=dict(type='data', array=std1, visible=True),
         marker_color='blue',
-        hoverinfo="x+y+text+name+error_y",
         hovertemplate="Trait: %{x}<br>Score: %{y:.3f} ± %{error_y.array:.3f}<extra></extra>"
     ))
 
@@ -222,7 +221,6 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         name=f"{label2} (n={count2:,})",
         error_y=dict(type='data', array=std2, visible=True),
         marker_color='red',
-        hoverinfo="x+y+text+name+error_y",
         hovertemplate="Trait: %{x}<br>Score: %{y:.3f} ± %{error_y.array:.3f}<extra></extra>"
     ))
 
