@@ -239,9 +239,11 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     ))
 
     # Calculate effect sizes and p-values, then annotate the plot
+    inv_trait_names = {v: k for k, v in trait_names.items()}
+    
     for i, trait in enumerate(traits):
         d_value = compute_effect_size(scores1[i], scores2[i], std1[i], std2[i], count1, count2)
-        _, p_value = mannwhitneyu(data1[trait], data2[trait], alternative='two-sided')
+        _, p_value = mannwhitneyu(data1[inv_trait_names[trait]], data2[inv_trait_names[trait]], alternative='two-sided')
         
         significance = "significant" if p_value < 0.05 else "not significant"
         interpretation = effect_size_interpretation(d_value)
