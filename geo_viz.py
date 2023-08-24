@@ -189,6 +189,7 @@ with col3:
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
+    
     if scope not 'states':
         trait = inv_trait_names[trait]
     
