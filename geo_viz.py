@@ -94,7 +94,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                                  hover_name='CityState',
                                  hover_data={trait: True, 'Count': True, 'Country': True, f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
                                  color_continuous_scale=px.colors.sequential.Plasma,
-                                 title=f"World Map of {full_trait_name} by Clustered Major Cities")
+                                 title=f"World Map of {full_trait_name} by Major Cities")
             fig.update_traces(marker=dict(size=9))
 
             fig.update_traces(
@@ -242,12 +242,14 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     st.plotly_chart(fig)
 
 # Create a section title and space
-st.title("City and Country Trait Comparison")
-st.write("Compare the Big Five personality profiles of any two countries or cities.")
+st.title("Population comparison tool")
+st.write("Compare the average Big Five personality profiles of any two countries or cities.")
 st.write("---")
 
 # Select comparison type: City vs. City or Country vs. Country
 comparison_type = st.radio("Compare cities or countries?", ["Compare cities", "Compare countries"])
+
+st.write("Note: there are almost always greater personality differences (higher trait variance) *within* any given location than *across* locations. See error bars (within-location trait diversity).")
 
 # Handle City vs. City comparison
 if comparison_type == "Compare cities":
