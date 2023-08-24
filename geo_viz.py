@@ -30,7 +30,7 @@ st.set_page_config(layout="wide")
 
 # Create a section title and space
 st.title("Personality Atlas")
-st.write("Explore and compare the Big Five personality traits on planet Earth using Truity's 3.8M person database.")
+st.write("Explore and compare the Big Five personality traits across the globe using Truity's 3.8M person database.")
 st.write("---")
 
 col1, col2, col3 = st.columns(3)
@@ -238,10 +238,10 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
             family="Roboto, monospace",
             size=16
         ),
-        margin=dict(t=100)  # Add more space at the top
+        margin=dict(t=200)  # Add more space at the top
     )
     
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
 # Create a section title and space
 st.title("Population comparison tool")
@@ -249,15 +249,18 @@ st.write("Compare the average Big Five personality profiles of any two countries
 st.write("---")
 
 # Select comparison type: City vs. City or Country vs. Country
-comparison_type = st.radio("Compare cities or countries?", ["Compare cities", "Compare countries"])
+comparison_type = st.radio("Would you like to compare cities or countries?", ["Cities", "Countries"])
 
 # Handle City vs. City comparison
-if comparison_type == "Compare cities":
+if comparison_type == "Cities":
     st.header("City Comparison")
     city_scores = pd.read_csv('city_data.csv')    
-    # City selectors
-    city1_selected = st.selectbox("Select the first city:", city_scores['CityState'].unique())
-    city2_selected = st.selectbox("Select the second city:", city_scores['CityState'].unique(), index=1)
+    # Determine the index positions of the desired default cities
+    default_city1_index = np.where(city_scores['CityState'].unique() == "New York, New York")[0][0]
+    default_city2_index = np.where(city_scores['CityState'].unique() == "Tokyo")[0][0]
+    
+    city1_selected = st.selectbox("Select the first city:", city_scores['CityState'].unique(), index=default_city1_index)
+    city2_selected = st.selectbox("Select the second city:", city_scores['CityState'].unique(), index=default_city2_index)
     
     # Fetch data for the selected cities
     city1_data = city_scores[city_scores['CityState'] == city1_selected].iloc[0]
@@ -276,13 +279,17 @@ if comparison_type == "Compare cities":
     plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
 
 # Handle Country vs. Country comparison
-elif comparison_type == "Compare countries":
+elif comparison_type == "Countries":
     st.header("Country Comparison")
     country_scores = pd.read_csv('country_data.csv')
-    # Country selectors
-    country1_selected = st.selectbox("Select the first country:", country_scores['Country'].unique())
-    country2_selected = st.selectbox("Select the second country:", country_scores['Country'].unique(), index=1)
     
+    # Determine the index positions of the desired default countries
+    default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
+    default_country2_index = np.where(country_scores['Country'].unique() == "Russia")[0][0]
+    
+    country1_selected = st.selectbox("Select the first country:", country_scores['Country'].unique(), index=default_country1_index)
+    country2_selected = st.selectbox("Select the second country:", country_scores['Country'].unique(), index=default_country2_index)
+
     # Fetch data for the selected countries
     country1_data = country_scores[country_scores['Country'] == country1_selected].iloc[0]
     country2_data = country_scores[country_scores['Country'] == country2_selected].iloc[0]
