@@ -186,12 +186,45 @@ elif us_or_global == 'Global':
 with col3:
     trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
 
-# Only render when the Submit button is pressed
+def display_top_bottom_places(data, trait, scope, place_column, N=5):
+    """Display the top N and bottom N places based on the trait score."""
+
+    # Sort the data based on the trait and take the top N and bottom N
+    top_places = data.sort_values(by=trait, ascending=False).head(N)
+    bottom_places = data.sort_values(by=trait, ascending=True).head(N)
+
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.write(f"Top {N} {scope} in {trait_names[trait]}:")
+        for idx, row in top_places.iterrows():
+            st.write(f"{row[place_column]}: {row[trait]:.2f} ± {row[trait + '_std']:.2f}")
+
+    with col2:
+        st.write(f"Bottom {N} {scope} in {trait_names[trait]}:")
+        for idx, row in bottom_places.iterrows():
+            st.write(f"{row[place_column]}: {row[trait]:.2f} ± {row[trait + '_std']:.2f}")
+
+# Inside the main Streamlit code:
+
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option':
         plot_us_trait_location(state_or_city, trait)
+        if state_or_city == 'State view':
+            data_state_renamed = pd.read_csv("us_state_viz.csv")
+            display_top_bottom_places(data_state_renamed, trait_abbrev, 'states', 'State')
+        else:
+            cluster_aggregates = pd.read_csv("us_city_viz.csv")
+            display_top_bottom_places(cluster_aggregates, trait_abbrev, 'cities', 'City')
+
     elif us_or_global == 'Global' and trait != 'Choose an option':
         plot_globe_trait_location(trait, level)
+        if level == "Country view":
+            country_scores = pd.read_csv('country_data.csv')
+            display_top_bottom_places(country_scores, trait_abbrev, 'countries', 'Country')
+        else:
+            city_scores = pd.read_csv('city_data.csv')
+            display_top_bottom_places(city_scores, trait_abbrev, 'cities', 'CityState')
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
     """Plot a side-by-side comparison of two entities over multiple traits."""
