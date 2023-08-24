@@ -189,8 +189,8 @@ with col3:
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
-    trait = inv_trait_names[trait]
-    print(list(data.columns))
+    if scope not 'states':
+        trait = inv_trait_names[trait]
     
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
