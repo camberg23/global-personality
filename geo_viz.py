@@ -226,19 +226,19 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     fig.update_layout(
         title="Trait Comparison",
         xaxis_title="Traits",
-        yaxis_title="Scores",
+        yaxis_title="Scores (normalized)",
         barmode='group',
         legend=dict(
             yanchor="top",
-            y=1,
+            y=1.2,
             xanchor="right",
             x=1
         ),
         font=dict(
             family="Roboto, monospace",
-            size=16
+            size=18
         ),
-        margin=dict(t=200)  # Add more space at the top
+        margin=dict(t=100)  # Add more space at the top
     )
     
     st.plotly_chart(fig, use_container_width=True)
