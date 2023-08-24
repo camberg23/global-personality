@@ -228,7 +228,7 @@ if st.button('Submit'):
 
     elif us_or_global == 'Global' and trait != 'Choose an option':
         if level == "Country view":
-            # country_scores = pd.read_csv('country_data.csv')
+            country_scores = pd.read_csv('country_data.csv')
             # this is the only one that seems to work right now so we'll revisit this later
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         # else:
