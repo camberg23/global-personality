@@ -37,7 +37,7 @@ with col1:
     us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
 
 def plot_globe_trait_location(trait, level, threshold_users=500):
-        if level == "Country":
+        if level == "Country view":
             data = pd.read_csv('country_data.csv')
         else:
             data = pd.read_csv('city_data.csv')
@@ -48,7 +48,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
         data[trait] = data[trait_abbrev]
         full_trait_name = trait
 
-        if level == "Country":
+        if level == "Country view":
             # Choropleth map for countries
             fig = px.choropleth(data, 
                                 locations="Country", 
@@ -57,13 +57,13 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                                 hover_name="Country",
                                 hover_data={"Count": True, trait: f"Mean {full_trait_name} Score", f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
                                 color_continuous_scale=px.colors.sequential.Plasma,
-                                title=f"Map of Average {full_trait_name} Score by {level}")
+                                title=f"Map of Average {full_trait_name} Score by Country")
 
             fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}</b><br>Mean: %{{customdata[1]:.2f}}<br>Std Dev: %{{customdata[2]:.2f}}<br>Count: %{{customdata[0]}}")
             fig.update_layout(width=1000, height=700)
             st.plotly_chart(fig)
 
-        elif level == "City":
+        elif level == "City view":
             # Clustering for cities
             kms_per_radian = 6371.0088
             epsilon = 50 / kms_per_radian
@@ -115,7 +115,7 @@ def plot_us_trait_location(state_or_city, trait):
     inv_trait_names = {v: k for k, v in trait_names.items()}
     trait_abbrev = inv_trait_names[trait]
     
-    if state_or_city == 'State':
+    if state_or_city == 'State view':
         data_state_renamed = pd.read_csv("us_state_viz.csv")
         full_trait_name = trait
         trait = inv_trait_names[trait]
@@ -176,10 +176,10 @@ def plot_us_trait_location(state_or_city, trait):
 # Conditionally display based on the first selection
 if us_or_global == 'US only':
     with col2:
-        state_or_city = st.selectbox('View by states or major cities?', ['Choose an option', 'State', 'City'])
+        state_or_city = st.selectbox('US scope:', ['Choose an option', 'State view', 'City view'])
 elif us_or_global == 'Global':
     with col2:
-        level = st.selectbox('View by countries or major cities?', ['Choose an option', 'Country', 'City'])
+        level = st.selectbox('Global scope:', ['Choose an option', 'Country view', 'City view'])
 
 with col3:
     trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
@@ -187,7 +187,6 @@ with col3:
 # Only render when the Submit button is pressed
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option':
-        print(state_or_city, trait)
         plot_us_trait_location(state_or_city, trait)
     elif us_or_global == 'Global' and trait != 'Choose an option':
         plot_globe_trait_location(trait, level)
