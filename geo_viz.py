@@ -284,8 +284,8 @@ elif comparison_type == "Country vs. Country":
     country1_std = [country1_data[trait+'_std'] for trait in trait_names]
     country2_std = [country2_data[trait+'_std'] for trait in trait_names]
 
-    country1_count = country_data[country_data['Country'] == country1_selected]['Count'].values[0]
-    country2_count = country_data[country_data['Country'] == country2_selected]['Count'].values[0]
+    country1_count = country_scores[country_scores['Country'] == country1_selected]['Count'].values[0]
+    country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
 
     # Plot the comparison
     plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
