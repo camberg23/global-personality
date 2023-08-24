@@ -190,26 +190,47 @@ if st.button('Submit'):
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, traits):
     """Plot a side-by-side comparison of two entities over multiple traits."""
     
+    # Organize data for grouped bar chart
+    x_labels = traits
+    y_values_1 = scores1
+    y_values_2 = scores2
+
+    # Create a grouped bar chart
     fig = go.Figure()
+
+    # Bars for first entity
+    fig.add_trace(go.Bar(
+        x=x_labels,
+        y=y_values_1,
+        name=label1,
+        error_y=dict(type='data', array=std1),
+        marker_color='blue'
+    ))
+
+    # Bars for second entity
+    fig.add_trace(go.Bar(
+        x=x_labels,
+        y=y_values_2,
+        name=label2,
+        error_y=dict(type='data', array=std2),
+        marker_color='red'
+    ))
+
+    # Update layout for better visualization
+    fig.update_layout(
+        title="Trait Comparison",
+        xaxis_title="Traits",
+        yaxis_title="Scores",
+        barmode='group',
+        legend_title_text="Entity",
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01
+        )
+    )
     
-    for i, trait in enumerate(traits):
-        fig.add_trace(go.Bar(
-            x=[label1],
-            y=[scores1[i]],
-            name=f"{label1} {trait}",
-            error_y=dict(type='data', array=[std1[i]]),
-            marker_color='blue'
-        ))
-        
-        fig.add_trace(go.Bar(
-            x=[label2],
-            y=[scores2[i]],
-            name=f"{label2} {trait}",
-            error_y=dict(type='data', array=[std2[i]]),
-            marker_color='red'
-        ))
-    
-    fig.update_layout(barmode='group', title="Trait Comparison")
     st.plotly_chart(fig)
 
 # Create a section title and space
