@@ -26,10 +26,15 @@ trait_names = {
 
 traits = ['o', 'c', 'e', 'a', 'n']
 
+# Create a section title and space
+st.title("Personality Atlas")
+st.write("Explore and compare the Big Five personality traits on planet Earth using Truity's 3.8M person database.")
+st.write("---")
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    us_or_global = st.selectbox('Data Scope:', ['Choose an option', 'US only', 'Global'])
+    us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
 
 def plot_globe_trait_location(trait, level, threshold_users=500):
         if level == "Country":
@@ -171,13 +176,13 @@ def plot_us_trait_location(state_or_city, trait):
 # Conditionally display based on the first selection
 if us_or_global == 'US only':
     with col2:
-        state_or_city = st.selectbox('US Level:', ['Choose an option', 'State', 'City'])
+        state_or_city = st.selectbox('View by states or major cities?', ['Choose an option', 'State', 'City'])
 elif us_or_global == 'Global':
     with col2:
-        level = st.selectbox('View by:', ['Choose an option', 'Country', 'City'])
+        level = st.selectbox('View by countries or major cities?', ['Choose an option', 'Country', 'City'])
 
 with col3:
-    trait = st.selectbox('Trait:', ['Choose an option'] + list(trait_names.values()))
+    trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
 
 # Only render when the Submit button is pressed
 if st.button('Submit'):
@@ -239,13 +244,14 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
 
 # Create a section title and space
 st.title("City and Country Trait Comparison")
+st.write("Compare the Big Five personality profiles of any two countries or cities.")
 st.write("---")
 
 # Select comparison type: City vs. City or Country vs. Country
-comparison_type = st.radio("Choose comparison type", ["City vs. City", "Country vs. Country"])
+comparison_type = st.radio("Compare cities or countries?", ["Compare cities", "Compare countries"])
 
 # Handle City vs. City comparison
-if comparison_type == "City vs. City":
+if comparison_type == "Compare cities":
     st.header("City Comparison")
     city_scores = pd.read_csv('city_data.csv')    
     # City selectors
@@ -268,7 +274,7 @@ if comparison_type == "City vs. City":
     plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
 
 # Handle Country vs. Country comparison
-elif comparison_type == "Country vs. Country":
+elif comparison_type == "Compare countries":
     st.header("Country Comparison")
     country_scores = pd.read_csv('country_data.csv')
     # Country selectors
