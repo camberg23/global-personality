@@ -198,35 +198,37 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.write(f"Top {N} {scope} in {trait_names[trait]}:")
+        st.markdown(f"**Highest {N} {scope} in {trait_names[trait]}:**", unsafe_allow_html=True)
         for idx, row in top_places.iterrows():
-            st.write(f"{row[place_column]}: {row[trait]:.2f} ± {row[trait + '_std']:.2f}")
-
+            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
+    
     with col2:
-        st.write(f"Bottom {N} {scope} in {trait_names[trait]}:")
+        st.markdown(f"**Lowest {N} {scope} in {trait_names[trait]}:**", unsafe_allow_html=True)
         for idx, row in bottom_places.iterrows():
-            st.write(f"{row[place_column]}: {row[trait]:.2f} ± {row[trait + '_std']:.2f}")
+            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
 
 # Inside the main Streamlit code:
 
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option':
-        plot_us_trait_location(state_or_city, trait)
         if state_or_city == 'State view':
             data_state_renamed = pd.read_csv("us_state_viz.csv")
             display_top_bottom_places(data_state_renamed, trait, 'states', 'State')
         else:
             cluster_aggregates = pd.read_csv("us_city_viz.csv")
             display_top_bottom_places(cluster_aggregates, trait, 'cities', 'City')
+            
+        plot_us_trait_location(state_or_city, trait)
 
     elif us_or_global == 'Global' and trait != 'Choose an option':
-        plot_globe_trait_location(trait, level)
         if level == "Country view":
             country_scores = pd.read_csv('country_data.csv')
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         else:
             city_scores = pd.read_csv('city_data.csv')
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+            
+        plot_globe_trait_location(trait, level)
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
     """Plot a side-by-side comparison of two entities over multiple traits."""
