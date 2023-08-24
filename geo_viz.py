@@ -261,8 +261,8 @@ if comparison_type == "City vs. City":
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
     
-    city1_count = city_scores[city_scores['City'] == city1_selected]['Count'].values[0]
-    city2_count = city_scores[city_scores['City'] == city2_selected]['Count'].values[0]
+    city1_count = city_scores[city_scores['CityState'] == city1_selected]['Count'].values[0]
+    city2_count = city_scores[city_scores['CityState'] == city2_selected]['Count'].values[0]
 
     # Plot the comparison
     plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
