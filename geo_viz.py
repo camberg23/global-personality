@@ -249,8 +249,6 @@ st.write("---")
 # Select comparison type: City vs. City or Country vs. Country
 comparison_type = st.radio("Compare cities or countries?", ["Compare cities", "Compare countries"])
 
-st.write("Note: there are almost always greater personality differences (higher trait variance) *within* any given location than *across* locations. See error bars (within-location trait diversity).")
-
 # Handle City vs. City comparison
 if comparison_type == "Compare cities":
     st.header("City Comparison")
@@ -272,6 +270,7 @@ if comparison_type == "Compare cities":
     city2_count = city_scores[city_scores['CityState'] == city2_selected]['Count'].values[0]
 
     # Plot the comparison
+    st.write("Note: there are almost always greater personality differences (higher trait variance) *within* any given location than *across* locations. See error bars (within-location trait diversity).")
     plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
 
 # Handle Country vs. Country comparison
@@ -295,4 +294,5 @@ elif comparison_type == "Compare countries":
     country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
 
     # Plot the comparison
+    st.write("Note: there are almost always greater personality differences (higher trait variance) *within* any given location than *across* locations. See error bars (within-location trait diversity).")
     plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
