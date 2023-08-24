@@ -61,7 +61,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                                 color_continuous_scale=px.colors.sequential.Plasma,
                                 title=f"Map of Average {full_trait_name} Score by Country")
 
-            fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}</b><br>Mean: %{{customdata[1]:.2f}}<br>Std Dev: %{{customdata[2]:.2f}}<br>Count: %{{customdata[0]}}")
+            fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}</b><br>Mean: %{{customdata[1]:.3f}}<br>Std Dev: %{{customdata[2]:.3f}}<br>Count: %{{customdata[0]}}")
             fig.update_layout(width=1000, height=700)
             st.plotly_chart(fig)
 
@@ -102,8 +102,8 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             fig.update_traces(
                 hovertemplate=(
                     "<b>%{hovertext}, %{customdata[2]}</b><br>" +
-                    f"Avg. {full_trait_name}: " + "%{customdata[0]:.2f}<br>" +
-                    f"Std. Dev {full_trait_name}: " + "%{customdata[3]:.2f}<br>" +
+                    f"Avg. {full_trait_name}: " + "%{customdata[0]:.3f}<br>" +
+                    f"Std. Dev {full_trait_name}: " + "%{customdata[3]:.3f}<br>" +
                     "Count: %{customdata[1]}"
                 )
             )
@@ -135,8 +135,8 @@ def plot_us_trait_location(state_or_city, trait):
 
         fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
                           "<br>" +
-                          f"<b>Average: %{{customdata[0]:.2f}}</b><br>" +   # Index based on order in hover_data
-                          f"Standard Dev.: %{{customdata[2]:.2f}}<br>" +   # Index based on order in hover_data
+                          f"<b>Average: %{{customdata[0]:.3f}}</b><br>" +   # Index based on order in hover_data
+                          f"Standard Dev.: %{{customdata[2]:.3f}}<br>" +   # Index based on order in hover_data
                           "User count: %{customdata[1]}"                 # Index based on order in hover_data
         )
         fig.update_layout(width=1000, height=700)
@@ -165,8 +165,8 @@ def plot_us_trait_location(state_or_city, trait):
         fig.update_traces(
             hovertemplate=(
                 f"<b>%{{hovertext}} {trait}:</b><br>" +
-                "<b>Average: %{customdata[0]:.2f}</b><br>" +
-                "Standard Dev.: %{customdata[2]:.2f}<br>" +
+                "<b>Average: %{customdata[0]:.3f}</b><br>" +
+                "Standard Dev.: %{customdata[2]:.3f}<br>" +
                 "User count: %{customdata[1]}")
         )
 
@@ -210,16 +210,18 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         y=y_values_1,
         name=f"{label1} (n={count1:,})",
         error_y=dict(type='data', array=std1),
-        marker_color='blue'
+        marker_color='blue',
+        hovertemplate=f"{label1}<br>Trait: {{x}}<br>Score: {{y:.3f}}<br>Std. Dev: {{error_y:.3f}}<extra></extra>"
     ))
-
+    
     # Bars for second entity
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_2,
         name=f"{label2} (n={count2:,})",
         error_y=dict(type='data', array=std2),
-        marker_color='red'
+        marker_color='red',
+        hovertemplate=f"{label2}<br>Trait: {{x}}<br>Score: {{y:.3f}}<br>Std. Dev: {{error_y:.3f}}<extra></extra>"
     ))
 
     # Update layout for better visualization
