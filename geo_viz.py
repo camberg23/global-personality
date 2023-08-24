@@ -187,7 +187,7 @@ if st.button('Submit'):
     elif us_or_global == 'Global' and trait != 'Choose an option':
         plot_globe_trait_location(trait, level)
 
-def plot_comparison(scores1, scores2, std1, std2, label1, label2, traits):
+def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
     """Plot a side-by-side comparison of two entities over multiple traits."""
     
     # Organize data for grouped bar chart
@@ -202,7 +202,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, traits):
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_1,
-        name=label1,
+        name=f"{label1} (n={count1:,})",
         error_y=dict(type='data', array=std1),
         marker_color='blue'
     ))
@@ -211,7 +211,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, traits):
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_2,
-        name=label2,
+        name=f"{label2} (n={count2:,})",
         error_y=dict(type='data', array=std2),
         marker_color='red'
     ))
@@ -260,9 +260,11 @@ if comparison_type == "City vs. City":
     city2_scores = [city2_data[trait] for trait in trait_names]
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
+    city1_count = [city1_data['Count'] for trait in trait_names]
+    city2_count = [city2_data['Count'] for trait in trait_names]
 
     # Plot the comparison
-    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, list(trait_names.values()))
+    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
 
 # Handle Country vs. Country comparison
 elif comparison_type == "Country vs. Country":
@@ -280,6 +282,8 @@ elif comparison_type == "Country vs. Country":
     country2_scores = [country2_data[trait] for trait in trait_names]
     country1_std = [country1_data[trait+'_std'] for trait in trait_names]
     country2_std = [country2_data[trait+'_std'] for trait in trait_names]
-
+    country1_count = [country1_data['Count'] for trait in trait_names]
+    country2_count = [country2_data['Count'] for trait in trait_names]
+    
     # Plot the comparison
-    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, list(trait_names.values()))
+    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
