@@ -212,7 +212,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         error_y=dict(type='data', array=std1, visible=True),
         marker_color='blue',
         hoverinfo="x+y+text+name+error_y",
-        hovertemplate=f"{label1}<br>Trait: %{{x}}<br>Score: %{{y:.3f}}<br>Std. Dev: %{{error_y:.3f}}"
+        hovertemplate="Trait: %{x}<br>Score: %{y:.3f} ± %{error_y.array:.3f}<extra></extra>"
     ))
 
     # Bars for second entity
@@ -223,7 +223,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         error_y=dict(type='data', array=std2, visible=True),
         marker_color='red',
         hoverinfo="x+y+text+name+error_y",
-        hovertemplate=f"{label2}<br>Trait: %{{x}}<br>Score: %{{y:.3f}}<br>Std. Dev: %{{error_y:.3f}}"
+        hovertemplate="Trait: %{x}<br>Score: %{y:.3f} ± %{error_y.array:.3f}<extra></extra>"
     ))
 
     # Update layout for better visualization
