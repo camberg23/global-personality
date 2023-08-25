@@ -159,7 +159,7 @@ def plot_us_trait_location(state_or_city, trait):
         fig.update_layout(width=1000, 
                           height=700,
                             title={
-                            'text': f"US Map of Average {full_trait_name} Score by State",
+                            'text': f"US Map of {full_trait_name} by State",
                             'x': 0.5,
                             'y': 0.95,
                             'xanchor': 'center',
@@ -201,7 +201,7 @@ def plot_us_trait_location(state_or_city, trait):
         fig.update_layout(width=1000, 
                           height=700,
                             title={
-                            'text': f"US Bubble Map of Average {trait} Score by Major Cities",
+                            'text': f"US Bubble Map of {trait} by Major Cities",
                             'x': 0.5,
                             'y': 0.95,
                             'xanchor': 'center',
