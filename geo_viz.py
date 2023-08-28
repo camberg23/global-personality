@@ -392,5 +392,5 @@ elif comparison_type == "Countries":
     country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
 
     # Plot the comparison
-    st.write("Note: there are almost always greater personality differences (higher trait variance) *within* any given location than *across* locations. See error bars (within-location trait diversity).")
+    st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars, which signify trait diversity within each place.")
     plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
