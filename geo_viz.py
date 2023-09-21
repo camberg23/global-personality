@@ -42,7 +42,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
         if level == "Country view":
             data = pd.read_csv('data/country_data.csv')
         else:
-            data = pd.read_csv('data/city_data.csv')
+            data = pd.read_csv('data/city_data_fixed.csv')
             
         data = data[data['Count'] > threshold_users]  # Filter the data based on threshold_users for both countries and cities
     
@@ -277,7 +277,7 @@ if st.button('Submit'):
             # this is the only one that seems to work right now so we'll revisit this later
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         # else:
-            # city_scores = pd.read_csv('data/city_data.csv')
+            # city_scores = pd.read_csv('data/city_data_fixed.csv')
             # display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
             
         plot_globe_trait_location(trait, level)
@@ -352,7 +352,7 @@ comparison_type = st.radio("Would you like to compare cities or countries?", ["C
 # Handle City vs. City comparison
 if comparison_type == "Cities":
     st.header("City Comparison")
-    city_scores = pd.read_csv('data/city_data.csv')    
+    city_scores = pd.read_csv('data/city_data_fixed.csv')    
     # Determine the index positions of the desired default cities
     default_city1_index = np.where(city_scores['CityState'].unique() == "New York, New York")[0][0]
     default_city2_index = np.where(city_scores['CityState'].unique() == "Tokyo")[0][0]
