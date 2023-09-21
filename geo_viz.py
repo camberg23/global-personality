@@ -38,7 +38,7 @@ col1, col2, col3 = st.columns(3)
 with col1:
     us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
 
-def plot_globe_trait_location(trait, level, threshold_users=500):
+def plot_globe_trait_location(trait, level, threshold_users=500, top_N=500):
         if level == "Country view":
             data = pd.read_csv('data/country_data.csv')
         else:
@@ -81,11 +81,10 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             city_counts = data.groupby('CityState').agg({'Count': 'sum'}).reset_index()
             
             # Filter to include only the top N cities by aggregated user count
-            top_cities = city_counts.nlargest(50, 'Count')['CityState']
+            top_cities = city_counts.nlargest(top_N, 'Count')['CityState']
             
             # Filter your data to only include these top cities
             data = data[data['CityState'].isin(top_cities)]
-            st.write(data)
             kms_per_radian = 6371.0088
             epsilon = 50 / kms_per_radian
             coords_global = data[['Latitude', 'Longitude']].values
@@ -140,7 +139,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
                             })
             st.plotly_chart(fig, use_container_width=True)
 
-def plot_us_trait_location(state_or_city, trait):
+def plot_us_trait_location(state_or_city, trait, top_N=100):
     inv_trait_names = {v: k for k, v in trait_names.items()}
     trait_abbrev = inv_trait_names[trait]
     
@@ -179,6 +178,8 @@ def plot_us_trait_location(state_or_city, trait):
         st.plotly_chart(fig, use_container_width=True)
     else:
         cluster_aggregates = pd.read_csv("data/us_city_viz_improved.csv")
+        cluster_aggregates = cluster_aggregates.groupby('City').agg({'Count': 'sum'}).reset_index()
+        cluster_aggregates = cluster_aggregates.nlargest(top_N, 'Count')['City']
         # Map the traits to their full names for the color column
         
         cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
