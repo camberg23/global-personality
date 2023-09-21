@@ -43,7 +43,9 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             data = pd.read_csv('data/country_data.csv')
         else:
             data = pd.read_csv('data/city_data.csv')
-        
+            
+        data = data[data['Count'] > threshold_users]  # Filter the data based on threshold_users for both countries and cities
+    
         inv_trait_names = {v: k for k, v in trait_names.items()}
 
         trait_abbrev = inv_trait_names[trait]
@@ -78,12 +80,11 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             # Clustering for cities
             kms_per_radian = 6371.0088
             epsilon = 50 / kms_per_radian
-            city_counts_filtered = data[data['Count'] > threshold_users].copy()
-            coords_global = city_counts_filtered[['Latitude', 'Longitude']].values
+            coords_global = data[['Latitude', 'Longitude']].values
             db_global = DBSCAN(eps=epsilon, min_samples=1, algorithm='ball_tree', metric='haversine').fit(np.radians(coords_global))
-            city_counts_filtered['Cluster'] = db_global.labels_
+            data['Cluster'] = db_global.labels_
 
-            clustered_data_global = city_counts_filtered[city_counts_filtered['Cluster'] != -1]
+            clustered_data_global = city_counts_filtered[data['Cluster'] != -1]
             cluster_aggregates_global = clustered_data_global.groupby('Cluster').agg({
                 'Latitude': 'mean',
                 'Longitude': 'mean',
