@@ -79,6 +79,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
         elif level == "City view":
             # Clustering for cities
             data = data.nlargest(50, 'Count')
+            st.write(data)
             kms_per_radian = 6371.0088
             epsilon = 50 / kms_per_radian
             coords_global = data[['Latitude', 'Longitude']].values
