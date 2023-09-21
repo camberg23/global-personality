@@ -84,7 +84,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             db_global = DBSCAN(eps=epsilon, min_samples=1, algorithm='ball_tree', metric='haversine').fit(np.radians(coords_global))
             data['Cluster'] = db_global.labels_
 
-            clustered_data_global = city_counts_filtered[data['Cluster'] != -1]
+            clustered_data_global = data[data['Cluster'] != -1]
             cluster_aggregates_global = clustered_data_global.groupby('Cluster').agg({
                 'Latitude': 'mean',
                 'Longitude': 'mean',
