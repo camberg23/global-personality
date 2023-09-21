@@ -78,7 +78,13 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
 
         elif level == "City view":
             # Clustering for cities
-            data = data.nlargest(50, 'Count')
+            city_counts = data.groupby('CityState').agg({'Count': 'sum'}).reset_index()
+            
+            # Filter to include only the top N cities by aggregated user count
+            top_cities = city_counts.nlargest(top_N_cities, 'Count')['CityState']
+            
+            # Filter your data to only include these top cities
+            data = data[data['CityState'].isin(top_cities)]
             st.write(data)
             kms_per_radian = 6371.0088
             epsilon = 50 / kms_per_radian
