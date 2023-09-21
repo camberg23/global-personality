@@ -177,8 +177,8 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
                             })
         st.plotly_chart(fig, use_container_width=True)
     else:
-        cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
         cluster_aggregates = pd.read_csv("data/us_city_viz_improved.csv")
+        cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
         cluster_aggregates = cluster_aggregates.groupby('City').agg({'Count': 'sum'}).reset_index()
         cluster_aggregates = cluster_aggregates.nlargest(top_N, 'Count')['City']    
 
