@@ -178,7 +178,7 @@ def plot_us_trait_location(state_or_city, trait):
                             })
         st.plotly_chart(fig, use_container_width=True)
     else:
-        cluster_aggregates = pd.read_csv("data/us_city_viz.csv")
+        cluster_aggregates = pd.read_csv("data/us_city_viz_improved.csv")
         # Map the traits to their full names for the color column
         
         cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
@@ -266,7 +266,7 @@ if st.button('Submit'):
             # data_state_renamed = pd.read_csv("data/us_state_viz.csv")
             # display_top_bottom_places(data_state_renamed, trait, 'states', 'State')
         # else:
-            # cluster_aggregates = pd.read_csv("data/us_city_viz.csv")
+            # cluster_aggregates = pd.read_csv("data/us_city_viz_improved.csv")
             # display_top_bottom_places(cluster_aggregates, trait, 'cities', 'City')
             
         plot_us_trait_location(state_or_city, trait)
