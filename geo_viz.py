@@ -81,7 +81,7 @@ def plot_globe_trait_location(trait, level, threshold_users=500):
             city_counts = data.groupby('CityState').agg({'Count': 'sum'}).reset_index()
             
             # Filter to include only the top N cities by aggregated user count
-            top_cities = city_counts.nlargest(top_N_cities, 'Count')['CityState']
+            top_cities = city_counts.nlargest(50, 'Count')['CityState']
             
             # Filter your data to only include these top cities
             data = data[data['CityState'].isin(top_cities)]
