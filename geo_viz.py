@@ -40,9 +40,9 @@ with col1:
 
 def plot_globe_trait_location(trait, level, threshold_users=500):
         if level == "Country view":
-            data = pd.read_csv('country_data.csv')
+            data = pd.read_csv('data/country_data.csv')
         else:
-            data = pd.read_csv('city_data.csv')
+            data = pd.read_csv('data/city_data.csv')
         
         inv_trait_names = {v: k for k, v in trait_names.items()}
 
@@ -136,7 +136,7 @@ def plot_us_trait_location(state_or_city, trait):
     trait_abbrev = inv_trait_names[trait]
     
     if state_or_city == 'State view':
-        data_state_renamed = pd.read_csv("us_state_viz.csv")
+        data_state_renamed = pd.read_csv("data/us_state_viz.csv")
         full_trait_name = trait
         trait = inv_trait_names[trait]
         
@@ -169,7 +169,7 @@ def plot_us_trait_location(state_or_city, trait):
                             })
         st.plotly_chart(fig, use_container_width=True)
     else:
-        cluster_aggregates = pd.read_csv("us_city_viz.csv")
+        cluster_aggregates = pd.read_csv("data/us_city_viz.csv")
         # Map the traits to their full names for the color column
         
         cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
@@ -254,21 +254,21 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option':
         # if state_or_city == 'State view':
-            # data_state_renamed = pd.read_csv("us_state_viz.csv")
+            # data_state_renamed = pd.read_csv("data/us_state_viz.csv")
             # display_top_bottom_places(data_state_renamed, trait, 'states', 'State')
         # else:
-            # cluster_aggregates = pd.read_csv("us_city_viz.csv")
+            # cluster_aggregates = pd.read_csv("data/us_city_viz.csv")
             # display_top_bottom_places(cluster_aggregates, trait, 'cities', 'City')
             
         plot_us_trait_location(state_or_city, trait)
 
     elif us_or_global == 'Global' and trait != 'Choose an option':
         if level == "Country view":
-            country_scores = pd.read_csv('country_data.csv')
+            country_scores = pd.read_csv('data/country_data.csv')
             # this is the only one that seems to work right now so we'll revisit this later
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         # else:
-            # city_scores = pd.read_csv('city_data.csv')
+            # city_scores = pd.read_csv('data/city_data.csv')
             # display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
             
         plot_globe_trait_location(trait, level)
@@ -343,7 +343,7 @@ comparison_type = st.radio("Would you like to compare cities or countries?", ["C
 # Handle City vs. City comparison
 if comparison_type == "Cities":
     st.header("City Comparison")
-    city_scores = pd.read_csv('city_data.csv')    
+    city_scores = pd.read_csv('data/city_data.csv')    
     # Determine the index positions of the desired default cities
     default_city1_index = np.where(city_scores['CityState'].unique() == "New York, New York")[0][0]
     default_city2_index = np.where(city_scores['CityState'].unique() == "Tokyo")[0][0]
@@ -370,7 +370,7 @@ if comparison_type == "Cities":
 # Handle Country vs. Country comparison
 elif comparison_type == "Countries":
     st.header("Country Comparison")
-    country_scores = pd.read_csv('country_data.csv')
+    country_scores = pd.read_csv('data/country_data.csv')
     
     # Determine the index positions of the desired default countries
     default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
