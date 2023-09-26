@@ -329,7 +329,7 @@ with col3:
     trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
 
 with col4:
-    N = st.number_input('Number of highest/lowest places to list:', min_value=1, max_value=50, value=5)
+    N = st.number_input('Top/bottom N to list:', min_value=1, max_value=50, value=5)
 
 # Inside the main Streamlit code:
 if st.button('Submit'):
