@@ -158,7 +158,7 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
                             locationmode="USA-states",
                             color=full_trait_name,
                             hover_name="State",
-                            hover_data=[full_trait_name, 'Count', trait + "_std"],  # Order matters
+                            hover_data=[trait, 'Count', trait + "_std"],  # Order matters
                             color_continuous_scale=px.colors.sequential.Plasma,
                             scope="usa")
 
