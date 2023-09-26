@@ -507,7 +507,6 @@ st.markdown(
 st.write(" ")
 st.markdown(
     """
-    <span style="font-size: 1.1em;">
     Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the Big Five 
     [personality traits](https://en.wikipedia.org/wiki/Big_Five_personality_traits) from across the globe, 
     powered by Truity's 4M person database. This page is split up into three different tools: 
@@ -515,19 +514,16 @@ st.markdown(
     (3) a **head-to-head comparison tool**. You can take [Truity’s validated Big Five personality assessment 
     here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating 
     these analyses is [publicly available](https://github.com/camberg23/global-personality). 
-    </span>
     """,
     unsafe_allow_html=True
 )
 
 st.markdown(
     """
-    <span style="font-size: 1.1em;">
     Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally
     [[1](https://journals.sagepub.com/doi/10.1177/0022022198291009),[2](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)]. 
     See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) for an accessible 
     overview of this subarea of psychometric research.
-    </span>
     """, 
     unsafe_allow_html=True
 )
