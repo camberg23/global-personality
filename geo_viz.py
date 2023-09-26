@@ -349,7 +349,7 @@ comparison_type = st.radio("Would you like to compare cities or countries?", ["C
 # Handle City vs. City comparison
 if comparison_type == "Cities":
     st.header("City Comparison")
-    city_scores = pd.read_csv('data/city_data_fixed.csv')    
+    city_scores = pd.read_csv('data/top_1000_city_data.csv')    
     # Determine the index positions of the desired default cities
     default_city1_index = np.where(city_scores['CityState'].unique() == "New York, New York")[0][0]
     default_city2_index = np.where(city_scores['CityState'].unique() == "Tokyo")[0][0]
