@@ -373,7 +373,7 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
     """Plot the percentile scores as a horizontal bar chart."""
     
     # Handling the special case for 'US States'
-    comparison_type = 'US states' if comparison_type == 'US states' else comparison_type.lower()
+    comparison_type = "US states" if comparison_type == "US States" else comparison_type.lower()
 
     # Mapping of trait names to adjectives
     trait_adj = {
