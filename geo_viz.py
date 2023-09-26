@@ -503,7 +503,7 @@ if st.button('Submit'):
             if score_type == "Percentiles":
                 city_scores = compute_percentiles_for_all(city_scores, trait_names)
             display_top_bottom_places(city_scores, trait, 'cities', 'City', N)
-
+        st.write(state_scores)
         plot_us_trait_location(state_or_city, trait)
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
