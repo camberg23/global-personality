@@ -570,7 +570,7 @@ is_button_pressed = False  # Initialize a flag to check if the button is pressed
 with col2:
     if comparison_type == "Cities":
         data = pd.read_csv('data/top_1000_city_data.csv')
-        city_options = data['CityState'] + ", " + city_scores['Country']
+        city_options = data['CityState'] + ", " + data['Country']
         default_city_index = np.where(city_options == "New York, New York, United States")[0][0]
         selected = st.selectbox("Select the city:", city_options, key='profile_city', index=int(default_city_index))
     elif comparison_type == "Countries":
