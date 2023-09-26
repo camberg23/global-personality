@@ -195,8 +195,6 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
     inv_trait_names = {v: k for k, v in trait_names.items()}
     full_name = trait
     trait = inv_trait_names[trait]
-    if score_type == "Percentiles":
-        data[trait] = compute_percentile(data, data[trait], trait_names)
 
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
@@ -212,7 +210,10 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
             if 'Country' in data.columns and scope == 'cities':
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
-            st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
+            if score_type == "Percentiles":
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: higher than {row[trait]:.2f}% of {scope} in {full_name}; N={row['Count']} users</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
     
     with col2:
         st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
@@ -222,7 +223,10 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
             if 'Country' in data.columns and scope == 'cities':
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
-            st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
+            if score_type == "Percentiles":
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: lower than {row[trait]:.2f}% of {scope} in {full_name}; N={row['Count']} users</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits, score_type, comparison_type):
     """Plot a side-by-side comparison of two entities over multiple traits."""
