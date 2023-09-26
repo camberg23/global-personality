@@ -519,7 +519,7 @@ if st.button('Submit'):
             if score_type == "Percentiles":
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
-            plot_globe_trait_location(trait, level)
+            plot_globe_trait_location(trait, level, scores)
         elif level == "City view":
             scores = pd.read_csv('data/top_1000_city_data.csv')
             scores = scores[scores['Count'] > THRESHOLD_USERS]
