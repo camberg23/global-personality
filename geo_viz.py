@@ -199,7 +199,6 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
         'Agreeableness': 'agreeable',
         'Neuroticism': 'neurotic'
     }
-    
     inv_trait_names = {v: k for k, v in trait_names.items()}
     full_name = trait
     trait = inv_trait_names[trait]
@@ -220,9 +219,9 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
             if score_type == "Percentiles":
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: more {description} than {row[trait]:.2f}% of {scope}; N={row['Count']} users</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: more {description} than {row[trait]:.2f}% of {scope} (N={row['Count']} users)</span>", unsafe_allow_html=True)
             else:
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f} (N={row['Count']} users)</span>", unsafe_allow_html=True)
     
     with col2:
         st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
@@ -233,9 +232,9 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
             if score_type == "Percentiles":
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: less {description} than {100 - row[trait]:.2f}% of {scope}; N={row['Count']} users</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: less {description} than {100 - row[trait]:.2f}% of {scope} (N={row['Count']} users)</span>", unsafe_allow_html=True)
             else:
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f} (N={row['Count']} users)</span>", unsafe_allow_html=True)
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits, score_type, comparison_type):
     """Plot a side-by-side comparison of two entities over multiple traits."""
@@ -504,12 +503,12 @@ if st.button('Submit'):
             scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
             if score_type == "Percentiles":
                 scores = compute_percentiles_for_all(scores, trait_names)
-            display_top_bottom_places(scores, trait, 'states', 'State', N, score_type)  # 'State' is the column name in state data
+            display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)  # 'State' is the column name in state data
         elif state_or_city == 'City view':
             scores = pd.read_csv('data/us_city_viz_improved.csv')
             if score_type == "Percentiles":
                 scores = compute_percentiles_for_all(scores, trait_names)
-            display_top_bottom_places(scores, trait, 'cities', 'City', N, score_type)
+            display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
                 
         plot_us_trait_location(state_or_city, trait, scores)
 
