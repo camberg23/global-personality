@@ -230,13 +230,16 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
             st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
 
 
-def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
+def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits, score_type):
     """Plot a side-by-side comparison of two entities over multiple traits."""
     
     # Organize data for grouped bar chart
     x_labels = traits
     y_values_1 = scores1
     y_values_2 = scores2
+
+    # Set error bars to be invisible for percentiles
+    error_visible = True if score_type == "Normalized Scores" else False
 
     # Create a grouped bar chart
     fig = go.Figure()
@@ -246,9 +249,9 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         x=x_labels,
         y=y_values_1,
         name=f"{label1} (n={count1:,})",
-        error_y=dict(type='data', array=std1, visible=True),
+        error_y=dict(type='data', array=std1, visible=error_visible),
         marker_color='blue',
-        hovertemplate="Trait: %{x}<br>Score: %{y:.3f} ± %{error_y.array:.3f}<extra></extra>"
+        hovertemplate="Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
     ))
 
     # Bars for second entity
@@ -256,12 +259,13 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         x=x_labels,
         y=y_values_2,
         name=f"{label2} (n={count2:,})",
-        error_y=dict(type='data', array=std2, visible=True),
+        error_y=dict(type='data', array=std2, visible=error_visible),
         marker_color='red',
-        hovertemplate="Trait: %{x}<br>Score: %{y:.3f} ± %{error_y.array:.3f}<extra></extra>"
+        hovertemplate="Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
     ))
 
     # Update layout for better visualization
+    yaxis_title = "Scores (percentile)" if score_type == "Percentiles" else "Scores (normalized)"
     fig.update_layout(
         title={
         'text': f"Trait Comparison: <span style='color:blue'>{label1}</span> and <span style='color:red'>{label2}</span>",
@@ -272,7 +276,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
             }
         },
         xaxis_title="Traits",
-        yaxis_title="Scores (normalized)",
+        yaxis_title=yaxis_title,
         barmode='group',
         legend=dict(
             yanchor="top",
@@ -323,7 +327,7 @@ def plot_percentile(percentiles, trait_names_values, selected):
     # Update layout for better visualization
     fig.update_layout(
         title={
-            'text': f"Trait Percentiles for {selected}",
+            'text': f"Personality Profile of {selected}",
             'x': 0.5,
             'xanchor': 'center',
             'font': {'size': 24}  # Adjust this value for desired font size
@@ -383,7 +387,7 @@ def display_percentile(comparison_type, selected):
 
     fig = plot_percentile(percentiles, trait_names, selected)
     st.plotly_chart(fig, use_container_width=True)
-    st.write(description)
+    st.write(f'**Personality profile of {selected}**:', description)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Trait name mapping
@@ -471,7 +475,8 @@ else:
     selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
 
 if st.button('Submit', key='profile_button'):
-        display_percentile(comparison_type, selected)
+        with st.spinner('Generating profile...'):
+                display_percentile(comparison_type, selected)
 
 # Create a section title and space
 st.title("Population comparison tool")
@@ -495,9 +500,10 @@ if comparison_type == "Cities":
     default_city1_index = np.where(city_options == "New York, New York, United States")[0][0]
     default_city2_index = np.where(city_options == "Tokyo, Japan")[0][0]
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
     city2_selected = col2.selectbox("Select the second city:", city_options, index=int(default_city2_index))
+    score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
     
     # Split the selected city option back into 'CityState' and 'Country'
     city1_citystate, city1_country = city1_selected.rsplit(', ', 1)
@@ -507,8 +513,13 @@ if comparison_type == "Cities":
     city1_data = city_scores[(city_scores['CityState'] == city1_citystate) & (city_scores['Country'] == city1_country)].iloc[0]
     city2_data = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)].iloc[0]
     
-    city1_scores = [city1_data[trait] for trait in trait_names]
-    city2_scores = [city2_data[trait] for trait in trait_names]
+    if score_type == "Percentiles":
+        city1_scores = compute_percentile(city_scores, city1_data, trait_names)
+        city2_scores = compute_percentile(city_scores, city2_data, trait_names)
+    else:
+        city1_scores = [city1_data[trait] for trait in trait_names]
+        city2_scores = [city2_data[trait] for trait in trait_names]
+
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
 
@@ -517,7 +528,7 @@ if comparison_type == "Cities":
     city2_count = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)]['Count'].values[0]
 
     # Plot the comparison
-    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
+    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type)
 
 # Handle Country vs. Country comparison
 elif comparison_type == "Countries":
@@ -530,16 +541,22 @@ elif comparison_type == "Countries":
     default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
     default_country2_index = np.where(country_scores['Country'].unique() == "Russia")[0][0]
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     country1_selected = col1.selectbox("Select the first country:", country_scores['Country'].unique(), index=int(default_country1_index))
     country2_selected = col2.selectbox("Select the second country:", country_scores['Country'].unique(), index=int(default_country2_index))
+    score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
 
     # Fetch data for the selected countries
     country1_data = country_scores[country_scores['Country'] == country1_selected].iloc[0]
     country2_data = country_scores[country_scores['Country'] == country2_selected].iloc[0]
     
-    country1_scores = [country1_data[trait] for trait in trait_names]
-    country2_scores = [country2_data[trait] for trait in trait_names]
+    if score_type == "Percentiles":
+        country1_scores = compute_percentile(country_scores, country1_data, trait_names)
+        country2_scores = compute_percentile(country_scores, country2_data, trait_names)
+    else:
+        country1_scores = [country1_data[trait] for trait in trait_names]
+        country2_scores = [country2_data[trait] for trait in trait_names]
+
     country1_std = [country1_data[trait+'_std'] for trait in trait_names]
     country2_std = [country2_data[trait+'_std'] for trait in trait_names]
 
@@ -547,4 +564,4 @@ elif comparison_type == "Countries":
     country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
 
     # Plot the comparison
-    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
+    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type)
