@@ -245,8 +245,8 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
 
     # Set hovertemplate based on score_type
     if score_type == "Percentiles":
-        hovertemplate1 = f"Higher than %{y:.1f}% of {comparison_type}<extra></extra>"
-        hovertemplate2 = f"Higher than %{y:.1f}% of {comparison_type}<extra></extra>"
+        hovertemplate1 = f"Higher than %{{y:.1f}}% of {comparison_type}<extra></extra>"
+        hovertemplate2 = f"Higher than %{{y:.1f}}% of {comparison_type}<extra></extra>"
     else:
         hovertemplate1 = "Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
         hovertemplate2 = "Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
