@@ -16,14 +16,8 @@ import plotly.graph_objects as go
 from sklearn.cluster import DBSCAN
 import streamlit as st
 
-def plot_globe_trait_location(trait, level, top_N=500):
-        if level == "Country view":
-            data = pd.read_csv('data/country_data.csv')
-        else:
-            data = pd.read_csv('data/city_data_fixed.csv')
-            
-        data = data[data['Count'] > THRESHOLD_USERS]  # Filter the data based on threshold_users for both countries and cities
-    
+def plot_globe_trait_location(trait, level, scores, top_N=500):
+        data = scores
         inv_trait_names = {v: k for k, v in trait_names.items()}
 
         trait_abbrev = inv_trait_names[trait]
@@ -122,7 +116,7 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
     trait_abbrev = inv_trait_names[trait]
     
     if state_or_city == 'State view':
-        data_state_renamed = pd.read_csv("data/us_state_viz.csv")
+        data_state_renamed = scores
         full_trait_name = trait
         trait = inv_trait_names[trait]
         data_state_renamed[full_trait_name] = data_state_renamed[trait]
@@ -156,7 +150,7 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
                             })
         st.plotly_chart(fig, use_container_width=True)
     else:
-        cluster_aggregates = pd.read_csv("data/us_city_viz_improved.csv")
+        cluster_aggregates = scores
         cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
 
         # Step 3: Plotting
@@ -494,33 +488,34 @@ with col5:
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
         if state_or_city == 'State view':
-            state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
+            scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
             if score_type == "Percentiles":
-                state_scores = compute_percentiles_for_all(state_scores, trait_names)
-            display_top_bottom_places(state_scores, trait, 'states', 'State', N)  # 'State' is the column name in state data
+                scores = compute_percentiles_for_all(scores, trait_names)
+            display_top_bottom_places(scores, trait, 'states', 'State', N)  # 'State' is the column name in state data
         elif state_or_city == 'City view':
-            city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+            scores = pd.read_csv('data/us_city_viz_improved.csv')
             if score_type == "Percentiles":
-                city_scores = compute_percentiles_for_all(city_scores, trait_names)
-            display_top_bottom_places(city_scores, trait, 'cities', 'City', N)
-        st.write(state_scores)
-        plot_us_trait_location(state_or_city, trait)
+                scores = compute_percentiles_for_all(scores, trait_names)
+            display_top_bottom_places(scores, trait, 'cities', 'City', N)
+                
+        plot_us_trait_location(state_or_city, trait, scores)
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
         if level == "Country view":
-            country_scores = pd.read_csv('data/country_data.csv')
-            country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
+            scores = pd.read_csv('data/country_data.csv')
+            scores = scores[scores['Count'] > THRESHOLD_USERS]
             if score_type == "Percentiles":
-                country_scores = compute_percentiles_for_all(country_scores, trait_names)
-            display_top_bottom_places(country_scores, trait, 'countries', 'Country', N)
+                scores = compute_percentiles_for_all(scores, trait_names)
+            display_top_bottom_places(scores, trait, 'countries', 'Country', N)
             plot_globe_trait_location(trait, level)
         elif level == "City view":
-            city_scores = pd.read_csv('data/top_1000_city_data.csv')
-            city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
+            scores = pd.read_csv('data/top_1000_city_data.csv')
+            scores = scores[scores['Count'] > THRESHOLD_USERS]
             if score_type == "Percentiles":
-                city_scores = compute_percentiles_for_all(city_scores, trait_names)
-            display_top_bottom_places(city_scores, trait, 'cities', 'CityState', N)
-            plot_globe_trait_location(trait, level)
+                scores = compute_percentiles_for_all(scores, trait_names)
+            display_top_bottom_places(scores, trait, 'cities', 'CityState', N)
+                
+            plot_globe_trait_location(trait, level, scores)
 
 # Create a section title and space
 st.title("Personality profile of any location")
