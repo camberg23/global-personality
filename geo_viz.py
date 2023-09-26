@@ -149,6 +149,8 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
     
     if state_or_city == 'State view':
         data_state_renamed = pd.read_csv("data/us_state_viz.csv")
+        data_state_renamed[trait_names[trait]] = data_state_renamed[trait]
+        
         full_trait_name = trait
         trait = inv_trait_names[trait]
         
