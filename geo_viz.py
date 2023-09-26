@@ -265,8 +265,31 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
                 place_name += f", {country_name}"
             st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
 
-# Inside the main Streamlit code:
+# # Inside the main Streamlit code:
+# if st.button('Submit'):
+#     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
+#         plot_us_trait_location(state_or_city, trait)
+#         if state_or_city == 'State view':
+#             state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
+#             display_top_bottom_places(state_scores, trait, 'states', 'State')  # 'State' is the column name in state data
+#         elif state_or_city == 'City view':
+#             city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+#             display_top_bottom_places(city_scores, trait, 'cities', 'City')
+
+#     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
+#         if level == "Country view":
+#             country_scores = pd.read_csv('data/country_data.csv')
+#             country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
+#             plot_globe_trait_location(trait, level)
+#             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
+#         elif level == "City view":
+#             city_scores = pd.read_csv('data/top_1000_city_data.csv')
+#             city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
+#             plot_globe_trait_location(trait, level)
+#             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+
 if st.button('Submit'):
+    st.markdown("<style> .reportview-container .markdown-text-container { padding-top: 0rem; padding-bottom: 0rem;} </style>", unsafe_allow_html=True)
     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
         plot_us_trait_location(state_or_city, trait)
         if state_or_city == 'State view':
@@ -279,14 +302,15 @@ if st.button('Submit'):
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
         if level == "Country view":
             country_scores = pd.read_csv('data/country_data.csv')
-            country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
             plot_globe_trait_location(trait, level)
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         elif level == "City view":
             city_scores = pd.read_csv('data/top_1000_city_data.csv')
-            city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
             plot_globe_trait_location(trait, level)
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+    
+    st.markdown("<style> .reportview-container .markdown-text-container { padding-top: 1rem; padding-bottom: 1rem;} </style>", unsafe_allow_html=True)
+
 
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
