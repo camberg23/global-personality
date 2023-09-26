@@ -424,9 +424,7 @@ def display_percentile(comparison_type, selected):
         selected_data = data[data['Country'] == selected]
     elif comparison_type == "US States":
         selected_data = data[data['State'] == selected]
-
-    st.write(selected_data)
-    st.write(data)
+            
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
 
@@ -512,7 +510,7 @@ st.write("Get the average Big Five personality profiles of any location in our d
 st.write("---")
 
 # User Input
-comparison_type = st.radio("Choose the type of place:", ["Cities", "Countries", "US States"], key='profile')
+comparison_type = st.radio("Choose the type of place:", ["Cities", "US States", "Countries"], key='profile')
 
 if comparison_type == "Cities":
     data = pd.read_csv('data/top_1000_city_data.csv')
@@ -535,7 +533,7 @@ st.write("Note: there are almost always greater personality differences *within*
 st.write("---")
 
 # Select comparison type: City vs. City or Country vs. Country
-comparison_type = st.radio("Would you like to compare cities or countries?", ["Cities", "Countries"])
+comparison_type = st.radio("Would you like to compare cities or countries?", ["Cities", "US States", "Countries"])
 # Handle City vs. City comparison
 if comparison_type == "Cities":
     st.header("City Comparison")
@@ -621,4 +619,45 @@ elif comparison_type == "Countries":
             plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type, comparison_type.lower())
             if score_type == 'Percentiles':
                 comparison_paragraph = generate_personality_comparison(country1_selected, country2_selected, percentiles1, percentiles2, trait_names, comparison_type)
+                st.write(comparison_paragraph)
+
+# Handle State vs. State comparison
+elif comparison_type == "US States":
+    st.header("State Comparison")
+    state_scores = pd.read_csv('data/us_state_viz.csv')
+
+    state_scores = state_scores[state_scores['Count'] > THRESHOLD_USERS]
+    
+    default_state1_index = np.where(state_scores['State'].unique() == "California")[0][0]
+    default_state2_index = np.where(state_scores['State'].unique() == "Texas")[0][0]
+
+    col1, col2, col3 = st.columns(3)
+    state1_selected = col1.selectbox("Select the first state:", state_scores['State'].unique(), index=int(default_state1_index))
+    state2_selected = col2.selectbox("Select the second state:", state_scores['State'].unique(), index=int(default_state2_index))
+    score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
+
+    state1_data = state_scores[state_scores['State'] == state1_selected].iloc[0]
+    state2_data = state_scores[state_scores['State'] == state2_selected].iloc[0]
+    
+    percentiles1, percentiles2 = {}, {}
+    if score_type == "Percentiles":
+        percentiles1 = compute_percentile(state_scores, state1_data, trait_names)
+        percentiles2 = compute_percentile(state_scores, state2_data, trait_names)
+        state1_scores = list(percentiles1.values())
+        state2_scores = list(percentiles2.values())
+    else:
+        state1_scores = [state1_data[trait] for trait in trait_names]
+        state2_scores = [state2_data[trait] for trait in trait_names]
+
+    state1_std = [state1_data[trait+'_std'] for trait in trait_names]
+    state2_std = [state2_data[trait+'_std'] for trait in trait_names]
+
+    state1_count = state_scores[state_scores['State'] == state1_selected]['Count'].values[0]
+    state2_count = state_scores[state_scores['State'] == state2_selected]['Count'].values[0]
+
+    if st.button('Submit', key='state_comparison_button'):
+        with st.spinner('Generating comparison...'):
+            plot_comparison(state1_scores, state2_scores, state1_std, state2_std, state1_selected, state2_selected, state1_count, state2_count, list(trait_names.values()), score_type, comparison_type.lower())
+            if score_type == 'Percentiles':
+                comparison_paragraph = generate_personality_comparison(state1_selected, state2_selected, percentiles1, percentiles2, trait_names, comparison_type)
                 st.write(comparison_paragraph)
