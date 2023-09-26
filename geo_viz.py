@@ -496,10 +496,11 @@ st.set_page_config(page_title="Personality Atlas", layout="wide")
 # Create a section title and space
 st.markdown(
     """
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <h1 style='font-size:3em;'>Personality Atlas </h1>
+    <div style="text-align: center;">
+        <h1 style='font-size:4em;'>Personality Atlas</h1>
+        <p style='font-size:0.8em;'>made by</p>
         <a href="https://www.truity.com/" target="_blank">
-            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:80px;">
+            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:100px;">
         </a>
     </div>
     """, 
