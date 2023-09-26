@@ -307,47 +307,6 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     
     st.plotly_chart(fig, use_container_width=True)
 
-def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
-    """Plot the percentile scores as a horizontal bar chart."""
-    
-    # Organize data for horizontal bar chart
-    y_labels = list(trait_names_values.values())
-    x_values = list(percentiles.values())
-
-    # Create a horizontal bar chart
-    fig = go.Figure()
-
-    # Bars for percentiles
-    fig.add_trace(go.Bar(
-        y=y_labels,
-        x=x_values,
-        orientation='h',  # to make the bars horizontal
-        text=x_values,
-        textposition='inside',  # to position the text inside the bars
-        marker_color='green',  # choosing a different color for distinction
-            hovertemplate=(
-        f"{selected} is in the top %{x:.2f}% for {trait} among all {comparison_type}<extra></extra>")
-    ))
-
-    # Update layout for better visualization
-    fig.update_layout(
-        title={
-            'text': f"Personality Profile of {selected}",
-            'x': 0.5,
-            'xanchor': 'center',
-            'font': {'size': 24}  # Adjust this value for desired font size
-        },
-        yaxis_title="Traits",
-        xaxis_title="Percentile",
-        font=dict(
-            family="Roboto, monospace",
-            size=18
-        ),
-        margin=dict(t=100, l=200),  # Add more space at the top and left
-    )
-    
-    return fig
-
 def generate_personality_description(selected, percentiles, trait_names):    
     # Construct the initial system message
     system_message = """
@@ -408,7 +367,48 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
     # Extract and return the model's response
     response = completion.choices[0].message['content']
     return response
-        
+
+def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
+    """Plot the percentile scores as a horizontal bar chart."""
+    
+    # Organize data for horizontal bar chart
+    y_labels = list(trait_names_values.values())
+    x_values = list(percentiles.values())
+
+    # Create a horizontal bar chart
+    fig = go.Figure()
+
+    # Bars for percentiles
+    fig.add_trace(go.Bar(
+        y=y_labels,
+        x=x_values,
+        orientation='h',  # to make the bars horizontal
+        text=x_values,
+        textposition='inside',  # to position the text inside the bars
+        marker_color='green',  # choosing a different color for distinction
+            hovertemplate=(
+        f"{selected} is in the top %{{x:.2f}}% for %{{y}} among all {comparison_type}<extra></extra>")
+    ))
+
+    # Update layout for better visualization
+    fig.update_layout(
+        title={
+            'text': f"Personality Profile of {selected}",
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 24}  # Adjust this value for desired font size
+        },
+        yaxis_title="Traits",
+        xaxis_title="Percentile",
+        font=dict(
+            family="Roboto, monospace",
+            size=18
+        ),
+        margin=dict(t=100, l=200),  # Add more space at the top and left
+    )
+    
+    return fig
+
 def display_percentile(comparison_type, selected):
      # Depending on the comparison type, filter the data and get the selected data
     if comparison_type == "Cities":
