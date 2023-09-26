@@ -281,21 +281,22 @@ if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
         plot_us_trait_location(state_or_city, trait)
         if state_or_city == 'State view':
-            state_scores = pd.read_csv('data/state_data.csv')  # Load your state data here
+            state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
             display_top_bottom_places(state_scores, trait, 'states', 'State')  # 'State' is the column name in state data
         elif state_or_city == 'City view':
-            city_scores = pd.read_csv('data/city_data_fixed.csv')
+            city_scores = pd.read_csv('data/us_city_viz_improved.csv')
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
         if level == "Country view":
             country_scores = pd.read_csv('data/country_data.csv')
+            plot_globe_trait_location(trait, level)
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         elif level == "City view":
             city_scores = pd.read_csv('data/city_data_fixed.csv')
+            plot_globe_trait_location(trait, level)
+            st.write(len(city_scores))
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
-            
-        plot_globe_trait_location(trait, level)
 
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
