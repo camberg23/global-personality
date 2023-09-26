@@ -650,7 +650,7 @@ if comparison_type == "Cities":
 
     city_options = city_scores['CityState'] + ", " + city_scores['Country']
 
-    default_city1_index = np.where(city_options == "Los Angeles, United States")[0][0]
+    default_city1_index = np.where(city_options == "Los Angeles, California, United States")[0][0]
     default_city2_index = np.where(city_options == "Amsterdam, Netherlands")[0][0]
 
     col1, col2, col3 = st.columns(3)
