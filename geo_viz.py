@@ -235,12 +235,9 @@ with col3:
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
-    
-    full_name = trait  # assign a default value to full_name here
 
-    if scope != 'states':
-        full_name = trait
-        trait = inv_trait_names[trait]
+    full_name = trait
+    trait = inv_trait_names[trait]
     
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
@@ -304,7 +301,6 @@ if st.button('Submit'):
         elif level == "City view":
             city_scores = pd.read_csv('data/top_1000_city_data.csv')
             plot_globe_trait_location(trait, level)
-            st.write(len(city_scores))
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
 
 
