@@ -325,7 +325,8 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
         text=x_values,
         textposition='inside',  # to position the text inside the bars
         marker_color='green',  # choosing a different color for distinction
-        hovertemplate=f"{selected} is in the top %{x}% for {trait} among all {comparison_type}<extra></extra>"
+            hovertemplate=(
+        f"{selected} is in the top %{x:.2f}% for {trait} among all {comparison_type}<extra></extra>")
     ))
 
     # Update layout for better visualization
