@@ -380,19 +380,22 @@ def generate_personality_description(selected, percentiles, trait_names):
     response = completion.choices[0].message['content']
     return response
 
-def generate_personality_comparison(selected, percentiles, trait_names):    
+def generate_personality_comparison(selected1, selected2, percentiles1, percentiles2, trait_names, comparison_type):    
     # Construct the initial system message
     system_message = """
-                        You are a helpful assistant that provides a courteous and succinct summary of a location's overall personality blend based on Big Five personality traits percentiles.
+                        You are a helpful assistant that provides a courteous and succinct analysis and summary of the percentile differences in Big Five traits between two places.
                         Where applicable, blend this information with what you know about the place to make it a harmonious and accurate profile.
                         Always use relative language, as the information is based on percentiles, comparing the location's traits to the global population.
                         Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
-                        Please be a bit sensitive about this given a place's results.
+                        Please be a bit sensitive about this given places' results.
                         YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
                         """
 
     # Construct user messages
-    user_messages = [f"{selected} is in the {percentiles[trait]} percentile in the world for trait {trait_full}." for trait, trait_full in trait_names.items()]
+    user_messages = []
+    for trait, trait_full in trait_names.items():
+        msg = f"{selected1} is in the {percentiles1[trait]} percentile and {selected2} is in the {percentiles2[trait]} percentile in the world for trait {trait_full}."
+        user_messages.append(msg)
     
     # Combine all messages
     messages = [{"role": "system", "content": system_message}]
@@ -408,7 +411,7 @@ def generate_personality_comparison(selected, percentiles, trait_names):
     # Extract and return the model's response
     response = completion.choices[0].message['content']
     return response
-
+        
 def display_percentile(comparison_type, selected):
     if comparison_type == "Cities":
         data = pd.read_csv('data/top_1000_city_data.csv')
@@ -518,22 +521,19 @@ if st.button('Submit', key='profile_button'):
 # Create a section title and space
 st.title("Population comparison tool")
 st.write("Compare the average Big Five personality profiles of any two countries or cities.")
-st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars, which signify trait diversity within each place.")
+st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars (set score type to normalized scores), which signify significant trait diversity within each place.")
 st.write("---")
 
 # Select comparison type: City vs. City or Country vs. Country
 comparison_type = st.radio("Would you like to compare cities or countries?", ["Cities", "Countries"])
-
 # Handle City vs. City comparison
 if comparison_type == "Cities":
     st.header("City Comparison")
     
     city_scores = pd.read_csv('data/top_1000_city_data.csv')  
 
-    # Create a new list of city options with the format "CityState, Country"
     city_options = city_scores['CityState'] + ", " + city_scores['Country']
-    
-    # Determine the index positions of the desired default cities
+
     default_city1_index = np.where(city_options == "New York, New York, United States")[0][0]
     default_city2_index = np.where(city_options == "Tokyo, Japan")[0][0]
 
@@ -541,18 +541,19 @@ if comparison_type == "Cities":
     city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
     city2_selected = col2.selectbox("Select the second city:", city_options, index=int(default_city2_index))
     score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
-    
-    # Split the selected city option back into 'CityState' and 'Country'
+
     city1_citystate, city1_country = city1_selected.rsplit(', ', 1)
     city2_citystate, city2_country = city2_selected.rsplit(', ', 1)
 
-    # Fetch data for the selected cities
     city1_data = city_scores[(city_scores['CityState'] == city1_citystate) & (city_scores['Country'] == city1_country)].iloc[0]
     city2_data = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)].iloc[0]
     
+    percentiles1, percentiles2 = {}, {}
     if score_type == "Percentiles":
-        city1_scores = list(compute_percentile(city_scores, city1_data, trait_names).values())
-        city2_scores = list(compute_percentile(city_scores, city2_data, trait_names).values())
+        percentiles1 = compute_percentile(city_scores, city1_data, trait_names)
+        percentiles2 = compute_percentile(city_scores, city2_data, trait_names)
+        city1_scores = list(percentiles1.values())
+        city2_scores = list(percentiles2.values())
     else:
         city1_scores = [city1_data[trait] for trait in trait_names]
         city2_scores = [city2_data[trait] for trait in trait_names]
@@ -560,12 +561,16 @@ if comparison_type == "Cities":
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
 
-    # Correcting the lines to fetch city counts
     city1_count = city_scores[(city_scores['CityState'] == city1_citystate) & (city_scores['Country'] == city1_country)]['Count'].values[0]
     city2_count = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)]['Count'].values[0]
 
-    # Plot the comparison
-    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type, comparison_type.lower())
+    if st.button('Submit', key='city_comparison_button'):
+        with st.spinner('Generating comparison...'):
+            plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type, comparison_type.lower())
+            if score_type == 'Percentiles':
+                comparison_paragraph = generate_personality_comparison(city1_selected, city2_selected, percentiles1, percentiles2, trait_names, comparison_type)
+                st.write(comparison_paragraph)
+
 
 # Handle Country vs. Country comparison
 elif comparison_type == "Countries":
@@ -574,7 +579,6 @@ elif comparison_type == "Countries":
 
     country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
     
-    # Determine the index positions of the desired default countries
     default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
     default_country2_index = np.where(country_scores['Country'].unique() == "Russia")[0][0]
 
@@ -583,13 +587,15 @@ elif comparison_type == "Countries":
     country2_selected = col2.selectbox("Select the second country:", country_scores['Country'].unique(), index=int(default_country2_index))
     score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
 
-    # Fetch data for the selected countries
     country1_data = country_scores[country_scores['Country'] == country1_selected].iloc[0]
     country2_data = country_scores[country_scores['Country'] == country2_selected].iloc[0]
     
+    percentiles1, percentiles2 = {}, {}
     if score_type == "Percentiles":
-        country1_scores = list(compute_percentile(country_scores, country1_data, trait_names).values())
-        country2_scores = list(compute_percentile(country_scores, country2_data, trait_names).values())
+        percentiles1 = compute_percentile(country_scores, country1_data, trait_names)
+        percentiles2 = compute_percentile(country_scores, country2_data, trait_names)
+        country1_scores = list(percentiles1.values())
+        country2_scores = list(percentiles2.values())
     else:
         country1_scores = [country1_data[trait] for trait in trait_names]
         country2_scores = [country2_data[trait] for trait in trait_names]
@@ -600,5 +606,9 @@ elif comparison_type == "Countries":
     country1_count = country_scores[country_scores['Country'] == country1_selected]['Count'].values[0]
     country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
 
-    # Plot the comparison
-    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type, comparison_type.lower())
+    if st.button('Submit', key='country_comparison_button'):
+        with st.spinner('Generating comparison...'):
+            plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type, comparison_type.lower())
+            if score_type == 'Percentiles':
+                comparison_paragraph = generate_personality_comparison(country1_selected, country2_selected, percentiles1, percentiles2, trait_names, comparison_type)
+                st.write(comparison_paragraph)
