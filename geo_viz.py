@@ -641,7 +641,7 @@ if comparison_type == "Cities":
             plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type, comparison_type.lower())
             if score_type == 'Percentiles':
                 comparison_paragraph = generate_personality_comparison(city1_selected, city2_selected, percentiles1, percentiles2, trait_names, comparison_type)
-                st.write(comparison_paragraph)
+                st.write(f"**Comparing {city1_selected} and {city2_selected}:** {comparison_paragraph}")
 
 
 # Handle Country vs. Country comparison
@@ -683,7 +683,7 @@ elif comparison_type == "Countries":
             plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type, comparison_type.lower())
             if score_type == 'Percentiles':
                 comparison_paragraph = generate_personality_comparison(country1_selected, country2_selected, percentiles1, percentiles2, trait_names, comparison_type)
-                st.write(comparison_paragraph)
+                st.write(f"**Comparing {country1_selected} and {country2_selected}:** {comparison_paragraph}")
 
 # Handle State vs. State comparison
 elif comparison_type == "US States":
@@ -724,4 +724,4 @@ elif comparison_type == "US States":
             plot_comparison(state1_scores, state2_scores, state1_std, state2_std, state1_selected, state2_selected, state1_count, state2_count, list(trait_names.values()), score_type, comparison_type.lower())
             if score_type == 'Percentiles':
                 comparison_paragraph = generate_personality_comparison(state1_selected, state2_selected, percentiles1, percentiles2, trait_names, comparison_type)
-                st.write(comparison_paragraph)
+                st.write(f"**Comparing {state1_selected} and {state2_selected}:** {comparison_paragraph}")
