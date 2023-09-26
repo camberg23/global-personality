@@ -374,9 +374,10 @@ if comparison_type == "Cities":
     city2_scores = [city2_data[trait] for trait in trait_names]
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
-    
-    city1_count = city_scores[city_scores['CityState'] == city1_selected]['Count'].values[0]
-    city2_count = city_scores[city_scores['CityState'] == city2_selected]['Count'].values[0]
+
+    # Correcting the lines to fetch city counts
+    city1_count = city_scores[(city_scores['CityState'] == city1_citystate) & (city_scores['Country'] == city1_country)]['Count'].values[0]
+    city2_count = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)]['Count'].values[0]
 
     # Plot the comparison
     st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars, which signify trait diversity within each place.")
