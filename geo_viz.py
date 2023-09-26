@@ -307,22 +307,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     
     st.plotly_chart(fig, use_container_width=True)
 
-# def compute_percentile(data, selected_data, trait_names):
-#     percentile_scores = {}
-#     for trait in trait_names:
-#         scores = data[trait].values
-#         selected_score = selected_data[trait]
-        
-#         # Ensure selected_score is a scalar
-#         if np.ndim(selected_score) > 0:  # if selected_score is not a scalar
-#             selected_score = selected_score.item()  # convert to scalar
-        
-#         percentile = 100 * len(scores[scores < selected_score]) / len(scores)
-#         percentile_scores[trait] = round(percentile, 2)
-#     return percentile_scores
-
-
-def plot_percentile(percentiles, trait_names_values, selected):
+def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
     """Plot the percentile scores as a horizontal bar chart."""
     
     # Organize data for horizontal bar chart
@@ -340,7 +325,7 @@ def plot_percentile(percentiles, trait_names_values, selected):
         text=x_values,
         textposition='inside',  # to position the text inside the bars
         marker_color='green',  # choosing a different color for distinction
-        hovertemplate="Trait: %{y}<br>Percentile: %{x}%<extra></extra>"
+        hovertemplate=f"{selected} is in the top %{x}% for {trait} among all {comparison_type}<extra></extra>"
     ))
 
     # Update layout for better visualization
@@ -435,7 +420,7 @@ def display_percentile(comparison_type, selected):
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
 
-    fig = plot_percentile(percentiles, trait_names, selected)
+    fig = plot_percentile(percentiles, trait_names, selected, comparison_type)
     st.plotly_chart(fig, use_container_width=True)
 
     description = generate_personality_description(selected, percentiles, trait_names)
