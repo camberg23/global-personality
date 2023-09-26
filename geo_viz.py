@@ -349,13 +349,18 @@ comparison_type = st.radio("Would you like to compare cities or countries?", ["C
 # Handle City vs. City comparison
 if comparison_type == "Cities":
     st.header("City Comparison")
-    city_scores = pd.read_csv('data/top_1000_city_data.csv')    
-    # Determine the index positions of the desired default cities
-    default_city1_index = np.where(city_scores['CityState'].unique() == "New York, New York")[0][0]
-    default_city2_index = np.where(city_scores['CityState'].unique() == "Tokyo")[0][0]
     
-    city1_selected = st.selectbox("Select the first city:", city_scores['CityState'].unique(), index=int(default_city1_index))
-    city2_selected = st.selectbox("Select the second city:", city_scores['CityState'].unique(), index=int(default_city2_index))
+    city_scores = pd.read_csv('data/top_1000_city_data.csv')  
+
+    # Create a new list of city options with the format "CityState, Country"
+    city_options = city_scores['CityState'] + ", " + city_scores['Country']
+    
+    # Determine the index positions of the desired default cities
+    default_city1_index = np.where(city_options == "New York, New York, United States")[0][0]
+    default_city2_index = np.where(city_options == "Tokyo, Japan")[0][0]
+    
+    city1_selected = st.selectbox("Select the first city:", city_options, index=int(default_city1_index))
+    city2_selected = st.selectbox("Select the second city:", city_options, index=int(default_city2_index))
     
     # Fetch data for the selected cities
     city1_data = city_scores[city_scores['CityState'] == city1_selected].iloc[0]
