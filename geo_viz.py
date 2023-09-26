@@ -371,24 +371,38 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
 def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
     """Plot the percentile scores as a horizontal bar chart."""
     
+    # Mapping of trait names to adjectives
+    trait_adj = {
+        'Openness': 'open',
+        'Conscientiousness': 'conscientious',
+        'Extraversion': 'extraverted',
+        'Agreeableness': 'agreeable',
+        'Neuroticism': 'neurotic'
+    }
+
     # Organize data for horizontal bar chart
     y_labels = list(trait_names_values.values())
     x_values = list(percentiles.values())
-
+    
     # Create a horizontal bar chart
     fig = go.Figure()
 
-    # Bars for percentiles
-    fig.add_trace(go.Bar(
-        y=y_labels,
-        x=x_values,
-        orientation='h',  # to make the bars horizontal
-        text=x_values,
-        textposition='inside',  # to position the text inside the bars
-        marker_color='green',  # choosing a different color for distinction
+    for i, (y_label, x_value) in enumerate(zip(y_labels, x_values)):
+        # Get the adjective for the current trait
+        adj = trait_adj.get(y_label, 'unknown trait')
+        
+        # Bars for percentiles
+        fig.add_trace(go.Bar(
+            y=[y_label],  # make this a list to use in a loop
+            x=[x_value],  # make this a list to use in a loop
+            orientation='h',  # to make the bars horizontal
+            text=[x_value],  # make this a list to use in a loop
+            textposition='inside',  # to position the text inside the bars
+            marker_color='green',  # choosing a different color for distinction
             hovertemplate=(
-        f"{selected} is in the top %{{x:.2f}}% for %{{y}} among all {comparison_type}<extra></extra>")
-    ))
+                f"{selected} is more {adj} than %{{x:.2f}}% of {comparison_type}<extra></extra>"
+            )
+        ))
 
     # Update layout for better visualization
     fig.update_layout(
