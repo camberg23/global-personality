@@ -312,7 +312,7 @@ st.write("Explore and compare the Big Five personality traits across the globe u
 st.write("*Add some context and information here.*")
 st.write("---")
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns([1, 1, 1, 0.5])
 
 with col1:
     us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
@@ -329,7 +329,7 @@ with col3:
     trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
 
 with col4:
-    N = st.number_input('# of highest/lowest places to list:', min_value=1, max_value=50, value=5)
+    N = st.number_input('Number of highest/lowest places to list:', min_value=1, max_value=50, value=5)
 
 # Inside the main Streamlit code:
 if st.button('Submit'):
