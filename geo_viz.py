@@ -540,7 +540,7 @@ st.markdown(
 )
 st.write("---")
 st.title("Interactive personality maps")
-st.write("Make your settings choices and click submit to get an interactive map of the desired Big Five trait in the chosen geographical scope.")
+st.write("Make your settings choices and click submit to get an interactive map of the desired Big Five trait in the chosen geographical scope. Note: you can zoom into and out of the maps and mouseover areas for more information!")
 
 col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 0.75])
 
