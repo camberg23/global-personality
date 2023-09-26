@@ -511,25 +511,26 @@ st.markdown(
     Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the Big Five 
     [personality traits](https://en.wikipedia.org/wiki/Big_Five_personality_traits) from across the globe, 
     powered by Truity's 4M person database. This page is split up into three different tools: 
-    1. An interactive personality map, 2. A personality profile generator by location, and 3. A head-to-head comparison tool.
-    You can take Truity’s validated Big Five personality assessment [here](https://www.truity.com/test/big-five-personality-test). 
-    The code and data used for generating these analyses is publicly available 
-    [here](https://github.com/camberg23/global-personality). 
-    Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally[[1](https://journals.sagepub.com/doi/10.1177/0022022198291009),[2](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)]. 
-    See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) 
-    for an accessible overview of this subarea of psychometric research. 
+    (1) An interactive personality map, (2) A personality profile generator by location, and 
+    (3) A head-to-head comparison tool. You can take Truity’s validated Big Five personality assessment 
+    [here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating 
+    these analyses is publicly available [here](https://github.com/camberg23/global-personality). 
+    Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally
+    [[1](https://journals.sagepub.com/doi/10.1177/0022022198291009),[2](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)]. 
+    See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) for an accessible 
+    overview of this subarea of psychometric research. 
     """,
     unsafe_allow_html=True
 )
 
 st.markdown(
     """
-    _One important caveat of this research:_ Our analysis involved converting 
+    <i><small>One important caveat of this research: Our analysis involved converting 
     [user IP addresses](https://ip-api.com/) to real-world locations; especially for fine-grained city data, 
     IP addresses can be a slightly [noisy source](https://www.if-so.com/geo-targeting/) of geographic data. 
     We attempt to address this problem for cities by clustering data within a 
     [radius](https://github.com/camberg23/global-personality/blob/9a2dadbde2ab718fc3b18d0c621c1794580c9a84/geo_viz.py#L63) 
-    that is larger than the typical margin of error typically associated with IP addresses.
+    that is larger than the typical margin of error typically associated with IP addresses.</small></i>
     """, 
     unsafe_allow_html=True
 )
