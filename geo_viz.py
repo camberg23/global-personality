@@ -503,6 +503,8 @@ st.write("Explore and compare the Big Five personality traits across the globe u
 st.write("*Add some context and information here.*")
 st.write("---")
 
+st.title("Interactive personality maps")
+st.write("specific directions for this bit")
 col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 0.75])
 
 with col1:
@@ -558,6 +560,7 @@ if st.button('Submit'):
             plot_globe_trait_location(trait, level, scores)
 
 # Create a section title and space
+st.write("---")
 st.title("Personality profile of any location")
 st.write("Get the average Big Five personality profiles of any location in our database.")
 st.write("---")
@@ -595,6 +598,7 @@ if is_button_pressed:
         display_percentile(comparison_type, selected)
 
 # Create a section title and space
+st.write("---")
 st.title("Population comparison tool")
 st.write("Compare the average Big Five personality profiles of any two countries or cities.")
 st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars (set score type to normalized scores), which signify significant trait diversity within each place.")
