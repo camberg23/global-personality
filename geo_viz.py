@@ -461,7 +461,7 @@ st.write("Explore and compare the Big Five personality traits across the globe u
 st.write("*Add some context and information here.*")
 st.write("---")
 
-col1, col2, col3, col4 = st.columns([1, 1, 1, 0.75])
+col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 0.75, 0.2])
 
 with col1:
     us_or_global = st.selectbox('US or global:', ['Choose an option', 'US only', 'Global'])
@@ -480,29 +480,30 @@ with col3:
 with col4:
     N = st.number_input('Top/bottom N to list:', min_value=1, max_value=50, value=5)
 
-# Inside the main Streamlit code:
-if st.button('Submit'):
-    if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
-        if state_or_city == 'State view':
-            state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
-            display_top_bottom_places(state_scores, trait, 'states', 'State', N)  # 'State' is the column name in state data
-        elif state_or_city == 'City view':
-            city_scores = pd.read_csv('data/us_city_viz_improved.csv')
-            display_top_bottom_places(city_scores, trait, 'cities', 'City', N)
-            
-        plot_us_trait_location(state_or_city, trait)
-
-    elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
-        if level == "Country view":
-            country_scores = pd.read_csv('data/country_data.csv')
-            country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
-            display_top_bottom_places(country_scores, trait, 'countries', 'Country', N)
-            plot_globe_trait_location(trait, level)
-        elif level == "City view":
-            city_scores = pd.read_csv('data/top_1000_city_data.csv')
-            city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
-            display_top_bottom_places(city_scores, trait, 'cities', 'CityState', N)
-            plot_globe_trait_location(trait, level)
+with col5:
+        # Inside the main Streamlit code:
+        if st.button('Submit'):
+            if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
+                if state_or_city == 'State view':
+                    state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
+                    display_top_bottom_places(state_scores, trait, 'states', 'State', N)  # 'State' is the column name in state data
+                elif state_or_city == 'City view':
+                    city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+                    display_top_bottom_places(city_scores, trait, 'cities', 'City', N)
+                    
+                plot_us_trait_location(state_or_city, trait)
+        
+            elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
+                if level == "Country view":
+                    country_scores = pd.read_csv('data/country_data.csv')
+                    country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
+                    display_top_bottom_places(country_scores, trait, 'countries', 'Country', N)
+                    plot_globe_trait_location(trait, level)
+                elif level == "City view":
+                    city_scores = pd.read_csv('data/top_1000_city_data.csv')
+                    city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
+                    display_top_bottom_places(city_scores, trait, 'cities', 'CityState', N)
+                    plot_globe_trait_location(trait, level)
 
 # Create a section title and space
 st.title("Personality profile of any location")
