@@ -565,7 +565,7 @@ if comparison_type == "Cities":
     city2_count = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)]['Count'].values[0]
 
     # Plot the comparison
-    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type)
+    plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type, comparison_type.lower())
 
 # Handle Country vs. Country comparison
 elif comparison_type == "Countries":
