@@ -371,6 +371,9 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
 def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
     """Plot the percentile scores as a horizontal bar chart."""
     
+    # Handling the special case for 'US States'
+    comparison_type = 'US states' if comparison_type == 'US States' else comparison_type.lower()
+
     # Mapping of trait names to adjectives
     trait_adj = {
         'Openness': 'open',
@@ -401,7 +404,8 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
             marker_color='green',  # choosing a different color for distinction
             hovertemplate=(
                 f"{selected} is more {adj} than %{{x:.2f}}% of {comparison_type}<extra></extra>"
-            )
+            ),
+            showlegend=False  # do not show the legend
         ))
 
     # Update layout for better visualization
@@ -419,9 +423,11 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
             size=18
         ),
         margin=dict(t=100, l=200),  # Add more space at the top and left
+        showlegend=False  # do not show the legend globally
     )
     
     return fig
+
 
 def display_percentile(comparison_type, selected):
      # Depending on the comparison type, filter the data and get the selected data
