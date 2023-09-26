@@ -312,10 +312,10 @@ st.write("Explore and compare the Big Five personality traits across the globe u
 st.write("*Add some context and information here.*")
 st.write("---")
 
-col1, col2, col3, col4 = st.columns([1, 1, 1, 0.5])
+col1, col2, col3, col4 = st.columns([1, 1, 1, 0.75])
 
 with col1:
-    us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
+    us_or_global = st.selectbox('US or global:', ['Choose an option', 'US only', 'Global'])
 
 # Conditionally display based on the first selection
 if us_or_global == 'US only':
