@@ -192,9 +192,18 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
 
 def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type="Normalized Scores"):
     """Display the top N and bottom N places based on the trait score."""
+    trait_descriptions = {
+        'Openness': 'open',
+        'Conscientiousness': 'conscientious',
+        'Extraversion': 'extraverted',
+        'Agreeableness': 'agreeable',
+        'Neuroticism': 'neurotic'
+    }
+    
     inv_trait_names = {v: k for k, v in trait_names.items()}
     full_name = trait
     trait = inv_trait_names[trait]
+    description = trait_descriptions[full_name]
 
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
@@ -211,7 +220,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
             if score_type == "Percentiles":
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: higher than {row[trait]:.2f}% of {scope} in {full_name}; N={row['Count']} users</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: more {description} than {row[trait]:.2f}% of {scope}; N={row['Count']} users</span>", unsafe_allow_html=True)
             else:
                 st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
     
@@ -224,7 +233,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
             if score_type == "Percentiles":
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: lower than {row[trait]:.2f}% of {scope} in {full_name}; N={row['Count']} users</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: less {description} than {100 - row[trait]:.2f}% of {scope}; N={row['Count']} users</span>", unsafe_allow_html=True)
             else:
                 st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
 
