@@ -514,8 +514,8 @@ if comparison_type == "Cities":
     city2_data = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)].iloc[0]
     
     if score_type == "Percentiles":
-        city1_scores = list(compute_percentile(city_scores, city1_data, trait_names))
-        city2_scores = list(compute_percentile(city_scores, city2_data, trait_names))
+        city1_scores = list(compute_percentile(city_scores, city1_data, trait_names).values())
+        city2_scores = list(compute_percentile(city_scores, city2_data, trait_names).values())
     else:
         city1_scores = [city1_data[trait] for trait in trait_names]
         city2_scores = [city2_data[trait] for trait in trait_names]
@@ -552,8 +552,7 @@ elif comparison_type == "Countries":
     
     if score_type == "Percentiles":
         country1_scores = list(compute_percentile(country_scores, country1_data, trait_names).values())
-        country2_scores = list(compute_percentile(country_scores, country2_data, trait_names))
-        st.write(country1_scores)
+        country2_scores = list(compute_percentile(country_scores, country2_data, trait_names).values())
     else:
         country1_scores = [country1_data[trait] for trait in trait_names]
         country2_scores = [country2_data[trait] for trait in trait_names]
