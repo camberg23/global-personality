@@ -413,12 +413,13 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
     return response
         
 def display_percentile(comparison_type, selected):
+     # Depending on the comparison type, filter the data and get the selected data
     if comparison_type == "Cities":
-        data = pd.read_csv('data/top_1000_city_data.csv')
-        selected_data = data[data['CityState'] == selected].iloc[0]
-    else:
-        data = pd.read_csv('data/country_data.csv')
-        selected_data = data[data['Country'] == selected].iloc[0]
+        selected_data = data[data['CityState'] == selected]
+    elif comparison_type == "Countries":
+        selected_data = data[data['Country'] == selected]
+    elif comparison_type == "US States":
+        selected_data = data[data['State'] == selected]
 
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
