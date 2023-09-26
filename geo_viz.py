@@ -285,7 +285,7 @@ if st.button('Submit'):
             display_top_bottom_places(state_scores, trait, 'states', 'State')  # 'State' is the column name in state data
         elif state_or_city == 'City view':
             city_scores = pd.read_csv('data/us_city_viz_improved.csv')
-            display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+            display_top_bottom_places(city_scores, trait, 'cities', 'City')
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
         if level == "Country view":
@@ -293,7 +293,7 @@ if st.button('Submit'):
             plot_globe_trait_location(trait, level)
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         elif level == "City view":
-            city_scores = pd.read_csv('data/city_data_fixed.csv')
+            city_scores = pd.read_csv('data/top_1000_city_data.csv')
             plot_globe_trait_location(trait, level)
             st.write(len(city_scores))
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
