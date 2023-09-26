@@ -300,8 +300,6 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     
     st.plotly_chart(fig, use_container_width=True)
 
-
-
 def compute_percentile(data, selected_data, trait_names):
     percentile_scores = {}
     for trait in trait_names:
@@ -421,6 +419,9 @@ def display_percentile(comparison_type, selected):
     elif comparison_type == "US States":
         selected_data = data[data['State'] == selected]
 
+    st.write(selected_data)
+    st.write(data)
+    st.write(trait_names)
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
 
