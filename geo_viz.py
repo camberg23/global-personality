@@ -506,9 +506,8 @@ st.markdown(
 st.write(" ")
 st.markdown(
     """
-    Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the Big Five 
-    [personality traits](https://en.wikipedia.org/wiki/Big_Five_personality_traits) from across the globe, 
-    powered by Truity's 4M person database. This page is split up into three different tools: 
+    Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) 
+    personality traits from across the globe, powered by Truity's 4M person database. This page is split up into three different tools: 
     (1) an **interactive personality map**, (2) a **personality profile generator** by location, and 
     (3) a **head-to-head comparison tool**. You can take [Truity’s validated Big Five personality assessment 
     here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating 
@@ -651,8 +650,8 @@ if comparison_type == "Cities":
 
     city_options = city_scores['CityState'] + ", " + city_scores['Country']
 
-    default_city1_index = np.where(city_options == "New York, New York, United States")[0][0]
-    default_city2_index = np.where(city_options == "Beijing, China")[0][0]
+    default_city1_index = np.where(city_options == "Los Angeles, United States")[0][0]
+    default_city2_index = np.where(city_options == "Amsterdam, Netherlands")[0][0]
 
     col1, col2, col3 = st.columns(3)
     city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
