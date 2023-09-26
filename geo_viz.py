@@ -360,9 +360,10 @@ if comparison_type == "Cities":
     # Determine the index positions of the desired default cities
     default_city1_index = np.where(city_options == "New York, New York, United States")[0][0]
     default_city2_index = np.where(city_options == "Tokyo, Japan")[0][0]
-    
-    city1_selected = st.selectbox("Select the first city:", city_options, index=int(default_city1_index))
-    city2_selected = st.selectbox("Select the second city:", city_options, index=int(default_city2_index))
+
+    col1, col2 = st.columns(2)
+    city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
+    city2_selected = col2.selectbox("Select the second city:", city_options, index=int(default_city2_index))
     
     # Split the selected city option back into 'CityState' and 'Country'
     city1_citystate, city1_country = city1_selected.rsplit(', ', 1)
@@ -395,9 +396,10 @@ elif comparison_type == "Countries":
     # Determine the index positions of the desired default countries
     default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
     default_country2_index = np.where(country_scores['Country'].unique() == "Russia")[0][0]
-    
-    country1_selected = st.selectbox("Select the first country:", country_scores['Country'].unique(), index=int(default_country1_index))
-    country2_selected = st.selectbox("Select the second country:", country_scores['Country'].unique(), index=int(default_country2_index))
+
+    col1, col2 = st.columns(2)
+    country1_selected = col1.selectbox("Select the first country:", country_scores['Country'].unique(), index=int(default_country1_index))
+    country2_selected = col2.selectbox("Select the second country:", country_scores['Country'].unique(), index=int(default_country2_index))
 
     # Fetch data for the selected countries
     country1_data = country_scores[country_scores['Country'] == country1_selected].iloc[0]
