@@ -492,7 +492,7 @@ openai.api_key = st.secrets['KEY']
 
 
 st.set_page_config(page_title="Personality Atlas", layout="wide")
-st.write("")
+st.write(" ")
 st.markdown(
     """
     <div style="text-align: center;">
