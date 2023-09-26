@@ -421,7 +421,6 @@ def display_percentile(comparison_type, selected):
 
     st.write(selected_data)
     st.write(data)
-    st.write(trait_names)
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
 
