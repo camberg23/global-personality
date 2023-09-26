@@ -505,14 +505,17 @@ st.write("Get the average Big Five personality profiles of any location in our d
 st.write("---")
 
 # User Input
-comparison_type = st.radio("Choose the type of place:", ["Cities", "Countries"], key='profile')
+comparison_type = st.radio("Choose the type of place:", ["Cities", "Countries", "US States"], key='profile')
 
 if comparison_type == "Cities":
     data = pd.read_csv('data/top_1000_city_data.csv')
     selected = st.selectbox("Select the city:", data['CityState'].unique(), key='profile_city')
-else:
+elif comparison_type == "Countries":
     data = pd.read_csv('data/country_data.csv')
     selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
+else:  # Assuming comparison_type is "US States"
+    data = pd.read_csv('data/us_state_viz.csv')
+    selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state')
 
 if st.button('Submit', key='profile_button'):
         with st.spinner('Generating profile...'):
