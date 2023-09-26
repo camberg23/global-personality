@@ -634,7 +634,7 @@ elif comparison_type == "Countries":
     col1, col2, col3 = st.columns(3)
     country1_selected = col1.selectbox("Select the first country:", country_scores['Country'].unique(), index=int(default_country1_index))
     country2_selected = col2.selectbox("Select the second country:", country_scores['Country'].unique(), index=int(default_country2_index))
-    score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
+    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0)
 
     country1_data = country_scores[country_scores['Country'] == country1_selected].iloc[0]
     country2_data = country_scores[country_scores['Country'] == country2_selected].iloc[0]
@@ -675,7 +675,7 @@ elif comparison_type == "US States":
     col1, col2, col3 = st.columns(3)
     state1_selected = col1.selectbox("Select the first state:", state_scores['State'].unique(), index=int(default_state1_index))
     state2_selected = col2.selectbox("Select the second state:", state_scores['State'].unique(), index=int(default_state2_index))
-    score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
+    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0)
 
     state1_data = state_scores[state_scores['State'] == state1_selected].iloc[0]
     state2_data = state_scores[state_scores['State'] == state2_selected].iloc[0]
