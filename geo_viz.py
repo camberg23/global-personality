@@ -342,9 +342,8 @@ def plot_percentile(percentiles, trait_names_values, selected):
 def generate_personality_description(selected, percentiles, trait_names):    
     # Construct the initial system message
     system_message = """
-                        You are a helpful assistant that provides a courteous and brief summary of a location's overall personality blend based on Big Five personality traits percentiles. 
-                        Even if the percentiles for certain traits are low, maintain a positive and respectful tone in the description. Always use relative language, as the information is based on percentiles, 
-                        comparing the location's traits to the global population.
+                        You are a helpful assistant that provides a courteous and very succinct and concise summary of a location's overall personality blend based on Big Five personality traits percentiles. 
+                        Always use relative language, as the information is based on percentiles, comparing the location's traits to the global population.
                         """
 
     # Construct user messages
@@ -466,9 +465,9 @@ if comparison_type == "Cities":
 else:
     data = pd.read_csv('data/country_data.csv')
     selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
-        
-display_percentile(comparison_type, selected)
 
+if st.button('Submit', key='profile_button'):
+        display_percentile(comparison_type, selected)
 
 # Create a section title and space
 st.title("Population comparison tool")
