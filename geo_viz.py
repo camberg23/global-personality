@@ -307,19 +307,19 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     
     st.plotly_chart(fig, use_container_width=True)
 
-def compute_percentile(data, selected_data, trait_names):
-    percentile_scores = {}
-    for trait in trait_names:
-        scores = data[trait].values
-        selected_score = selected_data[trait]
+# def compute_percentile(data, selected_data, trait_names):
+#     percentile_scores = {}
+#     for trait in trait_names:
+#         scores = data[trait].values
+#         selected_score = selected_data[trait]
         
-        # Ensure selected_score is a scalar
-        if np.ndim(selected_score) > 0:  # if selected_score is not a scalar
-            selected_score = selected_score.item()  # convert to scalar
+#         # Ensure selected_score is a scalar
+#         if np.ndim(selected_score) > 0:  # if selected_score is not a scalar
+#             selected_score = selected_score.item()  # convert to scalar
         
-        percentile = 100 * len(scores[scores < selected_score]) / len(scores)
-        percentile_scores[trait] = round(percentile, 2)
-    return percentile_scores
+#         percentile = 100 * len(scores[scores < selected_score]) / len(scores)
+#         percentile_scores[trait] = round(percentile, 2)
+#     return percentile_scores
 
 
 def plot_percentile(percentiles, trait_names_values, selected):
@@ -441,12 +441,30 @@ def display_percentile(comparison_type, selected):
     st.plotly_chart(fig, use_container_width=True)
     st.write(f'**Personality profile of {selected}**:', description)
 
+def compute_percentile(data, selected_data, trait_names):
+    percentile_scores = {}
+    for trait in trait_names:
+        scores = data[trait].values
+        selected_score = selected_data[trait]
+        
+        # Ensure selected_score is a scalar
+        if np.ndim(selected_score) > 0:  # if selected_score is not a scalar
+            selected_score = selected_score.item()  # convert to scalar
+        
+        # Exclude the current row's score when calculating the percentile
+        scores = scores[scores != selected_score]
+        percentile = 100 * len(scores[scores < selected_score]) / len(scores)
+        percentile_scores[trait] = round(percentile, 2)
+    return percentile_scores
+
+
 def compute_percentiles_for_all(data, trait_names):
-    for i, row in data.iterrows():
-        percentiles = compute_percentile(data, row, trait_names)
+    new_data = data.copy()
+    for i, row in new_data.iterrows():
+        percentiles = compute_percentile(data.drop(index=i), row, trait_names)
         for trait, percentile in percentiles.items():
-            data.at[i, trait] = percentile
-    return data
+            new_data.at[i, trait] = percentile
+    return new_data
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Trait name mapping
