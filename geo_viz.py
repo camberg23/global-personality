@@ -544,6 +544,8 @@ col1, col2 = st.columns((1, 1))  # Two columns of equal size
 with col1:
     comparison_type = st.radio("Choose the type of place:", ["Cities", "US States", "Countries"], key='profile')
 
+is_button_pressed = False  # Initialize a flag to check if the button is pressed
+
 with col2:
     if comparison_type == "Cities":
         data = pd.read_csv('data/top_1000_city_data.csv')
@@ -556,13 +558,13 @@ with col2:
         selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state')
 
     # Place the Submit button in the second column, next to the selectbox
-    if st.button('Submit', key='profile_button'):
-        pass  # Just to exit the 'with col2:' block
+    is_button_pressed = st.button('Submit', key='profile_button')
 
 # Generate profile outside of columns
-if st.button('Submit', key='profile_button'):
+if is_button_pressed:
     with st.spinner('Generating profile...'):
         display_percentile(comparison_type, selected)
+
 
 # Create a section title and space
 st.title("Population comparison tool")
