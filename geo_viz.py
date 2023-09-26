@@ -15,33 +15,6 @@ import plotly.graph_objects as go
 from sklearn.cluster import DBSCAN
 import streamlit as st
 
-# Trait name mapping
-trait_names = {
-    'o': 'Openness',
-    'c': 'Conscientiousness',
-    'e': 'Extraversion',
-    'a': 'Agreeableness',
-    'n': 'Neuroticism'
-}
-
-traits = ['o', 'c', 'e', 'a', 'n']
-
-THRESHOLD_USERS = 200
-
-st.set_page_config(layout="wide")
-
-# Create a section title and space
-st.title("Personality Atlas")
-st.write("Explore and compare the Big Five personality traits across the globe using Truity's 4M person database!")
-
-st.write("*Add some context and information here.*")
-st.write("---")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
-
 def plot_globe_trait_location(trait, level, top_N=500):
         if level == "Country view":
             data = pd.read_csv('data/country_data.csv')
@@ -222,17 +195,6 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
                             })
         st.plotly_chart(fig, use_container_width=True)
 
-# Conditionally display based on the first selection
-if us_or_global == 'US only':
-    with col2:
-        state_or_city = st.selectbox('US scope:', ['Choose an option', 'State view', 'City view'])
-elif us_or_global == 'Global':
-    with col2:
-        level = st.selectbox('Global scope:', ['Choose an option', 'Country view', 'City view'])
-
-with col3:
-    trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
-
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
@@ -265,30 +227,6 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
             st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
-
-# Inside the main Streamlit code:
-if st.button('Submit'):
-    if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
-        if state_or_city == 'State view':
-            state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
-            display_top_bottom_places(state_scores, trait, 'states', 'State')  # 'State' is the column name in state data
-        elif state_or_city == 'City view':
-            city_scores = pd.read_csv('data/us_city_viz_improved.csv')
-            display_top_bottom_places(city_scores, trait, 'cities', 'City')
-            
-        plot_us_trait_location(state_or_city, trait)
-
-    elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
-        if level == "Country view":
-            country_scores = pd.read_csv('data/country_data.csv')
-            country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
-            display_top_bottom_places(country_scores, trait, 'countries', 'Country')
-            plot_globe_trait_location(trait, level)
-        elif level == "City view":
-            city_scores = pd.read_csv('data/top_1000_city_data.csv')
-            city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
-            display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
-            plot_globe_trait_location(trait, level)
 
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
@@ -349,6 +287,70 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     )
     
     st.plotly_chart(fig, use_container_width=True)
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Trait name mapping
+trait_names = {
+    'o': 'Openness',
+    'c': 'Conscientiousness',
+    'e': 'Extraversion',
+    'a': 'Agreeableness',
+    'n': 'Neuroticism'
+}
+
+traits = ['o', 'c', 'e', 'a', 'n']
+
+THRESHOLD_USERS = 200
+
+st.set_page_config(layout="wide")
+
+# Create a section title and space
+st.title("Personality Atlas")
+st.write("Explore and compare the Big Five personality traits across the globe using Truity's 4M person database!")
+
+st.write("*Add some context and information here.*")
+st.write("---")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
+
+# Conditionally display based on the first selection
+if us_or_global == 'US only':
+    with col2:
+        state_or_city = st.selectbox('US scope:', ['Choose an option', 'State view', 'City view'])
+elif us_or_global == 'Global':
+    with col2:
+        level = st.selectbox('Global scope:', ['Choose an option', 'Country view', 'City view'])
+
+with col3:
+    trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
+
+# Inside the main Streamlit code:
+if st.button('Submit'):
+    if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
+        if state_or_city == 'State view':
+            state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
+            display_top_bottom_places(state_scores, trait, 'states', 'State')  # 'State' is the column name in state data
+        elif state_or_city == 'City view':
+            city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+            display_top_bottom_places(city_scores, trait, 'cities', 'City')
+            
+        plot_us_trait_location(state_or_city, trait)
+
+    elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
+        if level == "Country view":
+            country_scores = pd.read_csv('data/country_data.csv')
+            country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
+            display_top_bottom_places(country_scores, trait, 'countries', 'Country')
+            plot_globe_trait_location(trait, level)
+        elif level == "City view":
+            city_scores = pd.read_csv('data/top_1000_city_data.csv')
+            city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
+            display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+            plot_globe_trait_location(trait, level)
 
 # Create a section title and space
 st.title("Population comparison tool")
