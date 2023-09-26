@@ -387,6 +387,8 @@ if comparison_type == "Cities":
 elif comparison_type == "Countries":
     st.header("Country Comparison")
     country_scores = pd.read_csv('data/country_data.csv')
+
+    country_scores = country_scores[country_scores['Count'] > 500]
     
     # Determine the index positions of the desired default countries
     default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
