@@ -509,22 +509,27 @@ st.title("Personality profile of any location")
 st.write("Get the average Big Five personality profiles of any location in our database.")
 st.write("---")
 
+# Layout the top level containers
+col1, col2 = st.columns((1,2))  # First column is half the size of the second column
+
 # User Input
-comparison_type = st.radio("Choose the type of place:", ["Cities", "US States", "Countries"], key='profile')
+with col1:
+    comparison_type = st.radio("Choose the type of place:", ["Cities", "US States", "Countries"], key='profile')
 
-if comparison_type == "Cities":
-    data = pd.read_csv('data/top_1000_city_data.csv')
-    selected = st.selectbox("Select the city:", data['CityState'].unique(), key='profile_city')
-elif comparison_type == "Countries":
-    data = pd.read_csv('data/country_data.csv')
-    selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
-else:  # Assuming comparison_type is "US States"
-    data = pd.read_csv('data/us_state_viz.csv')
-    selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state')
+with col2:
+    if comparison_type == "Cities":
+        data = pd.read_csv('data/top_1000_city_data.csv')
+        selected = st.selectbox("Select the city:", data['CityState'].unique(), key='profile_city')
+    elif comparison_type == "Countries":
+        data = pd.read_csv('data/country_data.csv')
+        selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
+    else:  # Assuming comparison_type is "US States"
+        data = pd.read_csv('data/us_state_viz.csv')
+        selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state')
 
-if st.button('Submit', key='profile_button'):
+    if st.button('Submit', key='profile_button'):
         with st.spinner('Generating profile...'):
-                display_percentile(comparison_type, selected)
+            display_percentile(comparison_type, selected)
 
 # Create a section title and space
 st.title("Population comparison tool")
@@ -548,7 +553,7 @@ if comparison_type == "Cities":
     col1, col2, col3 = st.columns(3)
     city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
     city2_selected = col2.selectbox("Select the second city:", city_options, index=int(default_city2_index))
-    score_type = col3.selectbox("Score Type:", ["Normalized Scores", "Percentiles"])
+    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"])
 
     city1_citystate, city1_country = city1_selected.rsplit(', ', 1)
     city2_citystate, city2_country = city2_selected.rsplit(', ', 1)
