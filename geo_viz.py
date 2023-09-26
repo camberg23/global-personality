@@ -235,9 +235,9 @@ with col3:
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
-
-    # print(scope, trait)
     
+    full_name = trait  # assign a default value to full_name here
+
     if scope != 'states':
         full_name = trait
         trait = inv_trait_names[trait]
@@ -251,12 +251,21 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
     with col1:
         st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, row in top_places.iterrows():
-            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
+            place_name = row[place_column]
+            # Append country name if the scope is cities and global
+            if 'Country' in data.columns and scope == 'cities':
+                place_name += f", {row['Country']}"
+            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
     
     with col2:
         st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, row in bottom_places.iterrows():
-            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
+            place_name = row[place_column]
+            # Append country name if the scope is cities and global
+            if 'Country' in data.columns and scope == 'cities':
+                place_name += f", {row['Country']}"
+            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
+
 
 # # Inside the main Streamlit code:
 
