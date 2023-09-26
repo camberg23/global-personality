@@ -1,2 +1,22 @@
+[theme]
+# Using a light theme for a clean and professional look
+base = "light"
+
+# Neutral primary color to maintain a professional appearance
+primaryColor = "#4A4A4A"
+
+# Matching the background to the base for consistency
+backgroundColor = "#FFFFFF"
+
+# Using a darker color for the text to ensure it is readable against the light background
+textColor = "#2A2A2A"
+
+# Secondary background color is slightly different from the main background to differentiate sections
+secondaryBackgroundColor = "#F2F2F2"
+
+# Making the font sans-serif for a modern look
+font = "sans-serif"
+
 [layout]
+# Keeping the wide mode setting
 wide_mode = true
