@@ -351,7 +351,7 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
     # Construct user messages
     user_messages = []
     for trait, trait_full in trait_names.items():
-        msg = f"{selected1} is in the {percentiles1[trait]} percentile and {selected2} is in the {percentiles2[trait]} percentile in the world for trait {trait_full}."
+        msg = f"{selected1} is in the {percentiles1[trait]} percentile and {selected2} is in the {percentiles2[trait]} percentile in the world for trait {trait_full.lower()}."
         user_messages.append(msg)
     
     # Combine all messages
@@ -608,7 +608,7 @@ if comparison_type == "Cities":
     city_options = city_scores['CityState'] + ", " + city_scores['Country']
 
     default_city1_index = np.where(city_options == "New York, New York, United States")[0][0]
-    default_city2_index = np.where(city_options == "Tokyo, Japan")[0][0]
+    default_city2_index = np.where(city_options == "Beijing, China")[0][0]
 
     col1, col2, col3 = st.columns(3)
     city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
