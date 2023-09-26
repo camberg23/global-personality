@@ -26,6 +26,8 @@ trait_names = {
 
 traits = ['o', 'c', 'e', 'a', 'n']
 
+THRESHOLD_USERS = 300
+
 st.set_page_config(layout="wide")
 
 # Create a section title and space
@@ -38,13 +40,13 @@ col1, col2, col3 = st.columns(3)
 with col1:
     us_or_global = st.selectbox('US only or Global?', ['Choose an option', 'US only', 'Global'])
 
-def plot_globe_trait_location(trait, level, threshold_users=500, top_N=500):
+def plot_globe_trait_location(trait, level, top_N=500):
         if level == "Country view":
             data = pd.read_csv('data/country_data.csv')
         else:
             data = pd.read_csv('data/city_data_fixed.csv')
             
-        data = data[data['Count'] > threshold_users]  # Filter the data based on threshold_users for both countries and cities
+        data = data[data['Count'] > THRESHOLD_USERS]  # Filter the data based on threshold_users for both countries and cities
     
         inv_trait_names = {v: k for k, v in trait_names.items()}
 
@@ -388,7 +390,7 @@ elif comparison_type == "Countries":
     st.header("Country Comparison")
     country_scores = pd.read_csv('data/country_data.csv')
 
-    country_scores = country_scores[country_scores['Count'] > 500]
+    country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
     
     # Determine the index positions of the desired default countries
     default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
