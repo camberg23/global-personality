@@ -289,6 +289,44 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     st.plotly_chart(fig, use_container_width=True)
 
 
+def compute_percentile(data, selected_data, trait_names):
+    percentile_scores = {}
+    for trait in trait_names:
+        scores = data[trait].values
+        selected_score = selected_data[trait]
+        percentile = 100 * len(scores[scores < selected_score]) / len(scores)
+        percentile_scores[trait] = round(percentile, 2)
+    return percentile_scores
+
+def plot_percentile(percentiles, trait_names_values):
+    fig = px.bar(
+        x=list(trait_names_values.values()),
+        y=list(percentiles.values()),
+        text=list(percentiles.values()),
+        labels={'x': 'Traits', 'y': 'Percentile'},
+        title="Trait Percentiles"
+    )
+    fig.update_traces(texttemplate='%{text}%', textposition='outside')
+    return fig
+
+def display_percentile(comparison_type, selected):
+    if comparison_type == "Cities":
+        data = pd.read_csv('data/top_1000_city_data.csv')
+        selected_data = data[data['CityState'] == selected].iloc[0]
+    else:
+        data = pd.read_csv('data/country_data.csv')
+        selected_data = data[data['Country'] == selected].iloc[0]
+
+    trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
+    percentiles = compute_percentile(data, selected_data, trait_names)
+
+    for trait, trait_full in trait_names.items():
+        st.write(f"{selected} is in the {percentiles[trait]} percentile in the world for trait {trait_full}.")
+
+    fig = plot_percentile(percentiles, trait_names)
+    st.plotly_chart(fig, use_container_width=True)
+
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Trait name mapping
 trait_names = {
@@ -360,7 +398,19 @@ st.title("Personality profile of any location")
 st.write("Get the average Big Five personality profiles of any location in our database.")
 st.write("---")
 
-st.write('TODO')
+# User Input
+comparison_type = st.radio("Choose the type of place:", ["Cities", "Countries"])
+
+if comparison_type == "Cities":
+    data = pd.read_csv('data/top_1000_city_data.csv')
+    selected = st.selectbox("Select the city:", data['CityState'].unique())
+else:
+    data = pd.read_csv('data/country_data.csv')
+    selected = st.selectbox("Select the country:", data['Country'].unique())
+
+if st.button('Submit'):
+    display_percentile(comparison_type, selected)
+
 
 # Create a section title and space
 st.title("Population comparison tool")
