@@ -33,6 +33,8 @@ st.set_page_config(layout="wide")
 # Create a section title and space
 st.title("Personality Atlas")
 st.write("Explore and compare the Big Five personality traits across the globe using Truity's 4M person database!")
+
+st.write("*Add some context and information here.*")
 st.write("---")
 
 col1, col2, col3 = st.columns(3)
@@ -246,17 +248,6 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
 
     col1, col2 = st.columns(2)
 
-    
-    with col1:
-        st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
-        for idx, row in top_places.iterrows():
-            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
-        for idx, row in bottom_places.iterrows():
-            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
-
 # Inside the main Streamlit code:
 
 if st.button('Submit'):
@@ -280,6 +271,16 @@ if st.button('Submit'):
             # display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
             
         plot_globe_trait_location(trait, level)
+
+    with col1:
+        st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
+        for idx, row in top_places.iterrows():
+            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
+        for idx, row in bottom_places.iterrows():
+            st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
     """Plot a side-by-side comparison of two entities over multiple traits."""
@@ -343,6 +344,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
 # Create a section title and space
 st.title("Population comparison tool")
 st.write("Compare the average Big Five personality profiles of any two countries or cities.")
+st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars, which signify trait diversity within each place.")
 st.write("---")
 
 # Select comparison type: City vs. City or Country vs. Country
@@ -383,7 +385,6 @@ if comparison_type == "Cities":
     city2_count = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)]['Count'].values[0]
 
     # Plot the comparison
-    st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars, which signify trait diversity within each place.")
     plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()))
 
 # Handle Country vs. Country comparison
