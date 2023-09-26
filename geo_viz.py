@@ -149,16 +149,15 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
     
     if state_or_city == 'State view':
         data_state_renamed = pd.read_csv("data/us_state_viz.csv")
-        data_state_renamed[trait_names[trait]] = data_state_renamed[trait]
-        
         full_trait_name = trait
         trait = inv_trait_names[trait]
+        data_state_renamed[full_trait_name] = data_state_renamed[trait]
         
         # Adjust the plotting code to use the renamed DataFrame and columns
         fig = px.choropleth(data_state_renamed, 
                             locations="State_Abbrev", 
                             locationmode="USA-states",
-                            color=trait_names[trait],
+                            color=full_trait_name,
                             hover_name="State",
                             hover_data=[trait, 'Count', trait + "_std"],  # Order matters
                             color_continuous_scale=px.colors.sequential.Plasma,
