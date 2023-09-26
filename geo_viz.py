@@ -305,9 +305,15 @@ def compute_percentile(data, selected_data, trait_names):
     for trait in trait_names:
         scores = data[trait].values
         selected_score = selected_data[trait]
+        
+        # Ensure selected_score is a scalar
+        if np.ndim(selected_score) > 0:  # if selected_score is not a scalar
+            selected_score = selected_score.item()  # convert to scalar
+        
         percentile = 100 * len(scores[scores < selected_score]) / len(scores)
         percentile_scores[trait] = round(percentile, 2)
     return percentile_scores
+
 
 def plot_percentile(percentiles, trait_names_values, selected):
     """Plot the percentile scores as a horizontal bar chart."""
