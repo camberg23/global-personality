@@ -362,9 +362,13 @@ if comparison_type == "Cities":
     city1_selected = st.selectbox("Select the first city:", city_options, index=int(default_city1_index))
     city2_selected = st.selectbox("Select the second city:", city_options, index=int(default_city2_index))
     
+    # Split the selected city option back into 'CityState' and 'Country'
+    city1_citystate, city1_country = city1_selected.rsplit(', ', 1)
+    city2_citystate, city2_country = city2_selected.rsplit(', ', 1)
+
     # Fetch data for the selected cities
-    city1_data = city_scores[city_scores['CityState'] == city1_selected].iloc[0]
-    city2_data = city_scores[city_scores['CityState'] == city2_selected].iloc[0]
+    city1_data = city_scores[(city_scores['CityState'] == city1_citystate) & (city_scores['Country'] == city1_country)].iloc[0]
+    city2_data = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)].iloc[0]
     
     city1_scores = [city1_data[trait] for trait in trait_names]
     city2_scores = [city2_data[trait] for trait in trait_names]
