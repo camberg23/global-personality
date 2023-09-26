@@ -235,10 +235,10 @@ with col3:
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
-
-    full_name = trait
-    trait = inv_trait_names[trait]
     
+    full_name = trait  # assign a default value to full_name here
+    trait = inv_trait_names[trait]
+
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
     bottom_places = data.sort_values(by=trait, ascending=True).head(N)
@@ -251,8 +251,9 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
             place_name = row[place_column]
             # Append country name if the scope is cities and global
             if 'Country' in data.columns and scope == 'cities':
-                place_name += f", {row['Country']}"
-            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
+                country_name = 'US' if row['Country'] == 'United States' else row['Country']
+                place_name += f", {country_name}"
+            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']}</span>", unsafe_allow_html=True)
     
     with col2:
         st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
@@ -260,29 +261,11 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
             place_name = row[place_column]
             # Append country name if the scope is cities and global
             if 'Country' in data.columns and scope == 'cities':
-                place_name += f", {row['Country']}"
-            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
-
-
-# # Inside the main Streamlit code:
-
-# if st.button('Submit'):
-#     if us_or_global == 'US only' and trait != 'Choose an option':
-#         plot_us_trait_location(state_or_city, trait)
-
-#     elif us_or_global == 'Global' and trait != 'Choose an option':
-#         if level == "Country view":
-#             country_scores = pd.read_csv('data/country_data.csv')
-#             # this is the only one that seems to work right now so we'll revisit this later
-#             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
-#         # else:
-#             # city_scores = pd.read_csv('data/city_data_fixed.csv')
-#             # display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
-            
-#         plot_globe_trait_location(trait, level)
+                country_name = 'US' if row['Country'] == 'United States' else row['Country']
+                place_name += f", {country_name}"
+            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']}</span>", unsafe_allow_html=True)
 
 # Inside the main Streamlit code:
-
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
         plot_us_trait_location(state_or_city, trait)
