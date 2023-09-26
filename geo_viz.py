@@ -9,6 +9,7 @@ from collections import Counter as count
 import seaborn as sn
 import matplotlib.pyplot as plt
 import numpy as np
+import openai
 
 import plotly.express as px
 import plotly.graph_objects as go
