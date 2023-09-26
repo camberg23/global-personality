@@ -495,9 +495,15 @@ st.set_page_config(page_title="Personality Atlas", layout="wide")
 
 # Create a section title and space
 st.markdown(
-    "<h1 style='text-align: center; color: black; font-size: 4em;'>Personality Atlas</h1>", 
+    """
+    <div style="text-align:center;">
+        <h1 style='display:inline; font-size:4em;'>Personality Atlas by </h1>
+        <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="display:inline; width:100px; vertical-align: middle;">
+    </div>
+    """, 
     unsafe_allow_html=True
 )
+
 st.write("Explore and compare the Big Five personality traits across the globe using Truity's 4M person database!")
 
 st.write("*Add some context and information here.*")
