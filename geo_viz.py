@@ -461,7 +461,7 @@ st.write("Explore and compare the Big Five personality traits across the globe u
 st.write("*Add some context and information here.*")
 st.write("---")
 
-col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 0.75, 0.2])
+col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 0.75, 0.6])
 
 with col1:
     us_or_global = st.selectbox('US or global:', ['Choose an option', 'US only', 'Global'])
