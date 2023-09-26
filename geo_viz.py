@@ -229,20 +229,27 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
                 place_name += f", {country_name}"
             st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
 
-
-def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits, score_type):
+def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits, score_type, comparison_type):
     """Plot a side-by-side comparison of two entities over multiple traits."""
     
     # Organize data for grouped bar chart
     x_labels = traits
-    y_values_1 = scores1
-    y_values_2 = scores2
+    y_values_1 = [s if s > 0 else 1 for s in scores1]  # adding small value if percentile is 0
+    y_values_2 = [s if s > 0 else 1 for s in scores2]
 
     # Set error bars to be invisible for percentiles
     error_visible = True if score_type == "Normalized Scores" else False
 
     # Create a grouped bar chart
     fig = go.Figure()
+
+    # Set hovertemplate based on score_type
+    if score_type == "Percentiles":
+        hovertemplate1 = f"Higher than %{y:.1f}% of {comparison_type}<extra></extra>"
+        hovertemplate2 = f"Higher than %{y:.1f}% of {comparison_type}<extra></extra>"
+    else:
+        hovertemplate1 = "Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
+        hovertemplate2 = "Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
 
     # Bars for first entity
     fig.add_trace(go.Bar(
@@ -251,7 +258,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         name=f"{label1} (n={count1:,})",
         error_y=dict(type='data', array=std1, visible=error_visible),
         marker_color='blue',
-        hovertemplate="Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
+        hovertemplate=hovertemplate1
     ))
 
     # Bars for second entity
@@ -261,7 +268,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         name=f"{label2} (n={count2:,})",
         error_y=dict(type='data', array=std2, visible=error_visible),
         marker_color='red',
-        hovertemplate="Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
+        hovertemplate=hovertemplate2
     ))
 
     # Update layout for better visualization
@@ -292,6 +299,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     )
     
     st.plotly_chart(fig, use_container_width=True)
+
 
 
 def compute_percentile(data, selected_data, trait_names):
@@ -344,6 +352,35 @@ def plot_percentile(percentiles, trait_names_values, selected):
     return fig
 
 def generate_personality_description(selected, percentiles, trait_names):    
+    # Construct the initial system message
+    system_message = """
+                        You are a helpful assistant that provides a courteous and succinct summary of a location's overall personality blend based on Big Five personality traits percentiles.
+                        Where applicable, blend this information with what you know about the place to make it a harmonious and accurate profile.
+                        Always use relative language, as the information is based on percentiles, comparing the location's traits to the global population.
+                        Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
+                        Please be a bit sensitive about this given a place's results.
+                        YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
+                        """
+
+    # Construct user messages
+    user_messages = [f"{selected} is in the {percentiles[trait]} percentile in the world for trait {trait_full}." for trait, trait_full in trait_names.items()]
+    
+    # Combine all messages
+    messages = [{"role": "system", "content": system_message}]
+    for msg in user_messages:
+        messages.append({"role": "user", "content": msg})
+    
+    # Request a completion from the model
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    # Extract and return the model's response
+    response = completion.choices[0].message['content']
+    return response
+
+def generate_personality_comparison(selected, percentiles, trait_names):    
     # Construct the initial system message
     system_message = """
                         You are a helpful assistant that provides a courteous and succinct summary of a location's overall personality blend based on Big Five personality traits percentiles.
