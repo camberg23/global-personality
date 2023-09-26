@@ -399,14 +399,14 @@ st.write("Get the average Big Five personality profiles of any location in our d
 st.write("---")
 
 # User Input
-comparison_type = st.radio("Choose the type of place:", ["Cities", "Countries"])
+comparison_type = st.radio("Choose the type of place:", ["Cities", "Countries"], key='profile')
 
 if comparison_type == "Cities":
     data = pd.read_csv('data/top_1000_city_data.csv')
-    selected = st.selectbox("Select the city:", data['CityState'].unique())
+    selected = st.selectbox("Select the city:", data['CityState'].unique(), key='profile_city')
 else:
     data = pd.read_csv('data/country_data.csv')
-    selected = st.selectbox("Select the country:", data['Country'].unique())
+    selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
 
 if st.button('Submit'):
     display_percentile(comparison_type, selected)
