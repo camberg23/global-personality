@@ -196,12 +196,13 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
                             })
         st.plotly_chart(fig, use_container_width=True)
 
-def display_top_bottom_places(data, trait, scope, place_column, N=5):
+def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type="Normalized Scores"):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
-
-    full_name = trait  # assign a default value to full_name here
+    full_name = trait
     trait = inv_trait_names[trait]
+    if score_type == "Percentiles":
+        data[trait] = compute_percentile(data, data[trait], trait_names)
 
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
@@ -434,6 +435,13 @@ def display_percentile(comparison_type, selected):
     st.plotly_chart(fig, use_container_width=True)
     st.write(f'**Personality profile of {selected}**:', description)
 
+def compute_percentiles_for_all(data, trait_names):
+    for i, row in data.iterrows():
+        percentiles = compute_percentile(data, row, trait_names)
+        for trait, percentile in percentiles.items():
+            data.at[i, trait] = percentile
+    return data
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Trait name mapping
 trait_names = {
@@ -461,7 +469,7 @@ st.write("Explore and compare the Big Five personality traits across the globe u
 st.write("*Add some context and information here.*")
 st.write("---")
 
-col1, col2, col3, col4 = st.columns([1, 1, 1, 0.75])
+col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 0.75])
 
 with col1:
     us_or_global = st.selectbox('US or global:', ['Choose an option', 'US only', 'Global'])
@@ -478,29 +486,39 @@ with col3:
     trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
 
 with col4:
+    score_type = st.selectbox("Score Type:", ["Choose an option", "Percentiles", "Normalized Scores"])
+
+with col5:
     N = st.number_input('Top/bottom N to list:', min_value=1, max_value=50, value=5)
 
-# Inside the main Streamlit code:
 if st.button('Submit'):
-    if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
+    if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
         if state_or_city == 'State view':
             state_scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
+            if score_type == "Percentiles":
+                state_scores = compute_percentiles_for_all(state_scores, trait_names)
             display_top_bottom_places(state_scores, trait, 'states', 'State', N)  # 'State' is the column name in state data
         elif state_or_city == 'City view':
             city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+            if score_type == "Percentiles":
+                city_scores = compute_percentiles_for_all(city_scores, trait_names)
             display_top_bottom_places(city_scores, trait, 'cities', 'City', N)
-            
+
         plot_us_trait_location(state_or_city, trait)
 
-    elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
+    elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
         if level == "Country view":
             country_scores = pd.read_csv('data/country_data.csv')
             country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
+            if score_type == "Percentiles":
+                country_scores = compute_percentiles_for_all(country_scores, trait_names)
             display_top_bottom_places(country_scores, trait, 'countries', 'Country', N)
             plot_globe_trait_location(trait, level)
         elif level == "City view":
             city_scores = pd.read_csv('data/top_1000_city_data.csv')
             city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
+            if score_type == "Percentiles":
+                city_scores = compute_percentiles_for_all(city_scores, trait_names)
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState', N)
             plot_globe_trait_location(trait, level)
 
