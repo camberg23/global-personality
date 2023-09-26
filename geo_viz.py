@@ -275,7 +275,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         barmode='group',
         legend=dict(
             yanchor="top",
-            y=1.3,
+            y=1,
             xanchor="right",
             x=1
         ),
