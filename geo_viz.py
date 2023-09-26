@@ -490,7 +490,6 @@ THRESHOLD_USERS = 200
 openai.organization = st.secrets['ORG']
 openai.api_key = st.secrets['KEY']
 
-
 st.set_page_config(page_title="Personality Atlas", layout="wide")
 st.markdown(
     """
@@ -541,7 +540,7 @@ st.markdown(
 )
 st.write("---")
 st.title("Interactive personality maps")
-st.write("specific directions for this bit")
+st.write("Make your settings choices and click submit to get an interactive map of the desired Big Five trait in the chosen geographical scope.")
 
 col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 0.75])
 
