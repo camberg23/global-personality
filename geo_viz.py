@@ -601,4 +601,4 @@ elif comparison_type == "Countries":
     country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
 
     # Plot the comparison
-    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type)
+    plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type, comparison_type.lower())
