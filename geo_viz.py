@@ -550,13 +550,16 @@ is_button_pressed = False  # Initialize a flag to check if the button is pressed
 with col2:
     if comparison_type == "Cities":
         data = pd.read_csv('data/top_1000_city_data.csv')
-        selected = st.selectbox("Select the city:", data['CityState'].unique(), key='profile_city')
+        default_city_index = np.where(data['CityState'] == "New York, New York")[0][0]
+        selected = st.selectbox("Select the city:", data['CityState'].unique(), key='profile_city', index=int(default_city_index))
     elif comparison_type == "Countries":
         data = pd.read_csv('data/country_data.csv')
-        selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
+        default_country_index = np.where(data['Country'] == "United States")[0][0]
+        selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country', index=int(default_country_index))
     else:  # Assuming comparison_type is "US States"
         data = pd.read_csv('data/us_state_viz.csv')
-        selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state')
+        default_state_index = np.where(data['State'] == "California")[0][0]
+        selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state', index=int(default_state_index))
 
     # Place the Submit button in the second column, next to the selectbox
     is_button_pressed = st.button('Submit', key='profile_button')
