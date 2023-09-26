@@ -235,7 +235,7 @@ with col3:
 def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
-    
+
     full_name = trait  # assign a default value to full_name here
     trait = inv_trait_names[trait]
 
@@ -253,7 +253,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
             if 'Country' in data.columns and scope == 'cities':
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
-            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']}</span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
     
     with col2:
         st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
@@ -263,7 +263,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
             if 'Country' in data.columns and scope == 'cities':
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
-            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']}</span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:1.2em;'><b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}; N={row['Count']} users</span>", unsafe_allow_html=True)
 
 # Inside the main Streamlit code:
 if st.button('Submit'):
@@ -279,10 +279,12 @@ if st.button('Submit'):
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
         if level == "Country view":
             country_scores = pd.read_csv('data/country_data.csv')
+            country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
             plot_globe_trait_location(trait, level)
             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
         elif level == "City view":
             city_scores = pd.read_csv('data/top_1000_city_data.csv')
+            city_scores = city_scores[city_scores['Count'] > THRESHOLD_USERS]
             plot_globe_trait_location(trait, level)
             display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
 
