@@ -408,7 +408,7 @@ else:
     data = pd.read_csv('data/country_data.csv')
     selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country')
 
-if st.button('Submit'):
+if st.button('Submit', key='profile_submit'):
     display_percentile(comparison_type, selected)
 
 
