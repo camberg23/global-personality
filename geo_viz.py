@@ -435,10 +435,10 @@ def display_percentile(comparison_type, selected):
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
 
-    description = generate_personality_description(selected, percentiles, trait_names)
-
     fig = plot_percentile(percentiles, trait_names, selected)
     st.plotly_chart(fig, use_container_width=True)
+
+    description = generate_personality_description(selected, percentiles, trait_names)
     st.write(f'**Personality profile of {selected}**:', description)
 
 def compute_percentile(data, selected_data, trait_names):
@@ -570,9 +570,9 @@ with col2:
         data = pd.read_csv('data/us_state_viz.csv')
         selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state')
 
-    if st.button('Submit', key='profile_button'):
-        with st.spinner('Generating profile...'):
-            display_percentile(comparison_type, selected)
+if st.button('Submit', key='profile_button'):
+    with st.spinner('Generating profile...'):
+        display_percentile(comparison_type, selected)
 
 # Create a section title and space
 st.title("Population comparison tool")
