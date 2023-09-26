@@ -589,7 +589,7 @@ if comparison_type == "Cities":
     col1, col2, col3 = st.columns(3)
     city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
     city2_selected = col2.selectbox("Select the second city:", city_options, index=int(default_city2_index))
-    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"])
+    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0)
 
     city1_citystate, city1_country = city1_selected.rsplit(', ', 1)
     city2_citystate, city2_country = city2_selected.rsplit(', ', 1)
