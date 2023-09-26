@@ -275,7 +275,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         barmode='group',
         legend=dict(
             yanchor="top",
-            y=1.2,
+            y=1.3,
             xanchor="right",
             x=1
         ),
@@ -298,15 +298,44 @@ def compute_percentile(data, selected_data, trait_names):
         percentile_scores[trait] = round(percentile, 2)
     return percentile_scores
 
-def plot_percentile(percentiles, trait_names_values):
-    fig = px.bar(
-        x=list(trait_names_values.values()),
-        y=list(percentiles.values()),
-        text=list(percentiles.values()),
-        labels={'x': 'Traits', 'y': 'Percentile'},
-        title="Trait Percentiles"
+def plot_percentile(percentiles, trait_names_values, selected):
+    """Plot the percentile scores as a horizontal bar chart."""
+    
+    # Organize data for horizontal bar chart
+    y_labels = list(trait_names_values.values())
+    x_values = list(percentiles.values())
+
+    # Create a horizontal bar chart
+    fig = go.Figure()
+
+    # Bars for percentiles
+    fig.add_trace(go.Bar(
+        y=y_labels,
+        x=x_values,
+        orientation='h',  # to make the bars horizontal
+        text=x_values,
+        textposition='inside',  # to position the text inside the bars
+        marker_color='green',  # choosing a different color for distinction
+        hovertemplate="Trait: %{y}<br>Percentile: %{x}%<extra></extra>"
+    ))
+
+    # Update layout for better visualization
+    fig.update_layout(
+        title={
+            'text': f"Trait Percentiles for {selected}",
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 24}  # Adjust this value for desired font size
+        },
+        yaxis_title="Traits",
+        xaxis_title="Percentile",
+        font=dict(
+            family="Roboto, monospace",
+            size=18
+        ),
+        margin=dict(t=100, l=200),  # Add more space at the top and left
     )
-    fig.update_traces(texttemplate='%{text}%', textposition='outside')
+    
     return fig
 
 def display_percentile(comparison_type, selected):
