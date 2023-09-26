@@ -342,8 +342,10 @@ def plot_percentile(percentiles, trait_names_values, selected):
 def generate_personality_description(selected, percentiles, trait_names):    
     # Construct the initial system message
     system_message = """
-                        You are a helpful assistant that provides a courteous and very succinct and concise summary of a location's overall personality blend based on Big Five personality traits percentiles. 
+                        You are a helpful assistant that provides a courteous and succinct summary of a location's overall personality blend based on Big Five personality traits percentiles.
+                        Where applicable, blend this information with what you know about the place to make it a harmonious and accurate profile.
                         Always use relative language, as the information is based on percentiles, comparing the location's traits to the global population.
+                        YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
                         """
 
     # Construct user messages
