@@ -275,7 +275,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
         barmode='group',
         legend=dict(
             yanchor="top",
-            y=1,
+            y=1.15,
             xanchor="right",
             x=1
         ),
@@ -352,7 +352,7 @@ def display_percentile(comparison_type, selected):
     for trait, trait_full in trait_names.items():
         st.write(f"{selected} is in the {percentiles[trait]} percentile in the world for trait {trait_full}.")
 
-    fig = plot_percentile(percentiles, trait_names)
+    fig = plot_percentile(percentiles, trait_names, selected)
     st.plotly_chart(fig, use_container_width=True)
 
 
