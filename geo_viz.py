@@ -356,6 +356,13 @@ if st.button('Submit'):
             plot_globe_trait_location(trait, level)
 
 # Create a section title and space
+st.title("Personality profile of any location")
+st.write("Get the average Big Five personality profiles of any location in our database.")
+st.write("---")
+
+st.write('TODO')
+
+# Create a section title and space
 st.title("Population comparison tool")
 st.write("Compare the average Big Five personality profiles of any two countries or cities.")
 st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars, which signify trait diversity within each place.")
@@ -429,5 +436,4 @@ elif comparison_type == "Countries":
     country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
 
     # Plot the comparison
-    st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars, which signify trait diversity within each place.")
     plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()))
