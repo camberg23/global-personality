@@ -339,6 +339,32 @@ def plot_percentile(percentiles, trait_names_values, selected):
     
     return fig
 
+def generate_personality_description(selected, percentiles, trait_names):    
+    # Construct the initial system message
+    system_message = """
+                        You are a helpful assistant that provides a courteous and brief summary of a location's overall personality blend based on Big Five personality traits percentiles. 
+                        Even if the percentiles for certain traits are low, maintain a positive and respectful tone in the description. Always use relative language, as the information is based on percentiles, 
+                        comparing the location's traits to the global population.
+                        """
+
+    # Construct user messages
+    user_messages = [f"{selected} is in the {percentiles[trait]} percentile in the world for trait {trait_full}." for trait, trait_full in trait_names.items()]
+    
+    # Combine all messages
+    messages = [{"role": "system", "content": system_message}]
+    for msg in user_messages:
+        messages.append({"role": "user", "content": msg})
+    
+    # Request a completion from the model
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    # Extract and return the model's response
+    response = completion.choices[0].message['content']
+    return response
+
 def display_percentile(comparison_type, selected):
     if comparison_type == "Cities":
         data = pd.read_csv('data/top_1000_city_data.csv')
@@ -350,12 +376,11 @@ def display_percentile(comparison_type, selected):
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
 
-    for trait, trait_full in trait_names.items():
-        st.write(f"{selected} is in the {percentiles[trait]} percentile in the world for trait {trait_full}.")
+    description = generate_personality_description(selected, percentiles, trait_names)
 
     fig = plot_percentile(percentiles, trait_names, selected)
     st.plotly_chart(fig, use_container_width=True)
-
+    st.write(description)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Trait name mapping
@@ -370,6 +395,10 @@ trait_names = {
 traits = ['o', 'c', 'e', 'a', 'n']
 
 THRESHOLD_USERS = 200
+
+openai.organization = st.secrets['ORG']
+openai.api_key = st.secrets['KEY']
+
 
 st.set_page_config(layout="wide")
 
