@@ -551,7 +551,7 @@ elif comparison_type == "Countries":
     country2_data = country_scores[country_scores['Country'] == country2_selected].iloc[0]
     
     if score_type == "Percentiles":
-        country1_scores = list(compute_percentile(country_scores, country1_data, trait_names))
+        country1_scores = list(compute_percentile(country_scores, country1_data, trait_names).values())
         country2_scores = list(compute_percentile(country_scores, country2_data, trait_names))
         st.write(country1_scores)
     else:
