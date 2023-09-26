@@ -236,7 +236,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
     """Display the top N and bottom N places based on the trait score."""
     inv_trait_names = {v: k for k, v in trait_names.items()}
 
-    print(scope, trait)
+    # print(scope, trait)
     
     if scope != 'states':
         full_name = trait
@@ -248,30 +248,6 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5):
 
     col1, col2 = st.columns(2)
 
-# Inside the main Streamlit code:
-
-if st.button('Submit'):
-    if us_or_global == 'US only' and trait != 'Choose an option':
-        # if state_or_city == 'State view':
-            # data_state_renamed = pd.read_csv("data/us_state_viz.csv")
-            # display_top_bottom_places(data_state_renamed, trait, 'states', 'State')
-        # else:
-            # cluster_aggregates = pd.read_csv("data/us_city_viz_improved.csv")
-            # display_top_bottom_places(cluster_aggregates, trait, 'cities', 'City')
-            
-        plot_us_trait_location(state_or_city, trait)
-
-    elif us_or_global == 'Global' and trait != 'Choose an option':
-        if level == "Country view":
-            country_scores = pd.read_csv('data/country_data.csv')
-            # this is the only one that seems to work right now so we'll revisit this later
-            display_top_bottom_places(country_scores, trait, 'countries', 'Country')
-        # else:
-            # city_scores = pd.read_csv('data/city_data_fixed.csv')
-            # display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
-            
-        plot_globe_trait_location(trait, level)
-
     with col1:
         st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, row in top_places.iterrows():
@@ -281,6 +257,46 @@ if st.button('Submit'):
         st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, row in bottom_places.iterrows():
             st.markdown(f"<span style='font-size:1.2em;'><b>{row[place_column]}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f}</span>", unsafe_allow_html=True)
+
+# # Inside the main Streamlit code:
+
+# if st.button('Submit'):
+#     if us_or_global == 'US only' and trait != 'Choose an option':
+#         plot_us_trait_location(state_or_city, trait)
+
+#     elif us_or_global == 'Global' and trait != 'Choose an option':
+#         if level == "Country view":
+#             country_scores = pd.read_csv('data/country_data.csv')
+#             # this is the only one that seems to work right now so we'll revisit this later
+#             display_top_bottom_places(country_scores, trait, 'countries', 'Country')
+#         # else:
+#             # city_scores = pd.read_csv('data/city_data_fixed.csv')
+#             # display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+            
+#         plot_globe_trait_location(trait, level)
+
+# Inside the main Streamlit code:
+
+if st.button('Submit'):
+    if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option':
+        plot_us_trait_location(state_or_city, trait)
+        if state_or_city == 'State view':
+            state_scores = pd.read_csv('data/state_data.csv')  # Load your state data here
+            display_top_bottom_places(state_scores, trait, 'states', 'State')  # 'State' is the column name in state data
+        elif state_or_city == 'City view':
+            city_scores = pd.read_csv('data/city_data_fixed.csv')
+            display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+
+    elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option':
+        if level == "Country view":
+            country_scores = pd.read_csv('data/country_data.csv')
+            display_top_bottom_places(country_scores, trait, 'countries', 'Country')
+        elif level == "City view":
+            city_scores = pd.read_csv('data/city_data_fixed.csv')
+            display_top_bottom_places(city_scores, trait, 'cities', 'CityState')
+            
+        plot_globe_trait_location(trait, level)
+
 
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits):
     """Plot a side-by-side comparison of two entities over multiple traits."""
