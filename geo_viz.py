@@ -493,14 +493,13 @@ openai.api_key = st.secrets['KEY']
 
 st.set_page_config(page_title="Personality Atlas", layout="wide")
 
-# Create a section title and space
 st.markdown(
     """
     <div style="text-align: center;">
         <h1 style='font-size:4em;'>Personality Atlas</h1>
-        <p style='font-size:0.8em;'>made by</p>
+        <p style='font-size:1.2em; font-weight:bold;'>made by</p>
         <a href="https://www.truity.com/" target="_blank">
-            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:100px;">
+            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px;">
         </a>
     </div>
     """, 
