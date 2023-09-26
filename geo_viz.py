@@ -26,7 +26,7 @@ trait_names = {
 
 traits = ['o', 'c', 'e', 'a', 'n']
 
-THRESHOLD_USERS = 300
+THRESHOLD_USERS = 200
 
 st.set_page_config(layout="wide")
 
