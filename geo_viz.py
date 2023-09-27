@@ -138,7 +138,7 @@ def plot_globe_trait_location(trait, level, scores, top_N=500, is_percentile=Fal
                             })
             st.plotly_chart(fig, use_container_width=True)
 
-def plot_us_trait_location(state_or_city, trait, scores, is_percentile=False, top_N=100):
+def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percentile=False):
     inv_trait_names = {v: k for k, v in trait_names.items()}
     trait_abbrev = inv_trait_names[trait]
 
@@ -605,7 +605,7 @@ if st.button('Submit'):
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
                 
-        plot_us_trait_location(state_or_city, trait, scores, is_percentile=is_percentile)  # Pass the is_percentile flag here
+        plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)  # Pass the is_percentile flag here
 
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
@@ -617,14 +617,14 @@ if st.button('Submit'):
             if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
-            plot_globe_trait_location(trait, level, scores, is_percentile)  # Pass the is_percentile flag here
+            plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile)  # Pass the is_percentile flag here
         elif level == "City view":
             scores = pd.read_csv('data/top_1000_city_data.csv')
             scores = scores[scores['Count'] > THRESHOLD_USERS]
             if is_percentile:
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
-            plot_globe_trait_location(trait, level, scores, is_percentile)  # Pass the is_percentile flag here
+            plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile)  # Pass the is_percentile flag here
 
 
 # Create a section title and space
