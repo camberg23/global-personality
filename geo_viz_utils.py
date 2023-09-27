@@ -352,6 +352,7 @@ def generate_personality_description(selected, percentiles, trait_names):
     messages = [{"role": "system", "content": system_message}]
     for msg in user_messages:
         messages.append({"role": "user", "content": msg})
+        messages.append({"role": "user", "content": "At the end of your response, also please in a newline give one interesting or unique fact about this location!"})
     
     # Request a completion from the model
     completion = openai.ChatCompletion.create(
