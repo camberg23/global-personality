@@ -432,12 +432,17 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
 
 def display_percentile(comparison_type, selected, data):
      # Depending on the comparison type, filter the data and get the selected data
+    st.write(f"Data before filtering: {data}")  # Debugging line
+    st.write(f"Comparison type: {comparison_type}")  # Debugging line
+    st.write(f"Selected: {selected}")  # Debugging line
     if comparison_type == "Cities":
         selected_data = data[data['CityState'] == selected]
     elif comparison_type == "Countries":
         selected_data = data[data['Country'] == selected]
     elif comparison_type == "US States":
         selected_data = data[data['State'] == selected]
+    
+    st.write(f"Selected Data after filtering: {selected_data}")  # Debugging line
             
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
