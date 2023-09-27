@@ -452,7 +452,9 @@ def compute_percentile(data, selected_data, trait_names):
     percentile_scores = {}
     for trait in trait_names:
         scores = data[trait].values
-        
+
+        st.write(data)
+        st.write(selected_data)
         # Ensure selected_data is a single row if it's a DataFrame
         if isinstance(selected_data, pd.DataFrame):
             if selected_data.empty:
