@@ -452,11 +452,12 @@ def compute_percentile(data, selected_data, trait_names):
     percentile_scores = {}
     for trait in trait_names:
         scores = data[trait].values
-        selected_score = selected_data[trait]
         
-        # Ensure selected_score is a scalar
-        if np.ndim(selected_score) > 0:  # if selected_score is not a scalar
-            selected_score = selected_score.item()  # convert to scalar
+        # Ensure selected_data is a single row if it's a DataFrame
+        if isinstance(selected_data, pd.DataFrame):
+            selected_data = selected_data.iloc[0]
+
+        selected_score = selected_data[trait]
         
         # Exclude the current row's score when calculating the percentile
         scores = scores[scores != selected_score]
@@ -520,8 +521,8 @@ st.markdown(
     """
     Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally
     [[1](https://journals.sagepub.com/doi/10.1177/0022022198291009),[2](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)]. 
-    See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) for an accessible 
-    overview of this subarea of psychometric research.
+    See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) for an 
+    overview of this research subarea.
     """, 
     unsafe_allow_html=True
 )
