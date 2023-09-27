@@ -437,8 +437,6 @@ def display_percentile(comparison_type, selected, data):
         selected_data = data[data['Country'] == selected]
     elif comparison_type == "US States":
         selected_data = data[data['State'] == selected]
-    
-    st.write(f"Selected Data after filtering: {selected_data}")  # Debugging line
             
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
