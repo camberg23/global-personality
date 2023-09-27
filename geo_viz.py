@@ -455,6 +455,8 @@ def compute_percentile(data, selected_data, trait_names):
         
         # Ensure selected_data is a single row if it's a DataFrame
         if isinstance(selected_data, pd.DataFrame):
+            if selected_data.empty:
+                raise ValueError(f"No data found for the selected trait: {trait}")
             selected_data = selected_data.iloc[0]
 
         selected_score = selected_data[trait]
