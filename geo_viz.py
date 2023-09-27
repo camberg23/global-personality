@@ -431,10 +431,6 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
 
 
 def display_percentile(comparison_type, selected, data):
-     # Depending on the comparison type, filter the data and get the selected data
-    st.write(f"Data before filtering: {data}")  # Debugging line
-    st.write(f"Comparison type: {comparison_type}")  # Debugging line
-    st.write(f"Selected: {selected}")  # Debugging line
     if comparison_type == "Cities":
         selected_data = data[data['CityState'] == selected]
     elif comparison_type == "Countries":
@@ -457,10 +453,6 @@ def compute_percentile(data, selected_data, trait_names):
     percentile_scores = {}
     for trait in trait_names:
         scores = data[trait].values
-
-        st.write(data)
-        st.write(selected_data)
-        # Ensure selected_data is a single row if it's a DataFrame
         if isinstance(selected_data, pd.DataFrame):
             if selected_data.empty:
                 raise ValueError(f"No data found for the selected trait: {trait}")
@@ -472,7 +464,6 @@ def compute_percentile(data, selected_data, trait_names):
         scores = scores[scores != selected_score]
         percentile = 100 * len(scores[scores < selected_score]) / len(scores)
         percentile_scores[trait] = round(percentile, 2)
-        st.write("SCORE", percentile_scores)
     return percentile_scores
 
 
