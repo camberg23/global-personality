@@ -14,9 +14,6 @@ textColor = "#2A2A2A"
 # Secondary background color is slightly different from the main background to differentiate sections
 secondaryBackgroundColor = "#F2F2F2"
 
-# Making the font sans-serif for a modern look
-font = "sans-serif"
-
 [layout]
 # Keeping the wide mode setting
 wide_mode = true
