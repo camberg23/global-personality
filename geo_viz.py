@@ -430,7 +430,7 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
     return fig
 
 
-def display_percentile(comparison_type, selected):
+def display_percentile(comparison_type, selected, data):
      # Depending on the comparison type, filter the data and get the selected data
     if comparison_type == "Cities":
         selected_data = data[data['CityState'] == selected]
@@ -636,7 +636,7 @@ with col2:
 # Generate profile outside of columns
 if is_button_pressed:
     with st.spinner('Generating profile...'):
-        display_percentile(comparison_type, selected)
+        display_percentile(comparison_type, selected, data)
 
 # Create a section title and space
 st.write("---")
