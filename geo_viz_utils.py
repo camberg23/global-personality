@@ -343,7 +343,7 @@ def generate_personality_description(selected, percentiles, trait_names):
                         Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
                         Please be a bit sensitive about this given a place's results.
                         YOU MUST LIMIT THIS OUTPUT TO ONE STRONG PARAGRAPH ONLY.
-                        Finally: in a new paragraph, IN A SINGLE SENTENCE, give one interesting and/or unique fact about the location. FORMAT this as "Bonus information about [location]:"
+                        Finally: IN A SINGLE SENTENCE, give one interesting and/or unique fact about the location. FORMAT this as "\nBonus information about [location]:"
                         """
 
     # Construct user messages
