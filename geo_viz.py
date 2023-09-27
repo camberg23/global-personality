@@ -138,49 +138,51 @@ def plot_globe_trait_location(trait, level, scores, top_N=500):
                             })
             st.plotly_chart(fig, use_container_width=True)
 
-def plot_us_trait_location(state_or_city, trait, top_N=100):
+def plot_us_trait_location(state_or_city, trait, scores, is_percentile=False, top_N=100):
     inv_trait_names = {v: k for k, v in trait_names.items()}
     trait_abbrev = inv_trait_names[trait]
-    
+
     if state_or_city == 'State view':
         data_state_renamed = scores
         full_trait_name = trait
         trait = inv_trait_names[trait]
         data_state_renamed[full_trait_name] = data_state_renamed[trait]
-        
-        # Adjust the plotting code to use the renamed DataFrame and columns
+
         fig = px.choropleth(data_state_renamed, 
                             locations="State_Abbrev", 
                             locationmode="USA-states",
                             color=full_trait_name,
                             hover_name="State",
-                            hover_data=[trait, 'Count', trait + "_std"],  # Order matters
+                            hover_data=[trait, 'Count', trait + "_std"],
                             color_continuous_scale=px.colors.sequential.Plasma,
                             scope="usa")
 
-        fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
-                          "<br>" +
-                          f"<b>Average: %{{customdata[0]:.3f}}</b><br>" +   # Index based on order in hover_data
-                          f"Standard Dev.: %{{customdata[2]:.3f}}<br>" +   # Index based on order in hover_data
-                          "User count: %{customdata[1]}"                 # Index based on order in hover_data
-        )
+        if is_percentile:
+            hovertemplate = (f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
+                             f"<b>Percentile: %{{customdata[0]:.3f}}</b><br>" +
+                             "User count: %{customdata[1]}")
+        else:
+            hovertemplate = (f"<b>%{{hovertext}}, {full_trait_name}:</b><br>" +
+                             f"<b>Average: %{{customdata[0]:.3f}}</b><br>" +
+                             f"Standard Dev.: %{{customdata[2]:.3f}}<br>" +
+                             "User count: %{customdata[1]}")
+            
+        fig.update_traces(hovertemplate=hovertemplate)
         fig.update_layout(width=1000, 
                           height=700,
-                            title={
-                            'text': f"US Map of {full_trait_name} by State",
-                            'x': 0.5,
-                            'y': 0.95,
-                            'xanchor': 'center',
-                            'font': {
-                                'size': 30  # Adjust this value for desired font size
-                                }
-                            })
+                          title={
+                              'text': f"US Map of {full_trait_name} by State",
+                              'x': 0.5,
+                              'y': 0.95,
+                              'xanchor': 'center',
+                              'font': {'size': 30}
+                          })
         st.plotly_chart(fig, use_container_width=True)
-    else:
+
+    else:  # City view
         cluster_aggregates = scores
         cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
 
-        # Step 3: Plotting
         fig = px.scatter_geo(cluster_aggregates, 
                              locationmode='USA-states', 
                              scope='usa',
@@ -191,30 +193,29 @@ def plot_us_trait_location(state_or_city, trait, top_N=100):
                              hover_name='City',
                              hover_data={trait: True, 'Count': True, f"{trait_abbrev}_std": True},
                              color_continuous_scale=px.colors.sequential.Plasma,
-                             size_max=60
-                            )
+                             size_max=60)
 
-        fig.update_traces(
-            hovertemplate=(
-                f"<b>%{{hovertext}} {trait}:</b><br>" +
-                "<b>Average: %{customdata[0]:.3f}</b><br>" +
-                "Standard Dev.: %{customdata[2]:.3f}<br>" +
-                "User count: %{customdata[1]}")
-        )
+        if is_percentile:
+            hovertemplate = (f"<b>%{{hovertext}} {trait}:</b><br>" +
+                             f"<b>Percentile: %{customdata[0]:.3f}</b><br>" +
+                             "User count: %{customdata[1]}")
+        else:
+            hovertemplate = (f"<b>%{{hovertext}} {trait}:</b><br>" +
+                             f"<b>Average: %{customdata[0]:.3f}</b><br>" +
+                             f"Standard Dev.: %{customdata[2]:.3f}<br>" +
+                             "User count: %{customdata[1]}")
 
-
+        fig.update_traces(hovertemplate=hovertemplate)
         fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
         fig.update_layout(width=1000, 
                           height=700,
-                            title={
-                            'text': f"US Bubble Map of {trait} by Major Cities",
-                            'x': 0.5,
-                            'y': 0.95,
-                            'xanchor': 'center',
-                            'font': {
-                                'size': 30  # Adjust this value for desired font size
-                                }
-                            })
+                          title={
+                              'text': f"US Bubble Map of {trait} by Major Cities",
+                              'x': 0.5,
+                              'y': 0.95,
+                              'xanchor': 'center',
+                              'font': {'size': 30}
+                          })
         st.plotly_chart(fig, use_container_width=True)
 
 def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type="Normalized Scores"):
@@ -592,18 +593,20 @@ with col5:
 
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
+        is_percentile = score_type == "Percentiles"  # Set the flag based on the score_type
         if state_or_city == 'State view':
             scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
-            if score_type == "Percentiles":
+            if is_percentile:
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)  # 'State' is the column name in state data
         elif state_or_city == 'City view':
             scores = pd.read_csv('data/us_city_viz_improved.csv')
-            if score_type == "Percentiles":
+            if is_percentile:
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
                 
-        plot_us_trait_location(state_or_city, trait, scores)
+        plot_us_trait_location(state_or_city, trait, scores, is_percentile=is_percentile)  # Pass the is_percentile flag here
+
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
         is_percentile = score_type == "Percentiles"  # Set is_percentile flag based on score_type
