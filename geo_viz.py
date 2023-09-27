@@ -627,6 +627,7 @@ with col2:
         city_options = data['CityState'] + ", " + data['Country']
         default_city_index = np.where(city_options == "New York, New York, United States")[0][0]
         selected = st.selectbox("Select the city:", city_options, key='profile_city', index=int(default_city_index))
+        selected, _ = selected.rsplit(', ', 1)
     elif comparison_type == "Countries":
         data = pd.read_csv('data/country_data.csv')
         default_country_index = np.where(data['Country'] == "United States")[0][0]
