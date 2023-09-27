@@ -16,7 +16,7 @@ import plotly.graph_objects as go
 from sklearn.cluster import DBSCAN
 import streamlit as st
 
-def plot_globe_trait_location(trait, level, scores, top_N=500):
+def plot_globe_trait_location(trait, level, scores, top_N=500, is_percentile=False):
         data = scores
         inv_trait_names = {v: k for k, v in trait_names.items()}
 
