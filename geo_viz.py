@@ -24,6 +24,31 @@ def plot_globe_trait_location(trait, level, scores, top_N=500):
         data[trait] = data[trait_abbrev]
         full_trait_name = trait
 
+        if is_percentile:
+                hover_data = {
+                    "Count": True, 
+                    trait: f"Percentile {trait}",  # Change here to display percentile
+                }
+                hover_template_country = f"<b>%{{hovertext}}, {trait}</b><br>Percentile: %{{customdata[1]:.2f}}<br>Count: %{{customdata[0]}}"
+                hover_template_city = (
+                    "<b>%{hovertext}, %{customdata[2]}</b><br>" +
+                    f"Percentile {trait}: " + "%{customdata[0]:.2f}<br>" +
+                    "Count: %{customdata[1]}"
+                )
+        else:
+                hover_data = {
+                    "Count": True, 
+                    trait: f"Mean {trait}", 
+                    f"{trait_abbrev}_std": f"Std Dev {trait}"
+                }
+                hover_template_country = f"<b>%{{hovertext}}, {trait}</b><br>Mean: %{{customdata[1]:.3f}}<br>Std Dev: %{{customdata[2]:.3f}}<br>Count: %{{customdata[0]}}"
+                hover_template_city = (
+                    "<b>%{hovertext}, %{customdata[2]}</b><br>" +
+                    f"Avg. {trait}: " + "%{customdata[0]:.3f}<br>" +
+                    f"Std. Dev {trait}: " + "%{customdata[3]:.3f}<br>" +
+                    "Count: %{customdata[1]}"
+                )
+
         if level == "Country view":
             # Choropleth map for countries
             fig = px.choropleth(data, 
@@ -34,7 +59,8 @@ def plot_globe_trait_location(trait, level, scores, top_N=500):
                                 hover_data={"Count": True, trait: f"Mean {full_trait_name} Score", f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
                                 color_continuous_scale=px.colors.sequential.Plasma)
 
-            fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}</b><br>Mean: %{{customdata[1]:.3f}}<br>Std Dev: %{{customdata[2]:.3f}}<br>Count: %{{customdata[0]}}")
+            # fig.update_traces(hovertemplate=f"<b>%{{hovertext}}, {full_trait_name}</b><br>Mean: %{{customdata[1]:.3f}}<br>Std Dev: %{{customdata[2]:.3f}}<br>Count: %{{customdata[0]}}")
+            fig.update_traces(hovertemplate=hover_template_country)
             fig.update_layout(width=1000, 
                              height=700,
                             title={
@@ -86,16 +112,17 @@ def plot_globe_trait_location(trait, level, scores, top_N=500):
                                  hover_data={trait: True, 'Count': True, 'Country': True, f"{trait_abbrev}_std": f"Std Dev {full_trait_name}"},
                                  color_continuous_scale=px.colors.sequential.Plasma)
             fig.update_traces(marker=dict(size=9))
+                
+            # fig.update_traces(
+            #     hovertemplate=(
+            #         "<b>%{hovertext}, %{customdata[2]}</b><br>" +
+            #         f"Avg. {full_trait_name}: " + "%{customdata[0]:.3f}<br>" +
+            #         f"Std. Dev {full_trait_name}: " + "%{customdata[3]:.3f}<br>" +
+            #         "Count: %{customdata[1]}"
+            #     )
+            # )
 
-            fig.update_traces(
-                hovertemplate=(
-                    "<b>%{hovertext}, %{customdata[2]}</b><br>" +
-                    f"Avg. {full_trait_name}: " + "%{customdata[0]:.3f}<br>" +
-                    f"Std. Dev {full_trait_name}: " + "%{customdata[3]:.3f}<br>" +
-                    "Count: %{customdata[1]}"
-                )
-            )
-
+            fig.update_traces(hovertemplate=hover_template_city)
             # Add the extracted country boundaries to the cities' scatter map
             fig.update_geos(countrywidth=0.5, countrycolor="Black", showcountries=True)
             fig.update_layout(width=1000, 
@@ -579,21 +606,23 @@ if st.button('Submit'):
         plot_us_trait_location(state_or_city, trait, scores)
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
+        is_percentile = score_type == "Percentiles"  # Set is_percentile flag based on score_type
+        
         if level == "Country view":
             scores = pd.read_csv('data/country_data.csv')
             scores = scores[scores['Count'] > THRESHOLD_USERS]
-            if score_type == "Percentiles":
-                scores = compute_percentiles_for_all(scores, trait_names)
-            display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
-            plot_globe_trait_location(trait, level, scores)
+                if is_percentile:
+                    scores = compute_percentiles_for_all(scores, trait_names)
+                display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
+                plot_globe_trait_location(trait, level, scores, is_percentile)  # Pass the is_percentile flag here
         elif level == "City view":
             scores = pd.read_csv('data/top_1000_city_data.csv')
             scores = scores[scores['Count'] > THRESHOLD_USERS]
-            if score_type == "Percentiles":
+            if is_percentile:
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
-                
-            plot_globe_trait_location(trait, level, scores)
+            plot_globe_trait_location(trait, level, scores, is_percentile)  # Pass the is_percentile flag here
+
 
 # Create a section title and space
 st.write("---")
