@@ -441,7 +441,7 @@ def display_percentile(comparison_type, selected, data):
             
     trait_names = {'o': 'Openness', 'c': 'Conscientiousness', 'e': 'Extraversion', 'a': 'Agreeableness', 'n': 'Neuroticism'}
     percentiles = compute_percentile(data, selected_data, trait_names)
-
+        
     fig = plot_percentile(percentiles, trait_names, selected, comparison_type)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -467,6 +467,7 @@ def compute_percentile(data, selected_data, trait_names):
         scores = scores[scores != selected_score]
         percentile = 100 * len(scores[scores < selected_score]) / len(scores)
         percentile_scores[trait] = round(percentile, 2)
+        st.write("SCORE", percentile_scores)
     return percentile_scores
 
 
