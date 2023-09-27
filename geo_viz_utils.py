@@ -342,7 +342,8 @@ def generate_personality_description(selected, percentiles, trait_names):
                         Always use relative language, as the information is based on percentiles, comparing the location's traits to the greater population.
                         Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
                         Please be a bit sensitive about this given a place's results.
-                        YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
+                        YOU MUST LIMIT THIS OUTPUT TO ONE STRONG PARAGRAPH ONLY.
+                        Finally: in a new paragraph, IN A SINGLE SENTENCE, give one interesting and/or unique fact about the location.
                         """
 
     # Construct user messages
@@ -352,7 +353,6 @@ def generate_personality_description(selected, percentiles, trait_names):
     messages = [{"role": "system", "content": system_message}]
     for msg in user_messages:
         messages.append({"role": "user", "content": msg})
-        messages.append({"role": "user", "content": "At the end of your response, also please in a newline give one interesting or unique fact about this location!"})
     
     # Request a completion from the model
     completion = openai.ChatCompletion.create(
