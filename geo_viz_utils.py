@@ -338,8 +338,8 @@ def generate_personality_description(selected, percentiles, trait_names):
     # Construct the initial system message
     system_message = """
                         You are a helpful assistant that provides a courteous and succinct summary of a location's overall personality blend based on Big Five personality traits percentiles.
-                        Where applicable, blend this information with what you know about the place to make it a harmonious and accurate profile.
-                        Always use relative language, as the information is based on percentiles, comparing the location's traits to the global population.
+                        Where applicable, try to seamlessly blend this information with concrete things that you know about the place to make it a harmonious, holistic, and accurate profile.
+                        Always use relative language, as the information is based on percentiles, comparing the location's traits to the greater population.
                         Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
                         Please be a bit sensitive about this given a place's results.
                         YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
@@ -367,11 +367,11 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
     # Construct the initial system message
     system_message = """
                         You are a helpful assistant that provides a courteous and succinct analysis and comparison of the percentile differences in Big Five traits between two places.
+                        CRITICAL: Make sure you are giving an intuitive and helpful analysis of the differences rather than just restating the data.
                         Where applicable, blend this information with what you know about the place to make it a harmonious and accurate profile.
                         Always use relative language, as the information is based on percentiles, comparing the location's traits to the greater population.
                         Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
                         Please be a bit sensitive about this given places' results.
-                        Make sure you are giving an intuitive and helpful analysis of the differences rather than just restating the data.
                         YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
                         """
 
