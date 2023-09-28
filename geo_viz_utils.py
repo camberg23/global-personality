@@ -26,7 +26,7 @@ trait_names = {
 
 traits = list(trait_names.keys())
 
-def plot_globe_trait_location(trait, level, scores, top_N=350, is_percentile=False):
+def plot_globe_trait_location(trait, level, scores, top_N=200, is_percentile=False):
         data = scores
         inv_trait_names = {v: k for k, v in trait_names.items()}
 
