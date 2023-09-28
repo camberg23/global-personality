@@ -15,6 +15,17 @@ import plotly.graph_objects as go
 from sklearn.cluster import DBSCAN
 import streamlit as st
 
+# Trait name mapping
+trait_names = {
+    'o': 'Openness',
+    'c': 'Conscientiousness',
+    'e': 'Extraversion',
+    'a': 'Agreeableness',
+    'n': 'Neuroticism'
+}
+
+traits = list(trait_names.keys())
+
 def plot_globe_trait_location(trait, level, scores, top_N=500, is_percentile=False):
         data = scores
         inv_trait_names = {v: k for k, v in trait_names.items()}
