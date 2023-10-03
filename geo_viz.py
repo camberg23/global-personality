@@ -87,7 +87,7 @@ with col4:
     score_type = st.selectbox("Score Type:", ["Choose an option", "Percentiles", "Normalized Scores"])
 
 with col5:
-    N = st.number_input('\uFF03 high/low:', min_value=1, max_value=50, value=5)
+    N = st.number_input('\uFF03 hi/lo:', min_value=1, max_value=50, value=5)
 
 if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
