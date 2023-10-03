@@ -216,7 +216,7 @@ def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percenti
                              f"Standard Dev.: %{{customdata[2]:.3f}}<br>" +
                              "User count: %{{customdata[1]}}")
 
-    fig.update_traces(hovertemplate=hovertemplate)  # Don't forget to update the traces with the new hovertemplate
+        fig.update_traces(hovertemplate=hovertemplate)  # Don't forget to update the traces with the new hovertemplate
 
         fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
         fig.update_layout(width=1000, 
