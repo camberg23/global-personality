@@ -192,7 +192,7 @@ def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percenti
     else:  # City view
         cluster_aggregates = scores
         cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
-
+    
         fig = px.scatter_geo(cluster_aggregates, 
                              locationmode='USA-states', 
                              scope='usa',
@@ -202,20 +202,22 @@ def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percenti
                              color=trait,
                              hover_name='City',
                              hover_data={trait: True, 'Count': True, f"{trait_abbrev}_std": True},
+                             custom_data=[trait, 'Count', f"{trait_abbrev}_std"],  # Add custom data here
                              color_continuous_scale=px.colors.sequential.Plasma,
                              size_max=60)
-
+    
         if is_percentile:
             hovertemplate = (f"<b>%{{hovertext}} {trait}:</b><br>" +
-                             f"<b>Percentile: %{customdata[0]:.3f}</b><br>" +
-                             "User count: %{customdata[1]}")
+                             f"<b>Percentile: %{{customdata[0]:.3f}}</b><br>" +  # Use it correctly here
+                             "User count: %{{customdata[1]}}")
         else:
             hovertemplate = (f"<b>%{{hovertext}} {trait}:</b><br>" +
-                             f"<b>Average: %{customdata[0]:.3f}</b><br>" +
-                             f"Standard Dev.: %{customdata[2]:.3f}<br>" +
-                             "User count: %{customdata[1]}")
+                             f"<b>Average: %{{customdata[0]:.3f}}</b><br>" +  # And here
+                             f"Standard Dev.: %{{customdata[2]:.3f}}<br>" +
+                             "User count: %{{customdata[1]}}")
 
-        fig.update_traces(hovertemplate=hovertemplate)
+    fig.update_traces(hovertemplate=hovertemplate)  # Don't forget to update the traces with the new hovertemplate
+
         fig.update_geos(center=dict(lat=38.0902, lon=-95.7129))
         fig.update_layout(width=1000, 
                           height=700,
