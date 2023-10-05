@@ -244,13 +244,14 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
     trait = inv_trait_names[trait]
     description = trait_descriptions[full_name]
 
+    original_scope = scope
     # Determine the scope based on place_column
     if place_column == "CityState":
         text_scope = "largest 1000 cities in the world"
     elif place_column == "City":
         text_scope = "largest 100 cities in the US"
     else:
-        text_scope = None
+        text_scope = scope
         
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
@@ -259,9 +260,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
-        if text_scope:
-            scope = text_scope
+        st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {original_scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, (i, row) in enumerate(top_places.iterrows()):
             place_name = row[place_column]
             # Append country name if the scope is cities and global
@@ -269,14 +268,12 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
             if score_type == "Percentiles":
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: more {description} than {row[trait]:.2f}% of {scope} (N={row['Count']} users)</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: more {description} than {row[trait]:.2f}% of {text_scope} (N={row['Count']} users)</span>", unsafe_allow_html=True)
             else:
                 st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f} (N={row['Count']} users)</span>", unsafe_allow_html=True)
     
     with col2:
-        st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
-        if text_scope:
-            scope = text_scope
+        st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {original_scope} in {full_name}:</b></span>", unsafe_allow_html=True)
         for idx, (i, row) in enumerate(bottom_places.iterrows()):
             place_name = row[place_column]
             # Append country name if the scope is cities and global
@@ -284,7 +281,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
                 country_name = 'US' if row['Country'] == 'United States' else row['Country']
                 place_name += f", {country_name}"
             if score_type == "Percentiles":
-                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: less {description} than {100 - row[trait]:.2f}% of {scope} (N={row['Count']} users)</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: less {description} than {100 - row[trait]:.2f}% of {text_scope} (N={row['Count']} users)</span>", unsafe_allow_html=True)
             else:
                 st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f} (N={row['Count']} users)</span>", unsafe_allow_html=True)
 
