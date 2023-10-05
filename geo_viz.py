@@ -103,7 +103,7 @@ if st.button('Submit'):
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
                 
-        plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)  # Pass the is_percentile flag here
+        plot_us_trait_location(state_or_city, trait, scores, top_N=50, is_percentile=is_percentile)  # Pass the is_percentile flag here
 
 
     elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
