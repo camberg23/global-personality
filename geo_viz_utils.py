@@ -275,6 +275,8 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
     
     with col2:
         st.markdown(f"<span style='font-size:1.4em;'><b>Lowest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
+        if text_scope:
+            scope = text_scope
         for idx, (i, row) in enumerate(bottom_places.iterrows()):
             place_name = row[place_column]
             # Append country name if the scope is cities and global
