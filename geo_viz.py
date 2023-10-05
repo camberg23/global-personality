@@ -115,14 +115,14 @@ if st.button('Submit'):
             if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
-            plot_globe_trait_location(trait, level, scores, top_N=500, is_percentile=is_percentile)  # Pass the is_percentile flag here
+            plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
         elif level == "City view":
             scores = pd.read_csv('data/top_1000_city_data.csv')
             scores = scores[scores['Count'] > THRESHOLD_USERS]
             if is_percentile:
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
-            plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
+            plot_globe_trait_location(trait, level, scores, top_N=500, is_percentile=is_percentile)  # Pass the is_percentile flag here
 
 
 # Create a section title and space
