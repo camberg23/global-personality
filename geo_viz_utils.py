@@ -244,6 +244,12 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
     trait = inv_trait_names[trait]
     description = trait_descriptions[full_name]
 
+    # Determine the scope based on place_column
+    if place_column == "CityState":
+        scope = "largest 1000 cities in the world"
+    elif place_column == "City":
+        scope = "largest 100 cities in the US"
+        
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
     bottom_places = data.sort_values(by=trait, ascending=True).head(N)
