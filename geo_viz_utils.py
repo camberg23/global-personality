@@ -246,9 +246,11 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
 
     # Determine the scope based on place_column
     if place_column == "CityState":
-        scope = "largest 1000 cities in the world"
+        text_scope = "largest 1000 cities in the world"
     elif place_column == "City":
-        scope = "largest 100 cities in the US"
+        text_scope = "largest 100 cities in the US"
+    else:
+        text_scope = None
         
     # Sort the data based on the trait and take the top N and bottom N
     top_places = data.sort_values(by=trait, ascending=False).head(N)
@@ -258,6 +260,8 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
 
     with col1:
         st.markdown(f"<span style='font-size:1.4em;'><b>Highest {N} {scope} in {full_name}:</b></span>", unsafe_allow_html=True)
+        if text_scope:
+            scope = text_scope
         for idx, (i, row) in enumerate(top_places.iterrows()):
             place_name = row[place_column]
             # Append country name if the scope is cities and global
