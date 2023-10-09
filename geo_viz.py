@@ -93,7 +93,7 @@ if st.button('Submit'):
     if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
         is_percentile = score_type == "Percentiles"  # Set the flag based on the score_type
         if state_or_city == 'State view':
-            scores = pd.read_csv('data/us_state_viz.csv')  # Load your state data here
+            scores = pd.read_csv('data/us_state_viz_improved.csv')  # Load your state data here
             if is_percentile:
                 scores = compute_percentiles_for_all(scores, trait_names)
             display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)  # 'State' is the column name in state data
@@ -152,7 +152,7 @@ with col2:
         default_country_index = np.where(data['Country'] == "United States")[0][0]
         selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country', index=int(default_country_index))
     else:  # Assuming comparison_type is "US States"
-        data = pd.read_csv('data/us_state_viz.csv')
+        data = pd.read_csv('data/us_state_viz_improved.csv')
         default_state_index = np.where(data['State'] == "California")[0][0]
         selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state', index=int(default_state_index))
 
@@ -263,7 +263,7 @@ elif comparison_type == "Countries":
 # Handle State vs. State comparison
 elif comparison_type == "US States":
     st.header("State Comparison")
-    state_scores = pd.read_csv('data/us_state_viz.csv')
+    state_scores = pd.read_csv('data/us_state_viz_improved.csv')
 
     state_scores = state_scores[state_scores['Count'] > THRESHOLD_USERS]
     
