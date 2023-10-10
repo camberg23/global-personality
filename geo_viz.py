@@ -50,7 +50,7 @@ Welcome to Truity’s Big Five Personality Atlas, where you can explore and comp
 personality traits from across the globe, powered by Truity's 4M person database.
 """
 
-with st.expander(expander_title, unsafe_allow_html=True):
+with st.expander(expander_title):
     st.markdown(
         """
         Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) 
