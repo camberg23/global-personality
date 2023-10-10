@@ -35,7 +35,7 @@ st.markdown(
     """
     <div style="display: flex; align-items: center; justify-content: center;">
         <a href="https://www.truity.com/" target="_blank">
-            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:175px; transform: translateY(-55px)">
+            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:160px; transform: translateY(-52px)">
         </a>
         <h1 style='font-size:4em; margin-left: 15px'>Personality Atlas</h1>
     </div>
@@ -44,7 +44,13 @@ st.markdown(
 )
 
 # Expander
-with st.expander("Welcome to Truity’s Big Five Personality Atlas, where you can explore and compare the Big Five personality traits from across the globe..."):
+expander_title = """
+Welcome to Truity’s Big Five Personality Atlas, where you can explore and compare the 
+<a href="https://en.wikipedia.org/wiki/Big_Five_personality_traits" target="_blank">Big Five</a> 
+personality traits from across the globe, powered by Truity's 4M person database.
+"""
+
+with st.expander(expander_title, unsafe_allow_html=True):
     st.markdown(
         """
         Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) 
