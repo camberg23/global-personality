@@ -96,7 +96,7 @@ with col4:
     score_type = st.selectbox("Score Type:", ["Choose an option", "Percentiles", "Normalized Scores"])
 
 with col5:
-    N = st.number_input('\uFF03 hi/lo:', min_value=1, max_value=50, value=5)
+    N = st.number_input('\uFF03 hi/lo:', min_value=0, max_value=50, value=5)
 
 if st.button('Submit'):
     if trait == 'Display all traits':
