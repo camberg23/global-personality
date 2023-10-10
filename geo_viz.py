@@ -18,13 +18,13 @@ openai.api_key = st.secrets['KEY']
 
 st.set_page_config(page_title="Personality Atlas", layout="wide")
 
-# Adjusted Title and Logo on one line using Flexbox
+# Adjusted Title and Logo using Flexbox
 st.markdown(
     """
     <div style="display: flex; align-items: center; justify-content: center;">
-        <h1 style='font-size:4em; margin-right: 5px;'>Personality Atlas by</h1>
-        <a href="https://www.truity.com/" target="_blank" style="margin-top: -5px;">
-            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; vertical-align: middle;">
+        <h1 style='font-size:4em; margin-right: 2px;'>Personality Atlas by</h1>
+        <a href="https://www.truity.com/" target="_blank">
+            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-5px);">
         </a>
     </div>
     """, 
