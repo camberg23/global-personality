@@ -17,52 +17,56 @@ openai.organization = st.secrets['ORG']
 openai.api_key = st.secrets['KEY']
 
 st.set_page_config(page_title="Personality Atlas", layout="wide")
+
+# Title and Logo
 st.markdown(
     """
     <div style="text-align: center;">
-        <h1 style='font-size:4em;'>Personality Atlas</h1>
-        <p style='font-size:1.2em; font-weight:bold;'>made by</p>
-        <a href="https://www.truity.com/" target="_blank">
-            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px;">
+        <h1 style='font-size:4em; display: inline;'>Personality Atlas</h1>
+        <a href="https://www.truity.com/" target="_blank" style="display: inline; margin-left: 20px;">
+            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; vertical-align: middle;">
         </a>
     </div>
     """, 
     unsafe_allow_html=True
 )
-st.write(" ")
-st.markdown(
-    """
-    Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) 
-    personality traits from across the globe, powered by Truity's 4M person database. This page is split up into three different tools: 
-    (1) an **interactive personality map**, (2) a **personality profile generator** by location, and 
-    (3) a **head-to-head comparison tool**. You can take [Truity’s validated Big Five personality assessment 
-    here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating 
-    these analyses is [publicly available](https://github.com/camberg23/global-personality). 
-    """,
-    unsafe_allow_html=True
-)
 
-st.markdown(
-    """
-    Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally
-    [[1](https://journals.sagepub.com/doi/10.1177/0022022198291009),[2](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)]. 
-    See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) for an 
-    overview of this research subarea.
-    """, 
-    unsafe_allow_html=True
-)
+# Expander
+with st.expander("Welcome to Truity’s Big Five Personality Atlas, where you can explore and compare the Big Five personality traits from across the globe..."):
+    st.markdown(
+        """
+        Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) 
+        personality traits from across the globe, powered by Truity's 4M person database. This page is split up into three different tools: 
+        (1) an **interactive personality map**, (2) a **personality profile generator** by location, and 
+        (3) a **head-to-head comparison tool**. You can take [Truity’s validated Big Five personality assessment 
+        here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating 
+        these analyses is [publicly available](https://github.com/camberg23/global-personality). 
+        """,
+        unsafe_allow_html=True
+    )
 
-st.markdown(
-    """
-    <i><small>One important caveat of this research: Our analysis involved converting 
-    [user IP addresses](https://ip-api.com/) to real-world locations; especially for fine-grained city data, 
-    IP addresses can be a slightly [noisy source](https://www.if-so.com/geo-targeting/) of geographic data. 
-    We attempt to address this problem for cities by clustering data within a 
-    [radius](https://github.com/camberg23/global-personality/blob/9a2dadbde2ab718fc3b18d0c621c1794580c9a84/geo_viz.py#L63) 
-    that is larger than the typical margin of error typically associated with IP addresses.</small></i>
-    """, 
-    unsafe_allow_html=True
-)
+    st.markdown(
+        """
+        Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally
+        [[1](https://journals.sagepub.com/doi/10.1177/0022022198291009),[2](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)]. 
+        See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) for an 
+        overview of this research subarea.
+        """, 
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <i><small>One important caveat of this research: Our analysis involved converting 
+        [user IP addresses](https://ip-api.com/) to real-world locations; especially for fine-grained city data, 
+        IP addresses can be a slightly [noisy source](https://www.if-so.com/geo-targeting/) of geographic data. 
+        We attempt to address this problem for cities by clustering data within a 
+        [radius](https://github.com/camberg23/global-personality/blob/9a2dadbde2ab718fc3b18d0c621c1794580c9a84/geo_viz.py#L63) 
+        that is larger than the typical margin of error typically associated with IP addresses.</small></i>
+        """, 
+        unsafe_allow_html=True
+    )
+
 st.write("---")
 st.title("Interactive personality maps")
 st.write("Make your settings choices and click submit to get an interactive map of the desired Big Five trait in the chosen geographical scope. Note: you can zoom into and out of the maps and mouseover areas for more information!")
