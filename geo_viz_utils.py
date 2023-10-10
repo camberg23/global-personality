@@ -441,8 +441,6 @@ def generate_list_explanation(places, trait, score_type):
         
     # Combine all messages
     messages = [{"role": "system", "content": system_message}, {"role":"user", "content":user_message}]
-    for msg in user_messages:
-        messages.append({"role": "user", "content": msg})
     
     # Request a completion from the model
     completion = openai.ChatCompletion.create(
