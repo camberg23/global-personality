@@ -81,7 +81,13 @@ def plot_globe_trait_location(trait, level, scores, top_N=5, is_percentile=False
                             'font': {
                                 'size': 30  # Adjust this value for desired font size
                                 }
-                            })
+                            },
+                             coloraxis_colorbar=dict(
+                             lenmode="pixels", len=200,
+                             yanchor="top", y=1,
+                             xanchor="center", x=0.5,
+                             orientation="h"
+                         ))
             st.plotly_chart(fig, use_container_width=True)
 
         elif level == "City view":
@@ -145,7 +151,13 @@ def plot_globe_trait_location(trait, level, scores, top_N=5, is_percentile=False
                             'font': {
                                 'size': 30  # Adjust this value for desired font size
                                 }
-                            })
+                            },
+                              coloraxis_colorbar=dict(
+                             lenmode="pixels", len=200,
+                             yanchor="top", y=1,
+                             xanchor="center", x=0.5,
+                             orientation="h"
+                 ))
             st.plotly_chart(fig, use_container_width=True)
 
 def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percentile=False):
