@@ -37,7 +37,7 @@ st.markdown(
         <a href="https://www.truity.com/" target="_blank">
             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-50px)">
         </a>
-        <h1 style='font-size:4em; margin-left: -20px'>Personality Atlas</h1>
+        <h1 style='font-size:4em; margin-left: 0px'>Personality Atlas</h1>
     </div>
     """, 
     unsafe_allow_html=True
