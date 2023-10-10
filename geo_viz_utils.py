@@ -315,8 +315,11 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     
     # Organize data for grouped bar chart
     x_labels = traits
-    y_values_1 = [s if s > 0 else 1 for s in scores1]  # adding small value if percentile is 0
-    y_values_2 = [s if s > 0 else 1 for s in scores2]
+    y_values_plot_1 = [s if s > 0 else 1 for s in scores1]  # adjusting for plot
+    y_values_plot_2 = [s if s > 0 else 1 for s in scores2]
+    
+    y_values_hover_1 = scores1  # original values for hover
+    y_values_hover_2 = scores2
 
     # Set error bars to be invisible for percentiles
     error_visible = True if score_type == "Normalized Scores" else False
@@ -335,7 +338,8 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     # Bars for first entity
     fig.add_trace(go.Bar(
         x=x_labels,
-        y=y_values_1,
+        y=y_values_plot_1,
+        hovertext=y_values_hover_1,
         name=f"{label1} (n={count1:,})",
         error_y=dict(type='data', array=std1, visible=error_visible),
         marker_color='blue',
@@ -345,7 +349,8 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     # Bars for second entity
     fig.add_trace(go.Bar(
         x=x_labels,
-        y=y_values_2,
+        y=y_values_plot_2,
+        hovertext=y_values_hover_2,
         name=f"{label2} (n={count2:,})",
         error_y=dict(type='data', array=std2, visible=error_visible),
         marker_color='red',
@@ -380,6 +385,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     )
     
     st.plotly_chart(fig, use_container_width=True)
+
 
 def generate_personality_description(selected, percentiles, trait_names):    
     # Construct the initial system message
