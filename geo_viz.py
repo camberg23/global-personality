@@ -37,7 +37,7 @@ st.markdown(
         <a href="https://www.truity.com/" target="_blank">
             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:160px; transform: translateY(-52px)">
         </a>
-        <h1 style='font-size:4em; margin-left: 15px'>Personality Atlas</h1>
+        <h1 style='font-size:3.5em; margin-left: 12px'>Personality Atlas</h1>
     </div>
     """, 
     unsafe_allow_html=True
@@ -48,9 +48,7 @@ with st.expander("**Welcome to Truity’s Personality Atlas! Click to read more 
     
     st.markdown("This page is split up into three different tools: (1) an **interactive personality map**, (2) a **personality profile generator** by location, and (3) a **head-to-head comparison tool**.")
     
-    st.markdown("You can take [Truity’s validated Big Five personality assessment here](https://www.truity.com/test/big-five-personality-test).")
-    
-    st.markdown("The code and data used for generating these analyses is [publicly available](https://github.com/camberg23/global-personality).")
+    st.markdown("You can take [Truity’s validated Big Five personality assessment here](https://www.truity.com/test/big-five-personality-test). "The code and data used for generating these analyses is [publicly available](https://github.com/camberg23/global-personality).")
 
     st.markdown(
         """
