@@ -501,12 +501,13 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
 
     # Organize data for horizontal bar chart
     y_labels = list(trait_names_values.values())
-    x_values = [p if p > 0 else 1 for p in list(percentiles.values())]  # Adjust x_values for plotting
+    original_values = list(percentiles.values())
+    x_values = [p if p >= 1 else 1 for p in original_values]  # Adjust x_values for plotting
     
     # Create a horizontal bar chart
     fig = go.Figure()
 
-    for i, (y_label, x_value, original_value) in enumerate(zip(y_labels, x_values, list(percentiles.values()))):
+    for i, (y_label, x_value, original_value) in enumerate(zip(y_labels, x_values, original_values)):
         # Get the adjective for the current trait
         adj = trait_adj.get(y_label, 'unknown trait')
         
@@ -519,7 +520,7 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
             textposition='inside',  # to position the text inside the bars
             marker_color='green',  # choosing a different color for distinction
             hovertemplate=(
-                f"{selected} is more {adj} than %{{x:.2f}}% of {comparison_type}<extra></extra>"
+                f"{selected} is more {adj} than {original_value:.2f}% of {comparison_type}<extra></extra>"
             ),
             showlegend=False  # do not show the legend
         ))
@@ -543,7 +544,6 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
     )
     
     return fig
-
 
 def display_percentile(comparison_type, selected, data):
     if comparison_type == "Cities":
