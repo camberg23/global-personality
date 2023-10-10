@@ -43,7 +43,7 @@ st.set_page_config(page_title="Personality Atlas", layout="wide")
 #     unsafe_allow_html=True
 # )
 
-with st.expander("**Click here to for quick background on the Personality Atlas.**"):
+with st.expander("**Click here for quick background on this tool!**"):
     st.markdown("Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) personality traits from across the globe, powered by Truity's 4M person database.")
     
     st.markdown("This page is split up into three different tools: (1) an **interactive personality map**, (2) a **personality profile generator** by location, and (3) a **head-to-head comparison tool**.")
