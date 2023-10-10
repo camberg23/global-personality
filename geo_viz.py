@@ -96,7 +96,8 @@ with col4:
     score_type = st.selectbox("Score Type:", ["Choose an option", "Percentiles", "Normalized Scores"])
 
 with col5:
-    N = st.number_input('\uFF03 hi/lo:', min_value=0, max_value=50, value=5)
+    default_value = 0 if trait == 'Display all traits' else 5
+    N = st.number_input('\uFF03 hi/lo:', min_value=0, max_value=50, value=default_value)
 
 if st.button('Submit'):
     if trait == 'Display all traits':
@@ -106,49 +107,55 @@ if st.button('Submit'):
 
     for trait in traits_to_display:
         if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
-            is_percentile = score_type == "Percentiles"  # Set the flag based on the score_type
+            is_percentile = score_type == "Percentiles"
             if state_or_city == 'State view':
-                scores = pd.read_csv('data/us_state_viz_improved.csv')  # Load your state data here
+                scores = pd.read_csv('data/us_state_viz_improved.csv')
                 if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
-                places = display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)  # 'State' is the column name in state data
+                places = display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)
             elif state_or_city == 'City view':
                 scores = pd.read_csv('data/us_city_viz_improved.csv')
                 if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
-
-            with st.spinner("Generating a potential explanation of this ranking..."):
-                explanation = generate_list_explanation(places, trait, score_type)
-                st.write(explanation)
+            
+            if trait != 'Display all traits':
+                with st.spinner("Generating a potential explanation of this ranking..."):
+                    explanation = generate_list_explanation(places, trait, score_type)
+                    st.write(explanation)
                     
-            plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)  # Pass the is_percentile flag here
-    
+            plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)
     
         elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
-            is_percentile = score_type == "Percentiles"  # Set is_percentile flag based on score_type
+            is_percentile = score_type == "Percentiles"
             
             if level == "Country view":
                 scores = pd.read_csv('data/country_data.csv')
                 scores = scores[scores['Count'] > THRESHOLD_USERS]
                 if is_percentile:
-                        scores = compute_percentiles_for_all(scores, trait_names)
+                    scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
-                with st.spinner("Generating a potential explanation of this ranking..."):
-                    explanation = generate_list_explanation(places, trait, score_type)
-                    st.write(explanation)
-                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
+                
+                if trait != 'Display all traits':
+                    with st.spinner("Generating a potential explanation of this ranking..."):
+                        explanation = generate_list_explanation(places, trait, score_type)
+                        st.write(explanation)
+
+                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)
+
             elif level == "City view":
                 scores = pd.read_csv('data/top_1000_city_data.csv')
                 scores = scores[scores['Count'] > THRESHOLD_USERS]
                 if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
-                with st.spinner("Generating a potential explanation of this ranking..."):
-                    explanation = generate_list_explanation(places, trait, score_type)
-                    st.write(explanation)
-                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
+                
+                if trait != 'Display all traits':
+                    with st.spinner("Generating a potential explanation of this ranking..."):
+                        explanation = generate_list_explanation(places, trait, score_type)
+                        st.write(explanation)
 
+                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)
 
 # Create a section title and space
 st.write("---")
