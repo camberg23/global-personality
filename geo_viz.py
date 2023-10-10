@@ -44,17 +44,13 @@ st.markdown(
 )
 
 with st.expander("**Welcome to Truity’s Personality Atlas! Click to read more about this project.**"):
-    st.markdown(
-        """
-        Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) 
-        personality traits from across the globe, powered by Truity's 4M person database. This page is split up into three different tools: 
-        (1) an **interactive personality map**, (2) a **personality profile generator** by location, and 
-        (3) a **head-to-head comparison tool**. You can take [Truity’s validated Big Five personality assessment 
-        here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating 
-        these analyses is [publicly available](https://github.com/camberg23/global-personality). 
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown("Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) personality traits from across the globe, powered by Truity's 4M person database.")
+    
+    st.markdown("This page is split up into three different tools: (1) an **interactive personality map**, (2) a **personality profile generator** by location, and (3) a **head-to-head comparison tool**.")
+    
+    st.markdown("You can take [Truity’s validated Big Five personality assessment here](https://www.truity.com/test/big-five-personality-test).")
+    
+    st.markdown("The code and data used for generating these analyses is [publicly available](https://github.com/camberg23/global-personality).")
 
     st.markdown(
         """
