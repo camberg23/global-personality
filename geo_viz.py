@@ -29,7 +29,7 @@ st.set_page_config(page_title="Personality Atlas", layout="wide")
 #     </div>
 #     """, 
 #     unsafe_allow_html=True
-)
+# )
 # Adjusted Logo and Title using Flexbox
 st.markdown(
     """
