@@ -310,6 +310,11 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
             else:
                 st.markdown(f"<span style='font-size:1.2em;'>{idx+1}. <b>{place_name}</b>: {row[trait]:.2f} ± {row[trait + '_std']:.2f} (N={row['Count']} users)</span>", unsafe_allow_html=True)
 
+    return {
+    'top': [row[place_column] for _, row in top_places.iterrows()],
+    'bottom': [row[place_column] for _, row in bottom_places.iterrows()]
+    }
+
 def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2, traits, score_type, comparison_type):
     """Plot a side-by-side comparison of two entities over multiple traits."""
     
@@ -329,17 +334,17 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
 
     # Set hovertemplate based on score_type
     if score_type == "Percentiles":
-        hovertemplate1 = f"Higher than %{{y:.1f}}% of {comparison_type}<extra></extra>"
-        hovertemplate2 = f"Higher than %{{y:.1f}}% of {comparison_type}<extra></extra>"
+        hovertemplate1 = f"Higher than %{{customdata}}% of {comparison_type}<extra></extra>"
+        hovertemplate2 = f"Higher than %{{customdata}}% of {comparison_type}<extra></extra>"
     else:
-        hovertemplate1 = "Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
-        hovertemplate2 = "Trait: %{x}<br>Score: %{y:.3f}<extra></extra>"
+        hovertemplate1 = "Trait: %{x}<br>Score: %{customdata}<extra></extra>"
+        hovertemplate2 = "Trait: %{x}<br>Score: %{customdata}<extra></extra>"
 
     # Bars for first entity
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_plot_1,
-        hovertext=y_values_hover_1,
+        customdata=y_values_hover_1,
         name=f"{label1} (n={count1:,})",
         error_y=dict(type='data', array=std1, visible=error_visible),
         marker_color='blue',
@@ -350,7 +355,7 @@ def plot_comparison(scores1, scores2, std1, std2, label1, label2, count1, count2
     fig.add_trace(go.Bar(
         x=x_labels,
         y=y_values_plot_2,
-        hovertext=y_values_hover_2,
+        customdata=y_values_hover_2,
         name=f"{label2} (n={count2:,})",
         error_y=dict(type='data', array=std2, visible=error_visible),
         marker_color='red',
@@ -413,6 +418,37 @@ def generate_personality_description(selected, percentiles, trait_names):
         messages=messages
     )
 
+    # Extract and return the model's response
+    response = completion.choices[0].message['content']
+    return response
+
+def generate_list_explanation(places, trait, score_type):    
+    # Construct the initial system message
+    system_message = """
+                        You are a helpful assistant that provides a courteous and succinct attempted explanation/educated guess of why particular places are rank highest and lowest for a particular Big Five trait.
+                        Where applicable, try to seamlessly blend this information with concrete things that you know about the place to try to make sense of these rankings.
+                        Always use relative language, as the information is based on percentiles, comparing the location's traits to the greater population.
+                        Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
+                        Please be a bit sensitive about this given a place's results.
+                        YOU MUST LIMIT THIS OUTPUT TO ONE STRONG PARAGRAPH ONLY.
+                        """
+
+     # Construct user messages
+    top_places = ', '.join(places['top'])
+    bottom_places = ', '.join(places['bottom'])
+    
+    user_message = f"The highest ranking places for {trait} are {top_places}. The lowest ranking places for {trait} are {bottom_places}. Please provide a courteous and succinct attempted explanation/educated guess of why these particular places are ranking highest and lowest."
+        
+    # Combine all messages
+    messages = [{"role": "system", "content": system_message}, {"role":"user", "content":user_message}]
+    for msg in user_messages:
+        messages.append({"role": "user", "content": msg})
+    
+    # Request a completion from the model
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
     # Extract and return the model's response
     response = completion.choices[0].message['content']
     return response
