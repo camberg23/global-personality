@@ -48,7 +48,7 @@ with st.expander("**Welcome to Truity’s Personality Atlas! Click to read more 
     
     st.markdown("This page is split up into three different tools: (1) an **interactive personality map**, (2) a **personality profile generator** by location, and (3) a **head-to-head comparison tool**.")
     
-    st.markdown("You can take [Truity’s validated Big Five personality assessment here](https://www.truity.com/test/big-five-personality-test). "The code and data used for generating these analyses is [publicly available](https://github.com/camberg23/global-personality).")
+    st.markdown("You can take [Truity’s validated Big Five personality assessment here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating these analyses is [publicly available](https://github.com/camberg23/global-personality).")
 
     st.markdown(
         """
