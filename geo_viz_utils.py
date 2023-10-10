@@ -227,12 +227,13 @@ def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percenti
         if is_percentile:
             hovertemplate = (f"<b>%{{hovertext}} {trait}:</b><br>" +
                              f"<b>Percentile: %{{customdata[0]:.3f}}</b><br>" +  # Use it correctly here
-                             "User count: %{{customdata[1]}}")
+                             f"User count: %{{customdata[1]:.0f}}")
+
         else:
             hovertemplate = (f"<b>%{{hovertext}} {trait}:</b><br>" +
                              f"<b>Average: %{{customdata[0]:.3f}}</b><br>" +  # And here
                              f"Standard Dev.: %{{customdata[2]:.3f}}<br>" +
-                             "User count: %{{customdata[1]}}")
+                             f"User count: %{{customdata[1]:.0f}}")
 
         fig.update_traces(hovertemplate=hovertemplate)  # Don't forget to update the traces with the new hovertemplate
 
