@@ -18,12 +18,12 @@ openai.api_key = st.secrets['KEY']
 
 st.set_page_config(page_title="Personality Atlas", layout="wide")
 
-# Title and Logo
+# Title and Logo on one line
 st.markdown(
     """
     <div style="text-align: center;">
-        <h1 style='font-size:4em; display: inline;'>Personality Atlas</h1>
-        <a href="https://www.truity.com/" target="_blank" style="display: inline; margin-left: 20px;">
+        <h1 style='font-size:4em; display: inline;'>Personality Atlas by&nbsp;</h1>
+        <a href="https://www.truity.com/" target="_blank" style="display: inline;">
             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; vertical-align: middle;">
         </a>
     </div>
