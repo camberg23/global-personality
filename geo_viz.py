@@ -22,7 +22,7 @@ st.set_page_config(page_title="Personality Atlas", layout="wide")
 st.markdown(
     """
     <div style="display: flex; align-items: center; justify-content: center;">
-        <h1 style='font-size:4em; margin-right: -35px;'>Personality Atlas <span style='font-size: 0.75em;'>by</span></h1>
+        <h1 style='font-size:4em; margin-right: -35px;'>Personality Atlas <span style='font-size: 0.6em;'>by</span></h1>
         <a href="https://www.truity.com/" target="_blank">
             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-50px);">
         </a>
