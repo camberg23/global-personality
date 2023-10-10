@@ -501,12 +501,12 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
 
     # Organize data for horizontal bar chart
     y_labels = list(trait_names_values.values())
-    x_values = list(percentiles.values())
+    x_values = [p if p > 0 else 1 for p in list(percentiles.values())]  # Adjust x_values for plotting
     
     # Create a horizontal bar chart
     fig = go.Figure()
 
-    for i, (y_label, x_value) in enumerate(zip(y_labels, x_values)):
+    for i, (y_label, x_value, original_value) in enumerate(zip(y_labels, x_values, list(percentiles.values()))):
         # Get the adjective for the current trait
         adj = trait_adj.get(y_label, 'unknown trait')
         
@@ -515,7 +515,7 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
             y=[y_label],  # make this a list to use in a loop
             x=[x_value],  # make this a list to use in a loop
             orientation='h',  # to make the bars horizontal
-            text=[x_value],  # make this a list to use in a loop
+            text=[original_value],  # use the original value for the text
             textposition='inside',  # to position the text inside the bars
             marker_color='green',  # choosing a different color for distinction
             hovertemplate=(
