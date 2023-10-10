@@ -35,9 +35,9 @@ st.markdown(
     """
     <div style="display: flex; align-items: center; justify-content: center;">
         <a href="https://www.truity.com/" target="_blank">
-            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:160px; transform: translateY(-54px)">
+            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:155px; transform: translateY(-50px)">
         </a>
-        <h1 style='font-size:3.5em; margin-left: 15px'>Personality Atlas</h1>
+        <h1 style='font-size:3.5em; margin-left: 14px'>Personality Atlas</h1>
     </div>
     """, 
     unsafe_allow_html=True
