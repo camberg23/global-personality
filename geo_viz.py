@@ -44,11 +44,11 @@ st.markdown(
 )
 
 # Expander
-expander_title = """
+expander_title = st.markdown("""
 Welcome to Truity’s Big Five Personality Atlas, where you can explore and compare the 
 <a href="https://en.wikipedia.org/wiki/Big_Five_personality_traits" target="_blank">Big Five</a> 
 personality traits from across the globe, powered by Truity's 4M person database.
-"""
+""", unsafe_allow_html=True)
 
 with st.expander(expander_title):
     st.markdown(
