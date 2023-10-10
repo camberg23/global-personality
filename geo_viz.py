@@ -18,30 +18,30 @@ openai.api_key = st.secrets['KEY']
 
 st.set_page_config(page_title="Personality Atlas", layout="wide")
 
-# Adjusted Title and Logo using Flexbox
+# # Adjusted Title and Logo using Flexbox
+# st.markdown(
+#     """
+#     <div style="display: flex; align-items: center; justify-content: center;">
+#         <h1 style='font-size:4em; margin-right: -35px;'>Personality Atlas <span style='font-size: 0.6em;'>by</span></h1>
+#         <a href="https://www.truity.com/" target="_blank">
+#             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-50px);">
+#         </a>
+#     </div>
+#     """, 
+#     unsafe_allow_html=True
+)
+# Adjusted Logo and Title using Flexbox
 st.markdown(
     """
     <div style="display: flex; align-items: center; justify-content: center;">
-        <h1 style='font-size:4em; margin-right: -35px;'>Personality Atlas <span style='font-size: 0.6em;'>by</span></h1>
         <a href="https://www.truity.com/" target="_blank">
-            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-50px);">
+            <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-50px)">
         </a>
+        <h1 style='font-size:4em; margin-left: -20px'>Personality Atlas</h1>
     </div>
     """, 
     unsafe_allow_html=True
 )
-# Adjusted Logo and Title using Flexbox
-# st.markdown(
-#     """
-#     <div style="display: flex; align-items: center; justify-content: center;">
-#         <a href="https://www.truity.com/" target="_blank">
-#             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-50px); margin-right: -20px;">
-#         </a>
-#         <h1 style='font-size:4em;'>Personality Atlas by</h1>
-#     </div>
-#     """, 
-#     unsafe_allow_html=True
-# )
 
 # Expander
 with st.expander("Welcome to Truity’s Big Five Personality Atlas, where you can explore and compare the Big Five personality traits from across the globe..."):
