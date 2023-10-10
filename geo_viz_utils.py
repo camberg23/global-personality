@@ -198,7 +198,13 @@ def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percenti
                               'y': 0.95,
                               'xanchor': 'center',
                               'font': {'size': 30}
-                          })
+                          },
+                            coloraxis_colorbar=dict(
+                          lenmode="fraction", len=0.75,
+                          yanchor="bottom", y=-0.1,
+                          xanchor="center", x=0.5,
+                          orientation="h"
+                      ))
         st.plotly_chart(fig, use_container_width=True)
 
     else:  # City view
@@ -239,7 +245,13 @@ def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percenti
                               'y': 0.95,
                               'xanchor': 'center',
                               'font': {'size': 30}
-                          })
+                          },
+                          coloraxis_colorbar=dict(
+                          lenmode="fraction", len=0.75,
+                          yanchor="bottom", y=-0.1,
+                          xanchor="center", x=0.5,
+                          orientation="h"
+                      ))
         st.plotly_chart(fig, use_container_width=True)
 
 def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type="Normalized Scores"):
