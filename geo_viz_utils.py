@@ -83,8 +83,8 @@ def plot_globe_trait_location(trait, level, scores, top_N=5, is_percentile=False
                                 }
                             },
                              coloraxis_colorbar=dict(
-                             lenmode="pixels", len=200,
-                             yanchor="top", y=1,
+                             lenmode="fraction", len=1.0,
+                             yanchor="bottom", y=-0.1,
                              xanchor="center", x=0.5,
                              orientation="h"
                          ))
@@ -153,8 +153,8 @@ def plot_globe_trait_location(trait, level, scores, top_N=5, is_percentile=False
                                 }
                             },
                               coloraxis_colorbar=dict(
-                             lenmode="pixels", len=200,
-                             yanchor="top", y=1,
+                             lenmode="fraction", len=1.0,
+                             yanchor="bottom", y=-0.1,
                              xanchor="center", x=0.5,
                              orientation="h"
                  ))
