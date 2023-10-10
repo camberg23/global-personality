@@ -96,8 +96,7 @@ with col4:
     score_type = st.selectbox("Score Type:", ["Choose an option", "Percentiles", "Normalized Scores"])
 
 with col5:
-    default_value = 0 if trait == 'Display all traits' else 5
-    N = st.number_input('\uFF03 hi/lo:', min_value=0, max_value=50, value=default_value)
+    N = st.number_input('\uFF03 hi/lo:', min_value=0, max_value=50, value=5)
 
 if st.button('Submit'):
     if trait == 'Display all traits':
@@ -119,10 +118,9 @@ if st.button('Submit'):
                     scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
             
-            if trait != 'Display all traits':
-                with st.spinner("Generating a potential explanation of this ranking..."):
-                    explanation = generate_list_explanation(places, trait, score_type)
-                    st.write(explanation)
+            with st.spinner("Generating a potential explanation of this ranking..."):
+                explanation = generate_list_explanation(places, trait, score_type)
+                st.write(explanation)
                     
             plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)
     
@@ -136,10 +134,9 @@ if st.button('Submit'):
                     scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
                 
-                if trait != 'Display all traits':
-                    with st.spinner("Generating a potential explanation of this ranking..."):
-                        explanation = generate_list_explanation(places, trait, score_type)
-                        st.write(explanation)
+                with st.spinner("Generating a potential explanation of this ranking..."):
+                    explanation = generate_list_explanation(places, trait, score_type)
+                    st.write(explanation)
 
                 plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)
 
@@ -150,10 +147,9 @@ if st.button('Submit'):
                     scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
                 
-                if trait != 'Display all traits':
-                    with st.spinner("Generating a potential explanation of this ranking..."):
-                        explanation = generate_list_explanation(places, trait, score_type)
-                        st.write(explanation)
+                with st.spinner("Generating a potential explanation of this ranking..."):
+                    explanation = generate_list_explanation(places, trait, score_type)
+                    st.write(explanation)
 
                 plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)
 
