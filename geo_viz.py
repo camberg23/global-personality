@@ -30,7 +30,7 @@ st.markdown(
     """, 
     unsafe_allow_html=True
 )
-Adjusted Logo and Title using Flexbox
+# Adjusted Logo and Title using Flexbox
 # st.markdown(
 #     """
 #     <div style="display: flex; align-items: center; justify-content: center;">
