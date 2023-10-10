@@ -90,7 +90,7 @@ elif us_or_global == 'Global':
         level = st.selectbox('Global scope:', ['Choose an option', 'Country view', 'City view'])
 
 with col3:
-    trait = st.selectbox('Big Five Trait:', ['Choose an option'] + list(trait_names.values()))
+    trait = st.selectbox('Big Five Trait:', ['Choose an option', 'Display all traits'] + list(trait_names.values()))
 
 with col4:
     score_type = st.selectbox("Score Type:", ["Choose an option", "Percentiles", "Normalized Scores"])
@@ -99,39 +99,45 @@ with col5:
     N = st.number_input('\uFF03 hi/lo:', min_value=1, max_value=50, value=5)
 
 if st.button('Submit'):
-    if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
-        is_percentile = score_type == "Percentiles"  # Set the flag based on the score_type
-        if state_or_city == 'State view':
-            scores = pd.read_csv('data/us_state_viz_improved.csv')  # Load your state data here
-            if is_percentile:
-                scores = compute_percentiles_for_all(scores, trait_names)
-            display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)  # 'State' is the column name in state data
-        elif state_or_city == 'City view':
-            scores = pd.read_csv('data/us_city_viz_improved.csv')
-            if is_percentile:
-                scores = compute_percentiles_for_all(scores, trait_names)
-            display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
-                
-        plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)  # Pass the is_percentile flag here
+    if trait == 'Display all traits':
+        traits_to_display = list(trait_names.values())
+    else:
+        traits_to_display = [trait]
 
-
-    elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
-        is_percentile = score_type == "Percentiles"  # Set is_percentile flag based on score_type
-        
-        if level == "Country view":
-            scores = pd.read_csv('data/country_data.csv')
-            scores = scores[scores['Count'] > THRESHOLD_USERS]
-            if is_percentile:
+    for trait in traits_to_display:
+        if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
+            is_percentile = score_type == "Percentiles"  # Set the flag based on the score_type
+            if state_or_city == 'State view':
+                scores = pd.read_csv('data/us_state_viz_improved.csv')  # Load your state data here
+                if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
-            display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
-            plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
-        elif level == "City view":
-            scores = pd.read_csv('data/top_1000_city_data.csv')
-            scores = scores[scores['Count'] > THRESHOLD_USERS]
-            if is_percentile:
-                scores = compute_percentiles_for_all(scores, trait_names)
-            display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
-            plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
+                display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)  # 'State' is the column name in state data
+            elif state_or_city == 'City view':
+                scores = pd.read_csv('data/us_city_viz_improved.csv')
+                if is_percentile:
+                    scores = compute_percentiles_for_all(scores, trait_names)
+                display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
+                    
+            plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)  # Pass the is_percentile flag here
+    
+    
+        elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
+            is_percentile = score_type == "Percentiles"  # Set is_percentile flag based on score_type
+            
+            if level == "Country view":
+                scores = pd.read_csv('data/country_data.csv')
+                scores = scores[scores['Count'] > THRESHOLD_USERS]
+                if is_percentile:
+                        scores = compute_percentiles_for_all(scores, trait_names)
+                display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
+                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
+            elif level == "City view":
+                scores = pd.read_csv('data/top_1000_city_data.csv')
+                scores = scores[scores['Count'] > THRESHOLD_USERS]
+                if is_percentile:
+                    scores = compute_percentiles_for_all(scores, trait_names)
+                display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
+                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)  # Pass the is_percentile flag here
 
 
 # Create a section title and space
