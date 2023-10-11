@@ -457,11 +457,12 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
     # Construct the initial system message
     system_message = """
                         You are a helpful assistant that provides a courteous and succinct analysis and comparison of the percentile differences in Big Five traits between two places.
-                        CRITICAL: Make sure you are giving an intuitive and helpful analysis of the differences rather than just restating the data.
+                        CRITICAL: Make sure you are giving an intuitive and helpful synthesis of the biggest differences rather than just restating the data.
                         Where applicable, blend this information with what you know about the place to make it a harmonious and accurate profile.
                         Always use relative language, as the information is based on percentiles, comparing the location's traits to the greater population.
                         Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
                         Please be a bit sensitive about this given places' results.
+                        LIMIT OUTPUTS TO ONE OR TWO PARAGRAPHS MAXIMUM!
                         """
 
     # Construct user message with all comparison details
