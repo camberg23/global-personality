@@ -462,7 +462,6 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
                         Always use relative language, as the information is based on percentiles, comparing the location's traits to the greater population.
                         Please note, while there are no 'good' or 'bad' personalities, it is generally considered desirable to be high in openness, consciousness, agreeableness, and extraversion, and low in neuroticism.
                         Please be a bit sensitive about this given places' results.
-                        YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
                         """
 
     # Construct user message with all comparison details
