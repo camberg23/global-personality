@@ -210,6 +210,8 @@ def plot_us_trait_location(state_or_city, trait, scores,  top_N=100, is_percenti
     else:  # City view
         cluster_aggregates = scores
         cluster_aggregates[trait] = cluster_aggregates[trait_abbrev]
+        # CITIES N LARGEST
+        cluster_aggregates = cluster_aggregates.nlargest(30, 'Count')
     
         fig = px.scatter_geo(cluster_aggregates, 
                              locationmode='USA-states', 
