@@ -108,22 +108,24 @@ if st.button('Submit'):
         if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
             is_percentile = score_type == "Percentiles"
             if state_or_city == 'State view':
+                top_N = 51
                 scores = pd.read_csv('data/us_state_viz_improved.csv')
                 if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)
             elif state_or_city == 'City view':
+                top_N = 60
                 scores = pd.read_csv('data/us_city_viz_improved.csv')
                 if is_percentile:
                     scores = compute_percentiles_for_all(scores, trait_names)
-                    scores = scores.nlargest(30, 'Count')
+                    scores = scores.nlargest(top_N, 'Count')
                 places = display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
             
             with st.spinner("Generating a potential explanation of this ranking..."):
                 explanation = generate_list_explanation(places, trait, score_type)
                 st.write(explanation)
                     
-            plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentile=is_percentile)
+            plot_us_trait_location(state_or_city, trait, scores, top_N=top_N, is_percentile=is_percentile)
     
         elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
             is_percentile = score_type == "Percentiles"
