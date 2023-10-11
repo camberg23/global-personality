@@ -465,16 +465,18 @@ def generate_personality_comparison(selected1, selected2, percentiles1, percenti
                         YOU MUST LIMIT OUTPUT TO ONE STRONG PARAGRAPH ONLY.
                         """
 
-    # Construct user messages
-    user_messages = []
+    # Construct user message with all comparison details
+    comparison_details = []
     for trait, trait_full in trait_names.items():
-        msg = f"{selected1} is in the {percentiles1[trait]} percentile and {selected2} is in the {percentiles2[trait]} percentile in the world for trait {trait_full.lower()}."
-        user_messages.append(msg)
+        detail = f"{selected1} is in the {percentiles1[trait]} percentile and {selected2} is in the {percentiles2[trait]} percentile for trait {trait_full.lower()}."
+        comparison_details.append(detail)
+    combined_user_message = " ".join(comparison_details)
     
-    # Combine all messages
-    messages = [{"role": "system", "content": system_message}]
-    for msg in user_messages:
-        messages.append({"role": "user", "content": msg})
+    # Combine system message and user message
+    messages = [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": combined_user_message}
+    ]
     
     # Request a completion from the model
     completion = openai.ChatCompletion.create(
