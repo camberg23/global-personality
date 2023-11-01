@@ -167,17 +167,22 @@ col1, col2 = st.columns((1, 1))  # Two columns of equal size
 
 # User Input
 with col1:
-    comparison_type = st.radio("Choose the type of place:", ["Cities", "US States", "Countries"], key='profile')
+    comparison_type = st.radio("Choose the type of place:", ["Global Cities", "US Cities", "US States", "Countries"], key='profile')
 
 is_button_pressed = False  # Initialize a flag to check if the button is pressed
 
 with col2:
-    if comparison_type == "Cities":
+    if comparison_type == "Global Cities":
         data = pd.read_csv('data/top_1000_city_data.csv')
         city_options = data['CityState'] + ", " + data['Country']
         default_city_index = np.where(city_options == "New York, New York, United States")[0][0]
         selected = st.selectbox("Select the city:", city_options, key='profile_city', index=int(default_city_index))
         selected, _ = selected.rsplit(', ', 1)
+    elif comparison_type == "US Cities":
+        data = pd.read_csv('data/us_city_viz_improved.csv')
+        city_options = data['City']
+        default_city_index = np.where(city_options == "New York, New York")[0][0]
+        selected = st.selectbox("Select the US city:", city_options, key='profile_us_city', index=int(default_city_index))
     elif comparison_type == "Countries":
         data = pd.read_csv('data/country_data.csv')
         default_country_index = np.where(data['Country'] == "United States")[0][0]
