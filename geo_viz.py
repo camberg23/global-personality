@@ -351,9 +351,6 @@ elif comparison_type == "US Cities":
     city2_selected = col2.selectbox("Select the second US city:", us_city_options, index=int(default_city2_index), key='us_city2')
     score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0, key='us_city_score_type')
 
-    city1_city, city1_state = city1_selected.split(', ')
-    city2_city, city2_state = city2_selected.split(', ')
-
     city1_data = us_city_scores[us_city_scores['City'] == city1_city].iloc[0]
     city2_data = us_city_scores[us_city_scores['City'] == city2_city].iloc[0]
     
