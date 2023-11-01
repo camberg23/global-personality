@@ -367,8 +367,8 @@ elif comparison_type == "US Cities":
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
 
-    city1_count = us_city_scores[us_city_scores['City'] == city1_city]['Count'].values[0]
-    city2_count = us_city_scores[us_city_scores['City'] == city2_city]['Count'].values[0]
+    city1_count = us_city_scores[us_city_scores['City'] == city1_selected]['Count'].values[0]
+    city2_count = us_city_scores[us_city_scores['City'] == city2_selected]['Count'].values[0]
 
     if st.button('Submit', key='us_city_comparison_button'):
         with st.spinner('Generating comparison...'):
