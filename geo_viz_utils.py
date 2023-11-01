@@ -550,8 +550,10 @@ def plot_percentile(percentiles, trait_names_values, selected, comparison_type):
     return fig
 
 def display_percentile(comparison_type, selected, data):
-    if comparison_type == "Cities":
+    if comparison_type == "Global Cities":
         selected_data = data[data['CityState'] == selected]
+    elif comparison_type == "US Cities":
+        selected_data = data[data['City'] == selected]
     elif comparison_type == "Countries":
         selected_data = data[data['Country'] == selected]
     elif comparison_type == "US States":
