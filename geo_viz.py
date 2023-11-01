@@ -354,8 +354,8 @@ elif comparison_type == "US Cities":
     city1_city, city1_state = city1_selected.split(', ')
     city2_city, city2_state = city2_selected.split(', ')
 
-    city1_data = us_city_scores[(us_city_scores['City'] == city1_city) & (us_city_scores['State'] == city1_state)].iloc[0]
-    city2_data = us_city_scores[(us_city_scores['City'] == city2_city) & (us_city_scores['State'] == city2_state)].iloc[0]
+    city1_data = us_city_scores[us_city_scores['City'] == city1_city].iloc[0]
+    city2_data = us_city_scores[us_city_scores['City'] == city2_city].iloc[0]
     
     percentiles1, percentiles2 = {}, {}
     if score_type == "Percentiles":
@@ -370,8 +370,8 @@ elif comparison_type == "US Cities":
     city1_std = [city1_data[trait+'_std'] for trait in trait_names]
     city2_std = [city2_data[trait+'_std'] for trait in trait_names]
 
-    city1_count = us_city_scores[(us_city_scores['City'] == city1_city) & (us_city_scores['State'] == city1_state)]['Count'].values[0]
-    city2_count = us_city_scores[(us_city_scores['City'] == city2_city) & (us_city_scores['State'] == city2_state)]['Count'].values[0]
+    city1_count = us_city_scores[us_city_scores['City'] == city1_city]['Count'].values[0]
+    city2_count = us_city_scores[us_city_scores['City'] == city2_city]['Count'].values[0]
 
     if st.button('Submit', key='us_city_comparison_button'):
         with st.spinner('Generating comparison...'):
