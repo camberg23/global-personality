@@ -208,7 +208,7 @@ st.write("Compare the average Big Five personality profiles of any two countries
 st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars (set score type to normalized scores), which signify significant trait diversity within each place.")
 
 # Select comparison type: City vs. City or Country vs. Country
-comparison_type = st.radio("Would you like to compare cities or countries?", ["Global Cities", "US Cities", "US States", "Countries"])
+comparison_type = st.radio("Choose the type of places to compare:", ["Global Cities", "US Cities", "US States", "Countries"])
 # Handle City vs. City comparison
 if comparison_type == "Global Cities":
     st.header("City Comparison")
