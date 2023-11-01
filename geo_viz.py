@@ -352,7 +352,7 @@ elif comparison_type == "US Cities":
     score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0, key='us_city_score_type')
 
     city1_data = us_city_scores[us_city_scores['City'] == city1_selected].iloc[0]
-    city2_data = us_city_scores[us_city_scores['City'] == city1_selected].iloc[0]
+    city2_data = us_city_scores[us_city_scores['City'] == city2_selected].iloc[0]
     
     percentiles1, percentiles2 = {}, {}
     if score_type == "Percentiles":
