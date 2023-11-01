@@ -208,9 +208,9 @@ st.write("Compare the average Big Five personality profiles of any two countries
 st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars (set score type to normalized scores), which signify significant trait diversity within each place.")
 
 # Select comparison type: City vs. City or Country vs. Country
-comparison_type = st.radio("Would you like to compare cities or countries?", ["Cities", "US States", "Countries"])
+comparison_type = st.radio("Would you like to compare cities or countries?", ["Global Cities", "US States", "US Cities", "Countries"])
 # Handle City vs. City comparison
-if comparison_type == "Cities":
+if comparison_type == "Global Cities":
     st.header("City Comparison")
     
     city_scores = pd.read_csv('data/top_1000_city_data.csv')  
@@ -336,3 +336,46 @@ elif comparison_type == "US States":
             if score_type == 'Percentiles':
                 comparison_paragraph = generate_personality_comparison(state1_selected, state2_selected, percentiles1, percentiles2, trait_names, comparison_type)
                 st.write(f"**Comparing {state1_selected} and {state2_selected}:** {comparison_paragraph}")
+
+elif comparison_type == "US Cities":
+    st.header("US City Comparison")
+    us_city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+
+    us_city_options = us_city_scores['City'] + ", " + us_city_scores['State']
+
+    default_city1_index = np.where(us_city_options == "New York, New York")[0][0]
+    default_city2_index = np.where(us_city_options == "Los Angeles, California")[0][0]
+
+    col1, col2, col3 = st.columns(3)
+    city1_selected = col1.selectbox("Select the first US city:", us_city_options, index=int(default_city1_index), key='us_city1')
+    city2_selected = col2.selectbox("Select the second US city:", us_city_options, index=int(default_city2_index), key='us_city2')
+    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0, key='us_city_score_type')
+
+    city1_city, city1_state = city1_selected.split(', ')
+    city2_city, city2_state = city2_selected.split(', ')
+
+    city1_data = us_city_scores[(us_city_scores['City'] == city1_city) & (us_city_scores['State'] == city1_state)].iloc[0]
+    city2_data = us_city_scores[(us_city_scores['City'] == city2_city) & (us_city_scores['State'] == city2_state)].iloc[0]
+    
+    percentiles1, percentiles2 = {}, {}
+    if score_type == "Percentiles":
+        percentiles1 = compute_percentile(us_city_scores, city1_data, trait_names)
+        percentiles2 = compute_percentile(us_city_scores, city2_data, trait_names)
+        city1_scores = list(percentiles1.values())
+        city2_scores = list(percentiles2.values())
+    else:
+        city1_scores = [city1_data[trait] for trait in trait_names]
+        city2_scores = [city2_data[trait] for trait in trait_names]
+
+    city1_std = [city1_data[trait+'_std'] for trait in trait_names]
+    city2_std = [city2_data[trait+'_std'] for trait in trait_names]
+
+    city1_count = us_city_scores[(us_city_scores['City'] == city1_city) & (us_city_scores['State'] == city1_state)]['Count'].values[0]
+    city2_count = us_city_scores[(us_city_scores['City'] == city2_city) & (us_city_scores['State'] == city2_state)]['Count'].values[0]
+
+    if st.button('Submit', key='us_city_comparison_button'):
+        with st.spinner('Generating comparison...'):
+            plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type, comparison_type.lower())
+            if score_type == 'Percentiles':
+                comparison_paragraph = generate_personality_comparison(city1_selected, city2_selected, percentiles1, percentiles2, trait_names, comparison_type)
+                st.write(f"**Comparing {city1_selected} and {city2_selected}:** {comparison_paragraph}")
