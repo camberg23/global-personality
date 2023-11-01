@@ -341,7 +341,7 @@ elif comparison_type == "US Cities":
     st.header("US City Comparison")
     us_city_scores = pd.read_csv('data/us_city_viz_improved.csv')
 
-    us_city_options = us_city_scores['City'] + ", " + us_city_scores['State']
+    us_city_options = us_city_scores['City']
 
     default_city1_index = np.where(us_city_options == "New York, New York")[0][0]
     default_city2_index = np.where(us_city_options == "Los Angeles, California")[0][0]
