@@ -276,7 +276,7 @@ def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type=
     if place_column == "CityState":
         text_scope = "largest 1000 cities in the world"
     elif place_column == "City":
-        text_scope = "largest 100 cities in the US"
+        text_scope = "largest 60 cities in the US"
     else:
         text_scope = scope
         
