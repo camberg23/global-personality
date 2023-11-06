@@ -117,8 +117,8 @@ if st.button('Submit'):
                 top_N = 60
                 scores = pd.read_csv('data/us_city_viz_improved.csv')
                 if is_percentile:
-                    scores = compute_percentiles_for_all(scores, trait_names)
                     scores = scores.nlargest(top_N, 'Count')
+                    scores = compute_percentiles_for_all(scores, trait_names)
                 places = display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
             
             with st.spinner("Generating a potential explanation of this ranking..."):
