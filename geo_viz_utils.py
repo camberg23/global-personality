@@ -570,19 +570,26 @@ def display_percentile(comparison_type, selected, data):
 
 def compute_percentile(data, selected_data, trait_names):
     percentile_scores = {}
+    
+    # Convert selected_data to a series outside the loop to avoid repeated conversions
+    if isinstance(selected_data, pd.DataFrame):
+        if selected_data.empty:
+            raise ValueError("No data found for the selected.")
+        selected_data = selected_data.iloc[0]
+
     for trait in trait_names:
         scores = data[trait].values
-        if isinstance(selected_data, pd.DataFrame):
-            if selected_data.empty:
-                raise ValueError(f"No data found for the selected trait: {trait}")
-            selected_data = selected_data.iloc[0]
-
         selected_score = selected_data[trait]
         
-        # Exclude the current row's score when calculating the percentile
-        scores = scores[scores != selected_score]
-        percentile = 100 * len(scores[scores < selected_score]) / len(scores)
+        # Count how many scores are less than and equal to the selected score
+        less_than = len(scores[scores < selected_score])
+        equal_to = len(scores[scores == selected_score])
+        
+        # Calculate percentile, considering the scores less than the selected score
+        # and half of the scores that are equal to the selected score
+        percentile = (less_than + 0.5 * equal_to) / len(scores) * 100
         percentile_scores[trait] = round(percentile, 2)
+
     return percentile_scores
 
 
