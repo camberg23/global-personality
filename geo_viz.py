@@ -116,6 +116,7 @@ if st.button('Submit'):
             elif state_or_city == 'City view':
                 top_N = 60
                 scores = pd.read_csv('data/us_city_viz_improved.csv')
+                scores = scores.nlargest(top_N, 'Count')
                 if is_percentile:
                     scores = scores.nlargest(top_N, 'Count')
                     scores = compute_percentiles_for_all(scores, trait_names)
