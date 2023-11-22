@@ -8,4 +8,4 @@ plotly
 scikit-learn
 streamlit
 scipy
-openai
+openai==0.28
