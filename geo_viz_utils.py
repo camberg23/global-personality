@@ -307,19 +307,15 @@ def plot_us_trait_location(state_or_city, trait, scores, top_N=100, is_percentil
 # ---------- Top/bottom rankings ----------
 
 def _ranking_row_html(idx, place_name, value_line, accent):
-    return f"""
-    <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;
-                border-radius:10px;background:#FFFFFF;border:1px solid #E5E7EB;
-                margin-bottom:8px;box-shadow:0 1px 2px rgba(15,23,42,0.04);">
-      <div style="flex:0 0 28px;height:28px;border-radius:7px;background:{accent};
-                  color:white;font-weight:700;display:flex;align-items:center;
-                  justify-content:center;font-size:13px;">{idx}</div>
-      <div style="flex:1;">
-        <div style="font-weight:600;color:{NEUTRAL_DARK};font-size:15px;">{place_name}</div>
-        <div style="color:#64748B;font-size:13px;margin-top:2px;">{value_line}</div>
-      </div>
-    </div>
-    """
+    # Single-line HTML so Streamlit's markdown parser does not break the block.
+    return (
+        f'<div class="rank-card">'
+        f'<div class="rank-chip" style="background:{accent};">{idx}</div>'
+        f'<div style="flex:1;">'
+        f'<div class="rank-name">{place_name}</div>'
+        f'<div class="rank-meta">{value_line}</div>'
+        f'</div></div>'
+    )
 
 
 def display_top_bottom_places(data, trait, scope, place_column, N=5, score_type="Normalized Scores"):
@@ -584,15 +580,11 @@ def display_percentile(comparison_type, selected, data):
 
     description = generate_personality_description(selected, percentiles, trait_names)
     st.markdown(
-        f"""
-        <div style="background:#FFFFFF;border:1px solid #E5E7EB;border-radius:12px;
-                    padding:18px 22px;margin-top:6px;
-                    box-shadow:0 1px 2px rgba(15,23,42,0.04);">
-          <div style="font-weight:600;font-size:1.05em;color:{NEUTRAL_DARK};
-                      margin-bottom:8px;">Profile narrative — {selected}</div>
-          <div style="color:#334155;line-height:1.6;font-size:0.98em;">{description}</div>
-        </div>
-        """,
+        f'<div class="card" style="margin-top:6px;">'
+        f'<div style="font-weight:600;font-size:1.05em;color:{NEUTRAL_DARK};margin-bottom:8px;">'
+        f'Profile narrative — {selected}</div>'
+        f'<div style="color:#334155;line-height:1.6;font-size:0.98em;">{description}</div>'
+        f'</div>',
         unsafe_allow_html=True,
     )
 

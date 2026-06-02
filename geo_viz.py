@@ -25,140 +25,92 @@ st.set_page_config(
 )
 
 # ---------- Global CSS ----------
-st.markdown(
-    """
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-      html, body, [class*="css"], .stApp, .stMarkdown, p, label, div, span {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-      }
-      .stApp {
-        background:
-          radial-gradient(1200px 600px at 10% -10%, rgba(61,90,128,0.07), transparent 60%),
-          radial-gradient(900px 500px at 100% 0%, rgba(238,108,77,0.05), transparent 60%),
-          #FBFBFD;
-      }
-      .block-container { padding-top: 1.5rem; padding-bottom: 4rem; max-width: 1320px; }
-
-      /* Hero */
-      .hero {
-        display:flex; align-items:center; gap:18px;
-        padding: 14px 22px; margin: 8px 0 22px;
-        background: linear-gradient(135deg, rgba(61,90,128,0.06), rgba(238,108,77,0.06));
-        border: 1px solid #E5E7EB; border-radius: 18px;
-      }
-      .hero-title {
-        font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em;
-        background: linear-gradient(90deg, #293241 0%, #3D5A80 55%, #EE6C4D 100%);
-        -webkit-background-clip: text; background-clip: text; color: transparent;
-        line-height: 1.1; margin: 0;
-      }
-      .hero-sub {
-        color:#64748B; font-size: 0.98rem; margin-top: 4px; line-height: 1.5;
-      }
-      .hero-logo img { display:block; }
-      .hero-badge {
-        display:inline-block; font-size:0.72rem; font-weight:600;
-        background:#EEF2F7; color:#3D5A80; border:1px solid #DBE3EE;
-        padding: 3px 8px; border-radius: 999px; margin-bottom:6px;
-        letter-spacing:0.04em; text-transform:uppercase;
-      }
-
-      /* Section header */
-      .section-title {
-        font-size: 1.45rem; font-weight: 700; color: #293241;
-        letter-spacing: -0.01em; margin: 4px 0 4px;
-      }
-      .section-sub { color:#64748B; font-size: 0.96rem; line-height: 1.55; margin-bottom: 14px; }
-
-      /* Card */
-      .card {
-        background:#FFFFFF; border:1px solid #E5E7EB; border-radius: 14px;
-        padding: 18px 20px; box-shadow: 0 1px 2px rgba(15,23,42,0.04);
-        margin-bottom: 14px;
-      }
-
-      /* Tabs */
-      .stTabs [data-baseweb="tab-list"] {
-        gap: 4px; background: #F1F5F9; padding: 6px; border-radius: 12px;
-        border: 1px solid #E5E7EB;
-      }
-      .stTabs [data-baseweb="tab"] {
-        height: 40px; padding: 0 18px;
-        border-radius: 8px; color: #475569; font-weight: 600;
-        background: transparent;
-      }
-      .stTabs [aria-selected="true"] {
-        background: #FFFFFF !important; color: #293241 !important;
-        box-shadow: 0 1px 2px rgba(15,23,42,0.06);
-      }
-      .stTabs [data-baseweb="tab-highlight"] { display:none; }
-
-      /* Buttons */
-      .stButton > button {
-        background: #3D5A80; color: white; border: none;
-        border-radius: 10px; padding: 8px 22px; font-weight: 600;
-        transition: transform 0.05s ease, background 0.15s ease;
-      }
-      .stButton > button:hover { background: #2E4763; color: white; transform: translateY(-1px); }
-      .stButton > button:focus { box-shadow: 0 0 0 3px rgba(61,90,128,0.25) !important; }
-      .stDownloadButton > button { border-radius: 10px; }
-
-      /* Inputs */
-      .stSelectbox label, .stRadio label, .stNumberInput label {
-        font-weight: 600 !important; color: #334155 !important; font-size: 0.9rem !important;
-      }
-      div[data-baseweb="select"] > div {
-        border-radius: 10px !important; border-color: #E5E7EB !important;
-      }
-
-      /* Expander */
-      .streamlit-expanderHeader, [data-testid="stExpander"] details summary {
-        font-weight: 600 !important; color: #293241 !important;
-      }
-      [data-testid="stExpander"] {
-        background:#FFFFFF; border:1px solid #E5E7EB; border-radius:12px;
-      }
-
-      /* Spinner color */
-      .stSpinner > div > div { border-top-color: #3D5A80 !important; }
-
-      /* Subtle divider */
-      .soft-divider { height:1px; background: linear-gradient(90deg, transparent, #E5E7EB, transparent); margin: 18px 0; }
-
-      /* Footer */
-      .footer { text-align:center; color:#94A3B8; font-size:0.85rem; margin-top:28px; }
-      .footer a { color:#3D5A80; text-decoration:none; }
-      .footer a:hover { text-decoration:underline; }
-    </style>
-    """,
-    unsafe_allow_html=True,
+# Note: Streamlit's markdown parser closes <style> blocks at blank lines.
+# The CSS below is intentionally written as one contiguous block.
+_CSS = (
+    "html, body, .stApp, .stMarkdown, p, label, h1, h2, h3, h4, h5, h6 {"
+    " font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, "
+    "'Helvetica Neue', Arial, sans-serif !important; }"
+    ".stApp { background: radial-gradient(1200px 600px at 10% -10%, "
+    "rgba(61,90,128,0.07), transparent 60%), "
+    "radial-gradient(900px 500px at 100% 0%, rgba(238,108,77,0.05), transparent 60%), "
+    "#FBFBFD; }"
+    ".block-container { padding-top: 1.5rem; padding-bottom: 4rem; max-width: 1320px; }"
+    ".hero { display:flex; align-items:center; gap:18px; padding: 16px 22px; "
+    "margin: 8px 0 22px; background: linear-gradient(135deg, rgba(61,90,128,0.08), "
+    "rgba(238,108,77,0.07)); border: 1px solid #E5E7EB; border-radius: 18px; }"
+    ".hero-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; "
+    "background: linear-gradient(90deg, #293241 0%, #3D5A80 55%, #EE6C4D 100%); "
+    "-webkit-background-clip: text; background-clip: text; "
+    "-webkit-text-fill-color: transparent; color: transparent; line-height: 1.1; margin: 0; }"
+    ".hero-sub { color:#475569; font-size: 1rem; margin-top: 6px; line-height: 1.5; }"
+    ".hero-logo img { display:block; }"
+    ".hero-badge { display:inline-block; font-size:0.72rem; font-weight:700; "
+    "background:#FFFFFF; color:#3D5A80; border:1px solid #DBE3EE; "
+    "padding: 4px 10px; border-radius: 999px; margin-bottom:8px; "
+    "letter-spacing:0.06em; text-transform:uppercase; }"
+    ".section-title { font-size: 1.5rem; font-weight: 700; color: #293241; "
+    "letter-spacing: -0.01em; margin: 4px 0 4px; }"
+    ".section-sub { color:#64748B; font-size: 0.98rem; line-height: 1.55; margin-bottom: 14px; }"
+    ".card { background:#FFFFFF; border:1px solid #E5E7EB; border-radius: 14px; "
+    "padding: 18px 20px; box-shadow: 0 1px 3px rgba(15,23,42,0.05); margin-bottom: 14px; }"
+    ".stTabs [data-baseweb=\"tab-list\"] { gap: 4px; background: #F1F5F9; "
+    "padding: 6px; border-radius: 12px; border: 1px solid #E5E7EB; }"
+    ".stTabs [data-baseweb=\"tab\"] { height: 42px; padding: 0 20px; "
+    "border-radius: 8px; color: #475569; font-weight: 600; background: transparent; }"
+    ".stTabs [aria-selected=\"true\"] { background: #FFFFFF !important; "
+    "color: #293241 !important; box-shadow: 0 1px 3px rgba(15,23,42,0.08); }"
+    ".stTabs [data-baseweb=\"tab-highlight\"] { display:none !important; }"
+    ".stTabs [data-baseweb=\"tab-border\"] { display:none !important; }"
+    ".stButton > button { background: #3D5A80; color: white; border: none; "
+    "border-radius: 10px; padding: 8px 22px; font-weight: 600; "
+    "transition: transform 0.05s ease, background 0.15s ease; }"
+    ".stButton > button:hover { background: #2E4763; color: white; "
+    "transform: translateY(-1px); }"
+    ".stButton > button:focus { box-shadow: 0 0 0 3px rgba(61,90,128,0.25) !important; }"
+    ".stDownloadButton > button { border-radius: 10px; }"
+    ".stSelectbox label, .stRadio label, .stNumberInput label { "
+    "font-weight: 600 !important; color: #334155 !important; font-size: 0.9rem !important; }"
+    "div[data-baseweb=\"select\"] > div { border-radius: 10px !important; "
+    "border-color: #E5E7EB !important; }"
+    "[data-testid=\"stExpander\"] { background:#FFFFFF; border:1px solid #E5E7EB; "
+    "border-radius:12px; }"
+    "[data-testid=\"stExpander\"] details summary { font-weight: 600 !important; "
+    "color: #293241 !important; }"
+    ".stSpinner > div > div { border-top-color: #3D5A80 !important; }"
+    ".soft-divider { height:1px; background: linear-gradient(90deg, transparent, "
+    "#E5E7EB, transparent); margin: 18px 0; }"
+    ".footer { text-align:center; color:#94A3B8; font-size:0.88rem; margin-top:28px; "
+    "padding: 16px 0; border-top: 1px solid #EEF2F7; }"
+    ".footer a { color:#3D5A80; text-decoration:none; font-weight:500; }"
+    ".footer a:hover { text-decoration:underline; }"
+    ".rank-card { display:flex; align-items:flex-start; gap:12px; padding:10px 12px; "
+    "border-radius:10px; background:#FFFFFF; border:1px solid #E5E7EB; "
+    "margin-bottom:8px; box-shadow:0 1px 2px rgba(15,23,42,0.04); }"
+    ".rank-chip { flex:0 0 28px; height:28px; border-radius:7px; color:white; "
+    "font-weight:700; display:flex; align-items:center; justify-content:center; "
+    "font-size:13px; }"
+    ".rank-name { font-weight:600; color:#293241; font-size:15px; }"
+    ".rank-meta { color:#64748B; font-size:13px; margin-top:2px; }"
 )
+st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
 
 # ---------- Hero ----------
-st.markdown(
-    """
-    <div class="hero">
-      <div class="hero-logo">
-        <a href="https://www.truity.com/" target="_blank" rel="noopener">
-          <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png"
-               alt="Truity" style="width:118px;">
-        </a>
-      </div>
-      <div style="flex:1;">
-        <div class="hero-badge">Powered by Truity · 4M+ respondents</div>
-        <div class="hero-title">Big Five Personality Atlas</div>
-        <div class="hero-sub">
-          Explore how the five core personality traits vary across countries, US states, and cities — built on
-          one of the largest open personality datasets in the world.
-        </div>
-      </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
+_HERO_HTML = (
+    '<div class="hero">'
+    '<div class="hero-logo">'
+    '<a href="https://www.truity.com/" target="_blank" rel="noopener">'
+    '<img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" '
+    'alt="Truity" style="width:118px;">'
+    '</a></div>'
+    '<div style="flex:1;">'
+    '<div class="hero-badge">Powered by Truity · 4M+ respondents</div>'
+    '<div class="hero-title">Big Five Personality Atlas</div>'
+    '<div class="hero-sub">Explore how the five core personality traits vary across countries, '
+    'US states, and cities — built on one of the largest open personality datasets in the world.</div>'
+    '</div></div>'
 )
+st.markdown(_HERO_HTML, unsafe_allow_html=True)
 
 with st.expander("About this tool & a note on the data"):
     st.markdown(
@@ -204,8 +156,7 @@ with tab_map:
         unsafe_allow_html=True,
     )
 
-    with st.container():
-        st.markdown('<div class="card">', unsafe_allow_html=True)
+    with st.container(border=True):
         col1, col2, col3, col4, col5, col6 = st.columns([1.1, 1.1, 1.3, 1.2, 0.7, 0.9])
 
         with col1:
@@ -234,7 +185,6 @@ with tab_map:
         with col6:
             st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
             submit_map = st.button('Generate map', key='map_submit', use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     if submit_map:
         ready = (
@@ -315,47 +265,45 @@ with tab_profile:
         unsafe_allow_html=True,
     )
 
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    col_a, col_b, col_c = st.columns([1, 1.4, 0.7])
+    with st.container(border=True):
+        col_a, col_b, col_c = st.columns([1, 1.4, 0.7])
 
-    with col_a:
-        profile_type = st.radio(
-            "Place type",
-            ["Global Cities", "US Cities", "US States", "Countries"],
-            key='profile_type',
-            horizontal=False,
-        )
+        with col_a:
+            profile_type = st.radio(
+                "Place type",
+                ["Global Cities", "US Cities", "US States", "Countries"],
+                key='profile_type',
+                horizontal=False,
+            )
 
-    with col_b:
-        if profile_type == "Global Cities":
-            data = pd.read_csv('data/top_1000_city_data.csv')
-            city_options = data['CityState'] + ", " + data['Country']
-            default_idx = int(np.where(city_options == "New York, New York, United States")[0][0])
-            selected_display = st.selectbox("Select a city", city_options,
-                                            key='profile_city', index=default_idx)
-            selected_profile, _ = selected_display.rsplit(', ', 1)
-        elif profile_type == "US Cities":
-            data = pd.read_csv('data/us_city_viz_improved.csv')
-            city_options = data['City']
-            default_idx = int(np.where(city_options == "New York, New York")[0][0])
-            selected_profile = st.selectbox("Select a US city", city_options,
-                                            key='profile_us_city', index=default_idx)
-        elif profile_type == "Countries":
-            data = pd.read_csv('data/country_data.csv')
-            default_idx = int(np.where(data['Country'] == "United States")[0][0])
-            selected_profile = st.selectbox("Select a country", data['Country'].unique(),
-                                            key='profile_country', index=default_idx)
-        else:  # US States
-            data = pd.read_csv('data/us_state_viz_improved.csv')
-            default_idx = int(np.where(data['State'] == "California")[0][0])
-            selected_profile = st.selectbox("Select a US state", data['State'].unique(),
-                                            key='profile_state', index=default_idx)
+        with col_b:
+            if profile_type == "Global Cities":
+                data = pd.read_csv('data/top_1000_city_data.csv')
+                city_options = data['CityState'] + ", " + data['Country']
+                default_idx = int(np.where(city_options == "New York, New York, United States")[0][0])
+                selected_display = st.selectbox("Select a city", city_options,
+                                                key='profile_city', index=default_idx)
+                selected_profile, _ = selected_display.rsplit(', ', 1)
+            elif profile_type == "US Cities":
+                data = pd.read_csv('data/us_city_viz_improved.csv')
+                city_options = data['City']
+                default_idx = int(np.where(city_options == "New York, New York")[0][0])
+                selected_profile = st.selectbox("Select a US city", city_options,
+                                                key='profile_us_city', index=default_idx)
+            elif profile_type == "Countries":
+                data = pd.read_csv('data/country_data.csv')
+                default_idx = int(np.where(data['Country'] == "United States")[0][0])
+                selected_profile = st.selectbox("Select a country", data['Country'].unique(),
+                                                key='profile_country', index=default_idx)
+            else:  # US States
+                data = pd.read_csv('data/us_state_viz_improved.csv')
+                default_idx = int(np.where(data['State'] == "California")[0][0])
+                selected_profile = st.selectbox("Select a US state", data['State'].unique(),
+                                                key='profile_state', index=default_idx)
 
-    with col_c:
-        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
-        profile_submit = st.button("Generate profile", key='profile_button', use_container_width=True)
-
-    st.markdown('</div>', unsafe_allow_html=True)
+        with col_c:
+            st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+            profile_submit = st.button("Generate profile", key='profile_button', use_container_width=True)
 
     if profile_submit:
         with st.spinner('Building personality profile…'):
@@ -380,8 +328,6 @@ with tab_compare:
         key='compare_type',
         horizontal=True,
     )
-
-    st.markdown('<div class="card">', unsafe_allow_html=True)
 
     if compare_type == "Global Cities":
         city_scores = pd.read_csv('data/top_1000_city_data.csv')
@@ -504,7 +450,6 @@ with tab_compare:
         label1, label2 = sel1, sel2
 
     compare_submit = st.button('Compare', key='compare_button')
-    st.markdown('</div>', unsafe_allow_html=True)
 
     if compare_submit:
         with st.spinner('Generating comparison…'):
@@ -517,26 +462,21 @@ with tab_compare:
                     label1, label2, pct1, pct2, trait_names, compare_type,
                 )
                 st.markdown(
-                    f"""
-                    <div class="card" style="margin-top:8px;">
-                      <div style="font-weight:600;color:#293241;margin-bottom:6px;">
-                        Comparing {label1} and {label2}
-                      </div>
-                      <div style="color:#334155;line-height:1.6;">{narrative}</div>
-                    </div>
-                    """,
+                    f'<div class="card" style="margin-top:8px;">'
+                    f'<div style="font-weight:600;color:#293241;margin-bottom:6px;">'
+                    f'Comparing {label1} and {label2}</div>'
+                    f'<div style="color:#334155;line-height:1.6;">{narrative}</div>'
+                    f'</div>',
                     unsafe_allow_html=True,
                 )
 
 
 # ---------- Footer ----------
 st.markdown(
-    """
-    <div class="footer">
-      Built by <a href="https://www.truity.com/" target="_blank" rel="noopener">Truity</a> ·
-      <a href="https://www.truity.com/test/big-five-personality-test" target="_blank" rel="noopener">Take the Big Five test</a> ·
-      <a href="https://github.com/camberg23/global-personality" target="_blank" rel="noopener">Source on GitHub</a>
-    </div>
-    """,
+    '<div class="footer">'
+    'Built by <a href="https://www.truity.com/" target="_blank" rel="noopener">Truity</a> · '
+    '<a href="https://www.truity.com/test/big-five-personality-test" target="_blank" rel="noopener">Take the Big Five test</a> · '
+    '<a href="https://github.com/camberg23/global-personality" target="_blank" rel="noopener">Source on GitHub</a>'
+    '</div>',
     unsafe_allow_html=True,
 )
