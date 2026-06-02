@@ -77,7 +77,7 @@ def _openai_client():
     """Lazily instantiate the OpenAI client using Streamlit secrets."""
     org = st.secrets.get("ORG") if hasattr(st, "secrets") else None
     key = st.secrets.get("KEY") if hasattr(st, "secrets") else None
-    kwargs = {}
+    kwargs = {"timeout": 45.0}
     if key:
         kwargs["api_key"] = key
     if org:
@@ -88,18 +88,28 @@ def _openai_client():
 LLM_MODEL = "gpt-5-nano"
 
 
-def _chat(messages, max_tokens=500):
-    """Wrap chat completion with graceful fallback so the UI never crashes."""
+def _chat(messages, max_tokens=2500):
+    """Wrap chat completion with graceful fallback so the UI never crashes.
+
+    gpt-5-nano is a reasoning model: its hidden reasoning tokens count toward
+    max_completion_tokens. With a small budget the model can spend everything
+    on reasoning and return empty content with finish_reason='length'. We pass
+    reasoning_effort='minimal' to suppress that and keep a generous budget.
+    """
     try:
         client = _openai_client()
         resp = client.chat.completions.create(
             model=LLM_MODEL,
             messages=messages,
             max_completion_tokens=max_tokens,
+            reasoning_effort="minimal",
         )
-        return resp.choices[0].message.content.strip()
+        content = (resp.choices[0].message.content or "").strip()
+        if not content:
+            return "_AI narrative is taking too long to generate — try again._"
+        return content
     except Exception as e:
-        return f"_AI narrative unavailable right now ({type(e).__name__})._"
+        return f"_AI narrative unavailable right now ({type(e).__name__}: {e})._"
 
 
 # ---------- Maps ----------

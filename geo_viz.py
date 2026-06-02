@@ -35,10 +35,19 @@ _CSS = (
     "rgba(61,90,128,0.07), transparent 60%), "
     "radial-gradient(900px 500px at 100% 0%, rgba(238,108,77,0.05), transparent 60%), "
     "#FBFBFD; }"
-    ".block-container { padding-top: 1.5rem; padding-bottom: 4rem; max-width: 1320px; }"
-    ".hero { display:flex; align-items:center; gap:18px; padding: 16px 22px; "
-    "margin: 8px 0 22px; background: linear-gradient(135deg, rgba(61,90,128,0.08), "
+    ".block-container { padding-top: 3rem; padding-bottom: 4rem; max-width: 1320px; }"
+    ".hero { display:flex; align-items:center; gap:22px; padding: 22px 26px; "
+    "margin: 4px 0 22px; background: linear-gradient(135deg, rgba(61,90,128,0.08), "
     "rgba(238,108,77,0.07)); border: 1px solid #E5E7EB; border-radius: 18px; }"
+    ".hero-wordmark { display:flex; flex-direction:column; align-items:center; "
+    "justify-content:center; padding:14px 18px; border-radius:14px; background:#FFFFFF; "
+    "border:1px solid #E5E7EB; box-shadow:0 1px 3px rgba(15,23,42,0.05); min-width:108px; }"
+    ".hero-wordmark-text { font-size:1.55rem; font-weight:800; letter-spacing:0.02em; "
+    "background: linear-gradient(135deg, #3D5A80 0%, #EE6C4D 100%); "
+    "-webkit-background-clip: text; background-clip: text; "
+    "-webkit-text-fill-color: transparent; color: transparent; line-height:1; }"
+    ".hero-wordmark-tag { font-size:0.6rem; font-weight:600; color:#94A3B8; "
+    "letter-spacing:0.18em; margin-top:4px; text-transform:uppercase; }"
     ".hero-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; "
     "background: linear-gradient(90deg, #293241 0%, #3D5A80 55%, #EE6C4D 100%); "
     "-webkit-background-clip: text; background-clip: text; "
@@ -98,11 +107,12 @@ st.markdown(f"<style>{_CSS}</style>", unsafe_allow_html=True)
 # ---------- Hero ----------
 _HERO_HTML = (
     '<div class="hero">'
-    '<div class="hero-logo">'
-    '<a href="https://www.truity.com/" target="_blank" rel="noopener">'
-    '<img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" '
-    'alt="Truity" style="width:118px;">'
-    '</a></div>'
+    '<a href="https://www.truity.com/" target="_blank" rel="noopener" '
+    'style="text-decoration:none;">'
+    '<div class="hero-wordmark">'
+    '<div class="hero-wordmark-text">Truity</div>'
+    '<div class="hero-wordmark-tag">Personality</div>'
+    '</div></a>'
     '<div style="flex:1;">'
     '<div class="hero-badge">Powered by Truity · 4M+ respondents</div>'
     '<div class="hero-title">Big Five Personality Atlas</div>'
