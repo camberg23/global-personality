@@ -1,379 +1,542 @@
-from geo_viz_utils import * 
+import numpy as np
+import pandas as pd
+import streamlit as st
 
-# Trait name mapping
-trait_names = {
-    'o': 'Openness',
-    'c': 'Conscientiousness',
-    'e': 'Extraversion',
-    'a': 'Agreeableness',
-    'n': 'Neuroticism'
-}
-
-traits = list(trait_names.keys())
+from geo_viz_utils import (
+    trait_names,
+    compute_percentile,
+    compute_percentiles_for_all,
+    display_top_bottom_places,
+    display_percentile,
+    generate_list_explanation,
+    generate_personality_comparison,
+    plot_comparison,
+    plot_globe_trait_location,
+    plot_us_trait_location,
+)
 
 THRESHOLD_USERS = 200
 
-openai.organization = st.secrets['ORG']
-openai.api_key = st.secrets['KEY']
+st.set_page_config(
+    page_title="Personality Atlas · Truity",
+    page_icon="🌍",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
-st.set_page_config(page_title="Personality Atlas", layout="wide")
+# ---------- Global CSS ----------
+st.markdown(
+    """
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      html, body, [class*="css"], .stApp, .stMarkdown, p, label, div, span {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      }
+      .stApp {
+        background:
+          radial-gradient(1200px 600px at 10% -10%, rgba(61,90,128,0.07), transparent 60%),
+          radial-gradient(900px 500px at 100% 0%, rgba(238,108,77,0.05), transparent 60%),
+          #FBFBFD;
+      }
+      .block-container { padding-top: 1.5rem; padding-bottom: 4rem; max-width: 1320px; }
 
-# # Adjusted Title and Logo using Flexbox
-# st.markdown(
-#     """
-#     <div style="display: flex; align-items: center; justify-content: center;">
-#         <h1 style='font-size:4em; margin-right: -35px;'>Personality Atlas <span style='font-size: 0.6em;'>by</span></h1>
-#         <a href="https://www.truity.com/" target="_blank">
-#             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:150px; transform: translateY(-50px);">
-#         </a>
-#     </div>
-#     """, 
-#     unsafe_allow_html=True
-# )
-# Adjusted Logo and Title using Flexbox
-# st.markdown(
-#     """
-#     <div style="display: flex; align-items: center; justify-content: center;">
-#         <a href="https://www.truity.com/" target="_blank">
-#             <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png" style="width:155px; transform: translateY(-50px)">
-#         </a>
-#         <h1 style='font-size:3.5em; margin-left: 14px'>Personality Atlas</h1>
-#     </div>
-#     """, 
-#     unsafe_allow_html=True
-# )
+      /* Hero */
+      .hero {
+        display:flex; align-items:center; gap:18px;
+        padding: 14px 22px; margin: 8px 0 22px;
+        background: linear-gradient(135deg, rgba(61,90,128,0.06), rgba(238,108,77,0.06));
+        border: 1px solid #E5E7EB; border-radius: 18px;
+      }
+      .hero-title {
+        font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em;
+        background: linear-gradient(90deg, #293241 0%, #3D5A80 55%, #EE6C4D 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        line-height: 1.1; margin: 0;
+      }
+      .hero-sub {
+        color:#64748B; font-size: 0.98rem; margin-top: 4px; line-height: 1.5;
+      }
+      .hero-logo img { display:block; }
+      .hero-badge {
+        display:inline-block; font-size:0.72rem; font-weight:600;
+        background:#EEF2F7; color:#3D5A80; border:1px solid #DBE3EE;
+        padding: 3px 8px; border-radius: 999px; margin-bottom:6px;
+        letter-spacing:0.04em; text-transform:uppercase;
+      }
 
-with st.expander("**Click here for quick background on this tool!**"):
-    st.markdown("Welcome to Truity’s **Big Five Personality Atlas**, where you can explore and compare the [Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) personality traits from across the globe, powered by Truity's 4M person database.")
-    
-    st.markdown("This page is split up into three different tools: (1) an **interactive personality map**, (2) a **personality profile generator** by location, and (3) a **head-to-head comparison tool**.")
-    
-    st.markdown("You can take [Truity’s validated Big Five personality assessment here](https://www.truity.com/test/big-five-personality-test). The code and data used for generating these analyses is [publicly available](https://github.com/camberg23/global-personality).")
+      /* Section header */
+      .section-title {
+        font-size: 1.45rem; font-weight: 700; color: #293241;
+        letter-spacing: -0.01em; margin: 4px 0 4px;
+      }
+      .section-sub { color:#64748B; font-size: 0.96rem; line-height: 1.55; margin-bottom: 14px; }
 
+      /* Card */
+      .card {
+        background:#FFFFFF; border:1px solid #E5E7EB; border-radius: 14px;
+        padding: 18px 20px; box-shadow: 0 1px 2px rgba(15,23,42,0.04);
+        margin-bottom: 14px;
+      }
+
+      /* Tabs */
+      .stTabs [data-baseweb="tab-list"] {
+        gap: 4px; background: #F1F5F9; padding: 6px; border-radius: 12px;
+        border: 1px solid #E5E7EB;
+      }
+      .stTabs [data-baseweb="tab"] {
+        height: 40px; padding: 0 18px;
+        border-radius: 8px; color: #475569; font-weight: 600;
+        background: transparent;
+      }
+      .stTabs [aria-selected="true"] {
+        background: #FFFFFF !important; color: #293241 !important;
+        box-shadow: 0 1px 2px rgba(15,23,42,0.06);
+      }
+      .stTabs [data-baseweb="tab-highlight"] { display:none; }
+
+      /* Buttons */
+      .stButton > button {
+        background: #3D5A80; color: white; border: none;
+        border-radius: 10px; padding: 8px 22px; font-weight: 600;
+        transition: transform 0.05s ease, background 0.15s ease;
+      }
+      .stButton > button:hover { background: #2E4763; color: white; transform: translateY(-1px); }
+      .stButton > button:focus { box-shadow: 0 0 0 3px rgba(61,90,128,0.25) !important; }
+      .stDownloadButton > button { border-radius: 10px; }
+
+      /* Inputs */
+      .stSelectbox label, .stRadio label, .stNumberInput label {
+        font-weight: 600 !important; color: #334155 !important; font-size: 0.9rem !important;
+      }
+      div[data-baseweb="select"] > div {
+        border-radius: 10px !important; border-color: #E5E7EB !important;
+      }
+
+      /* Expander */
+      .streamlit-expanderHeader, [data-testid="stExpander"] details summary {
+        font-weight: 600 !important; color: #293241 !important;
+      }
+      [data-testid="stExpander"] {
+        background:#FFFFFF; border:1px solid #E5E7EB; border-radius:12px;
+      }
+
+      /* Spinner color */
+      .stSpinner > div > div { border-top-color: #3D5A80 !important; }
+
+      /* Subtle divider */
+      .soft-divider { height:1px; background: linear-gradient(90deg, transparent, #E5E7EB, transparent); margin: 18px 0; }
+
+      /* Footer */
+      .footer { text-align:center; color:#94A3B8; font-size:0.85rem; margin-top:28px; }
+      .footer a { color:#3D5A80; text-decoration:none; }
+      .footer a:hover { text-decoration:underline; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ---------- Hero ----------
+st.markdown(
+    """
+    <div class="hero">
+      <div class="hero-logo">
+        <a href="https://www.truity.com/" target="_blank" rel="noopener">
+          <img src="https://d31u95r9ywbjex.cloudfront.net/sites/all/themes/bootstrap_truity/images-new/truity_logo.png"
+               alt="Truity" style="width:118px;">
+        </a>
+      </div>
+      <div style="flex:1;">
+        <div class="hero-badge">Powered by Truity · 4M+ respondents</div>
+        <div class="hero-title">Big Five Personality Atlas</div>
+        <div class="hero-sub">
+          Explore how the five core personality traits vary across countries, US states, and cities — built on
+          one of the largest open personality datasets in the world.
+        </div>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+with st.expander("About this tool & a note on the data"):
     st.markdown(
         """
-        Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally
-        [[1](https://journals.sagepub.com/doi/10.1177/0022022198291009),[2](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)]. 
-        See [here](https://en.wikipedia.org/wiki/Big_Five_personality_traits_and_culture) for an 
-        overview of this research subarea.
-        """, 
-        unsafe_allow_html=True
+Welcome to Truity's **Big Five Personality Atlas**. This page brings together three views of how the
+[Big Five](https://en.wikipedia.org/wiki/Big_Five_personality_traits) personality traits — *Openness*,
+*Conscientiousness*, *Extraversion*, *Agreeableness*, and *Neuroticism* — vary around the world, built on Truity's
+4M-person database.
+
+- **Interactive maps** for the US (by state or city) and the world (by country or city).
+- A **profile generator** for any location in the database.
+- A **head-to-head comparison** tool for any two places.
+
+You can take [Truity's validated Big Five assessment here](https://www.truity.com/test/big-five-personality-test).
+The code and data are [publicly available](https://github.com/camberg23/global-personality).
+
+Longstanding evidence suggests that the Big Five is a valid measure of personality cross-culturally
+([Allik & McCrae, 1998](https://journals.sagepub.com/doi/10.1177/0022022198291009);
+[Schmitt et al., 2007](https://journals.sagepub.com/doi/abs/10.1177/0022022106297299)).
+
+> **A note on geography.** Locations are inferred from [user IP addresses](https://ip-api.com/), which can be
+> a [noisy source](https://www.if-so.com/geo-targeting/) of fine-grained data. To mitigate this for cities, we
+> cluster nearby points within a radius that exceeds typical IP geolocation error.
+        """,
+        unsafe_allow_html=True,
     )
 
+tab_map, tab_profile, tab_compare = st.tabs([
+    "🗺️  Interactive Map",
+    "📊  Location Profile",
+    "⚖️  Compare Places",
+])
+
+
+# ==================================================================
+# TAB 1 — Interactive map
+# ==================================================================
+with tab_map:
+    st.markdown('<div class="section-title">Interactive personality maps</div>', unsafe_allow_html=True)
     st.markdown(
-        """
-        <i><small>One important caveat of this research: Our analysis involved converting 
-        [user IP addresses](https://ip-api.com/) to real-world locations; especially for fine-grained city data, 
-        IP addresses can be a slightly [noisy source](https://www.if-so.com/geo-targeting/) of geographic data. 
-        We attempt to address this problem for cities by clustering data within a 
-        [radius](https://github.com/camberg23/global-personality/blob/9a2dadbde2ab718fc3b18d0c621c1794580c9a84/geo_viz.py#L63) 
-        that is larger than the typical margin of error typically associated with IP addresses.</small></i>
-        """, 
-        unsafe_allow_html=True
+        '<div class="section-sub">Configure the view below and hit <b>Generate map</b>. '
+        'Maps are fully interactive — zoom, pan, and hover for details.</div>',
+        unsafe_allow_html=True,
     )
 
-st.write("---")
-st.title("Interactive personality maps")
-st.write("Make your settings choices and click submit to get an interactive map of the desired Big Five trait in the chosen geographical scope. Note: you can zoom into and out of the maps and mouseover areas for more information!")
+    with st.container():
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        col1, col2, col3, col4, col5, col6 = st.columns([1.1, 1.1, 1.3, 1.2, 0.7, 0.9])
 
-col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 0.75])
+        with col1:
+            us_or_global = st.selectbox('Region', ['Choose…', 'US only', 'Global'], key='map_region')
+        with col2:
+            if us_or_global == 'US only':
+                scope_choice = st.selectbox('US scope', ['Choose…', 'State view', 'City view'], key='map_us_scope')
+            elif us_or_global == 'Global':
+                scope_choice = st.selectbox('Global scope', ['Choose…', 'Country view', 'City view'], key='map_global_scope')
+            else:
+                scope_choice = st.selectbox('Scope', ['Choose region first'], disabled=True, key='map_scope_dis')
+        with col3:
+            trait = st.selectbox(
+                'Big Five trait',
+                ['Choose…', 'Display all traits'] + list(trait_names.values()),
+                key='map_trait',
+            )
+        with col4:
+            score_type = st.selectbox(
+                'Score type',
+                ['Choose…', 'Percentiles', 'Normalized Scores'],
+                key='map_score_type',
+            )
+        with col5:
+            N = st.number_input('# hi/lo', min_value=0, max_value=50, value=5, key='map_n')
+        with col6:
+            st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+            submit_map = st.button('Generate map', key='map_submit', use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-with col1:
-    us_or_global = st.selectbox('US or global:', ['Choose an option', 'US only', 'Global'])
-
-# Conditionally display based on the first selection
-if us_or_global == 'US only':
-    with col2:
-        state_or_city = st.selectbox('US scope:', ['Choose an option', 'State view', 'City view'])
-elif us_or_global == 'Global':
-    with col2:
-        level = st.selectbox('Global scope:', ['Choose an option', 'Country view', 'City view'])
-
-with col3:
-    trait = st.selectbox('Big Five Trait:', ['Choose an option', 'Display all traits'] + list(trait_names.values()))
-
-with col4:
-    score_type = st.selectbox("Score Type:", ["Choose an option", "Percentiles", "Normalized Scores"])
-
-with col5:
-    N = st.number_input('\uFF03 hi/lo:', min_value=0, max_value=50, value=5)
-
-if st.button('Submit'):
-    if trait == 'Display all traits':
-        traits_to_display = list(trait_names.values())
-    else:
-        traits_to_display = [trait]
-
-    for trait in traits_to_display:
-        if us_or_global == 'US only' and trait != 'Choose an option' and state_or_city != 'Choose an option' and score_type != 'Choose an option':
+    if submit_map:
+        ready = (
+            us_or_global in ('US only', 'Global')
+            and scope_choice not in ('Choose…', 'Choose region first')
+            and trait != 'Choose…'
+            and score_type != 'Choose…'
+        )
+        if not ready:
+            st.warning("Pick a region, scope, trait, and score type to generate a map.")
+        else:
+            traits_to_display = list(trait_names.values()) if trait == 'Display all traits' else [trait]
             is_percentile = score_type == "Percentiles"
-            if state_or_city == 'State view':
-                top_N = 51
-                scores = pd.read_csv('data/us_state_viz_improved.csv')
-                if is_percentile:
-                    scores = compute_percentiles_for_all(scores, trait_names)
-                places = display_top_bottom_places(scores, trait, 'US states', 'State', N, score_type)
-            elif state_or_city == 'City view':
-                top_N = 60
-                scores = pd.read_csv('data/us_city_viz_improved.csv')
-                scores = scores.nlargest(top_N, 'Count')
-                if is_percentile:
-                    scores = scores.nlargest(top_N, 'Count')
-                    scores = compute_percentiles_for_all(scores, trait_names)
-                places = display_top_bottom_places(scores, trait, 'US cities', 'City', N, score_type)
-            
-            with st.spinner("Generating a potential explanation of this ranking..."):
-                explanation = generate_list_explanation(places, trait, score_type)
-                st.write(explanation)
-                    
-            plot_us_trait_location(state_or_city, trait, scores, top_N=top_N, is_percentile=is_percentile)
-    
-        elif us_or_global == 'Global' and trait != 'Choose an option' and level != 'Choose an option' and score_type != 'Choose an option':
-            is_percentile = score_type == "Percentiles"
-            
-            if level == "Country view":
-                scores = pd.read_csv('data/country_data.csv')
-                scores = scores[scores['Count'] > THRESHOLD_USERS]
-                if is_percentile:
-                    scores = compute_percentiles_for_all(scores, trait_names)
-                places = display_top_bottom_places(scores, trait, 'countries', 'Country', N, score_type)
-                
-                with st.spinner("Generating a potential explanation of this ranking..."):
-                    explanation = generate_list_explanation(places, trait, score_type)
-                    st.write(explanation)
 
-                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)
+            for current_trait in traits_to_display:
+                st.markdown('<div class="soft-divider"></div>', unsafe_allow_html=True)
 
-            elif level == "City view":
-                scores = pd.read_csv('data/top_1000_city_data.csv')
-                scores = scores[scores['Count'] > THRESHOLD_USERS]
-                if is_percentile:
-                    scores = compute_percentiles_for_all(scores, trait_names)
-                places = display_top_bottom_places(scores, trait, 'cities', 'CityState', N, score_type)
-                
-                with st.spinner("Generating a potential explanation of this ranking..."):
-                    explanation = generate_list_explanation(places, trait, score_type)
-                    st.write(explanation)
+                if us_or_global == 'US only':
+                    if scope_choice == 'State view':
+                        top_N = 51
+                        scores = pd.read_csv('data/us_state_viz_improved.csv')
+                        if is_percentile:
+                            scores = compute_percentiles_for_all(scores, trait_names)
+                        places = display_top_bottom_places(scores, current_trait, 'US states', 'State', N, score_type)
+                    else:  # City view
+                        top_N = 60
+                        scores = pd.read_csv('data/us_city_viz_improved.csv')
+                        scores = scores.nlargest(top_N, 'Count')
+                        if is_percentile:
+                            scores = compute_percentiles_for_all(scores, trait_names)
+                        places = display_top_bottom_places(scores, current_trait, 'US cities', 'City', N, score_type)
 
-                plot_globe_trait_location(trait, level, scores, top_N=1000, is_percentile=is_percentile)
+                    with st.spinner("Generating a possible explanation of this ranking…"):
+                        explanation = generate_list_explanation(places, current_trait, score_type)
+                    st.markdown(
+                        f"<div class='card' style='margin-top:6px;'><b>Possible explanation</b><br>"
+                        f"<span style='color:#334155;line-height:1.55;'>{explanation}</span></div>",
+                        unsafe_allow_html=True,
+                    )
 
-# Create a section title and space
-st.write("---")
-st.write("---")
-st.title("Personality profile of any location")
-st.write("Get the average Big Five personality profiles of any location in our database.")
+                    plot_us_trait_location(scope_choice, current_trait, scores,
+                                           top_N=top_N, is_percentile=is_percentile)
 
-# Layout the top level containers
-col1, col2 = st.columns((1, 1))  # Two columns of equal size
+                else:  # Global
+                    if scope_choice == 'Country view':
+                        scores = pd.read_csv('data/country_data.csv')
+                        scores = scores[scores['Count'] > THRESHOLD_USERS]
+                        if is_percentile:
+                            scores = compute_percentiles_for_all(scores, trait_names)
+                        places = display_top_bottom_places(scores, current_trait, 'countries', 'Country', N, score_type)
+                    else:  # City view
+                        scores = pd.read_csv('data/top_1000_city_data.csv')
+                        scores = scores[scores['Count'] > THRESHOLD_USERS]
+                        if is_percentile:
+                            scores = compute_percentiles_for_all(scores, trait_names)
+                        places = display_top_bottom_places(scores, current_trait, 'cities', 'CityState', N, score_type)
 
-# User Input
-with col1:
-    comparison_type = st.radio("Choose the type of place:", ["Global Cities", "US Cities", "US States", "Countries"], key='profile')
+                    with st.spinner("Generating a possible explanation of this ranking…"):
+                        explanation = generate_list_explanation(places, current_trait, score_type)
+                    st.markdown(
+                        f"<div class='card' style='margin-top:6px;'><b>Possible explanation</b><br>"
+                        f"<span style='color:#334155;line-height:1.55;'>{explanation}</span></div>",
+                        unsafe_allow_html=True,
+                    )
 
-is_button_pressed = False  # Initialize a flag to check if the button is pressed
-
-with col2:
-    if comparison_type == "Global Cities":
-        data = pd.read_csv('data/top_1000_city_data.csv')
-        city_options = data['CityState'] + ", " + data['Country']
-        default_city_index = np.where(city_options == "New York, New York, United States")[0][0]
-        selected = st.selectbox("Select the city:", city_options, key='profile_city', index=int(default_city_index))
-        selected, _ = selected.rsplit(', ', 1)
-    elif comparison_type == "US Cities":
-        data = pd.read_csv('data/us_city_viz_improved.csv')
-        city_options = data['City']
-        default_city_index = np.where(city_options == "New York, New York")[0][0]
-        selected = st.selectbox("Select the US city:", city_options, key='profile_us_city', index=int(default_city_index))
-    elif comparison_type == "Countries":
-        data = pd.read_csv('data/country_data.csv')
-        default_country_index = np.where(data['Country'] == "United States")[0][0]
-        selected = st.selectbox("Select the country:", data['Country'].unique(), key='profile_country', index=int(default_country_index))
-    else:  # Assuming comparison_type is "US States"
-        data = pd.read_csv('data/us_state_viz_improved.csv')
-        default_state_index = np.where(data['State'] == "California")[0][0]
-        selected = st.selectbox("Select the US state:", data['State'].unique(), key='profile_state', index=int(default_state_index))
-
-    # Place the Submit button in the second column, next to the selectbox
-    is_button_pressed = st.button('Submit', key='profile_button')
-
-# Generate profile outside of columns
-if is_button_pressed:
-    with st.spinner('Generating profile...'):
-        display_percentile(comparison_type, selected, data)
-
-# Create a section title and space
-st.write("---")
-st.write("---")
-st.title("Population comparison tool")
-st.write("Compare the average Big Five personality profiles of any two countries or cities.")
-st.write("Note: there are almost always greater personality differences *within* a given location than *across* locations. Notice the large error bars (set score type to normalized scores), which signify significant trait diversity within each place.")
-
-# Select comparison type: City vs. City or Country vs. Country
-comparison_type = st.radio("Choose the type of places to compare:", ["Global Cities", "US Cities", "US States", "Countries"])
-# Handle City vs. City comparison
-if comparison_type == "Global Cities":
-    st.header("City Comparison")
-    
-    city_scores = pd.read_csv('data/top_1000_city_data.csv')  
-
-    city_options = city_scores['CityState'] + ", " + city_scores['Country']
-
-    default_city1_index = np.where(city_options == "Los Angeles, California, United States")[0][0]
-    default_city2_index = np.where(city_options == "Amsterdam, Netherlands")[0][0]
-
-    col1, col2, col3 = st.columns(3)
-    city1_selected = col1.selectbox("Select the first city:", city_options, index=int(default_city1_index))
-    city2_selected = col2.selectbox("Select the second city:", city_options, index=int(default_city2_index))
-    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0)
-
-    city1_citystate, city1_country = city1_selected.rsplit(', ', 1)
-    city2_citystate, city2_country = city2_selected.rsplit(', ', 1)
-
-    city1_data = city_scores[(city_scores['CityState'] == city1_citystate) & (city_scores['Country'] == city1_country)].iloc[0]
-    city2_data = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)].iloc[0]
-    
-    percentiles1, percentiles2 = {}, {}
-    if score_type == "Percentiles":
-        percentiles1 = compute_percentile(city_scores, city1_data, trait_names)
-        percentiles2 = compute_percentile(city_scores, city2_data, trait_names)
-        city1_scores = list(percentiles1.values())
-        city2_scores = list(percentiles2.values())
-    else:
-        city1_scores = [city1_data[trait] for trait in trait_names]
-        city2_scores = [city2_data[trait] for trait in trait_names]
-
-    city1_std = [city1_data[trait+'_std'] for trait in trait_names]
-    city2_std = [city2_data[trait+'_std'] for trait in trait_names]
-
-    city1_count = city_scores[(city_scores['CityState'] == city1_citystate) & (city_scores['Country'] == city1_country)]['Count'].values[0]
-    city2_count = city_scores[(city_scores['CityState'] == city2_citystate) & (city_scores['Country'] == city2_country)]['Count'].values[0]
-
-    if st.button('Submit', key='city_comparison_button'):
-        with st.spinner('Generating comparison...'):
-            plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type, comparison_type.lower())
-            if score_type == 'Percentiles':
-                comparison_paragraph = generate_personality_comparison(city1_selected, city2_selected, percentiles1, percentiles2, trait_names, comparison_type)
-                st.write(f"**Comparing {city1_selected} and {city2_selected}:** {comparison_paragraph}")
+                    plot_globe_trait_location(current_trait, scope_choice, scores,
+                                              top_N=1000, is_percentile=is_percentile)
 
 
-# Handle Country vs. Country comparison
-elif comparison_type == "Countries":
-    st.header("Country Comparison")
-    country_scores = pd.read_csv('data/country_data.csv')
+# ==================================================================
+# TAB 2 — Location profile
+# ==================================================================
+with tab_profile:
+    st.markdown('<div class="section-title">Personality profile for any location</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-sub">Pick a place to see its average Big Five percentile profile, '
+        'with an AI-written narrative.</div>',
+        unsafe_allow_html=True,
+    )
 
-    country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
-    
-    default_country1_index = np.where(country_scores['Country'].unique() == "United States")[0][0]
-    default_country2_index = np.where(country_scores['Country'].unique() == "Russia")[0][0]
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    col_a, col_b, col_c = st.columns([1, 1.4, 0.7])
 
-    col1, col2, col3 = st.columns(3)
-    country1_selected = col1.selectbox("Select the first country:", country_scores['Country'].unique(), index=int(default_country1_index))
-    country2_selected = col2.selectbox("Select the second country:", country_scores['Country'].unique(), index=int(default_country2_index))
-    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0)
+    with col_a:
+        profile_type = st.radio(
+            "Place type",
+            ["Global Cities", "US Cities", "US States", "Countries"],
+            key='profile_type',
+            horizontal=False,
+        )
 
-    country1_data = country_scores[country_scores['Country'] == country1_selected].iloc[0]
-    country2_data = country_scores[country_scores['Country'] == country2_selected].iloc[0]
-    
-    percentiles1, percentiles2 = {}, {}
-    if score_type == "Percentiles":
-        percentiles1 = compute_percentile(country_scores, country1_data, trait_names)
-        percentiles2 = compute_percentile(country_scores, country2_data, trait_names)
-        country1_scores = list(percentiles1.values())
-        country2_scores = list(percentiles2.values())
-    else:
-        country1_scores = [country1_data[trait] for trait in trait_names]
-        country2_scores = [country2_data[trait] for trait in trait_names]
+    with col_b:
+        if profile_type == "Global Cities":
+            data = pd.read_csv('data/top_1000_city_data.csv')
+            city_options = data['CityState'] + ", " + data['Country']
+            default_idx = int(np.where(city_options == "New York, New York, United States")[0][0])
+            selected_display = st.selectbox("Select a city", city_options,
+                                            key='profile_city', index=default_idx)
+            selected_profile, _ = selected_display.rsplit(', ', 1)
+        elif profile_type == "US Cities":
+            data = pd.read_csv('data/us_city_viz_improved.csv')
+            city_options = data['City']
+            default_idx = int(np.where(city_options == "New York, New York")[0][0])
+            selected_profile = st.selectbox("Select a US city", city_options,
+                                            key='profile_us_city', index=default_idx)
+        elif profile_type == "Countries":
+            data = pd.read_csv('data/country_data.csv')
+            default_idx = int(np.where(data['Country'] == "United States")[0][0])
+            selected_profile = st.selectbox("Select a country", data['Country'].unique(),
+                                            key='profile_country', index=default_idx)
+        else:  # US States
+            data = pd.read_csv('data/us_state_viz_improved.csv')
+            default_idx = int(np.where(data['State'] == "California")[0][0])
+            selected_profile = st.selectbox("Select a US state", data['State'].unique(),
+                                            key='profile_state', index=default_idx)
 
-    country1_std = [country1_data[trait+'_std'] for trait in trait_names]
-    country2_std = [country2_data[trait+'_std'] for trait in trait_names]
+    with col_c:
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+        profile_submit = st.button("Generate profile", key='profile_button', use_container_width=True)
 
-    country1_count = country_scores[country_scores['Country'] == country1_selected]['Count'].values[0]
-    country2_count = country_scores[country_scores['Country'] == country2_selected]['Count'].values[0]
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    if st.button('Submit', key='country_comparison_button'):
-        with st.spinner('Generating comparison...'):
-            plot_comparison(country1_scores, country2_scores, country1_std, country2_std, country1_selected, country2_selected, country1_count, country2_count, list(trait_names.values()), score_type, comparison_type.lower())
-            if score_type == 'Percentiles':
-                comparison_paragraph = generate_personality_comparison(country1_selected, country2_selected, percentiles1, percentiles2, trait_names, comparison_type)
-                st.write(f"**Comparing {country1_selected} and {country2_selected}:** {comparison_paragraph}")
+    if profile_submit:
+        with st.spinner('Building personality profile…'):
+            display_percentile(profile_type, selected_profile, data)
 
-# Handle State vs. State comparison
-elif comparison_type == "US States":
-    st.header("State Comparison")
-    state_scores = pd.read_csv('data/us_state_viz_improved.csv')
 
-    state_scores = state_scores[state_scores['Count'] > THRESHOLD_USERS]
-    
-    default_state1_index = np.where(state_scores['State'].unique() == "California")[0][0]
-    default_state2_index = np.where(state_scores['State'].unique() == "Texas")[0][0]
+# ==================================================================
+# TAB 3 — Compare
+# ==================================================================
+with tab_compare:
+    st.markdown('<div class="section-title">Head-to-head comparison</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-sub">Compare two places side-by-side across the Big Five. '
+        'Note: with normalized scores, the visible error bars often show that personality variation '
+        '<i>within</i> a place is larger than the difference <i>between</i> places.</div>',
+        unsafe_allow_html=True,
+    )
 
-    col1, col2, col3 = st.columns(3)
-    state1_selected = col1.selectbox("Select the first state:", state_scores['State'].unique(), index=int(default_state1_index))
-    state2_selected = col2.selectbox("Select the second state:", state_scores['State'].unique(), index=int(default_state2_index))
-    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0)
+    compare_type = st.radio(
+        "Compare places of type:",
+        ["Global Cities", "US Cities", "US States", "Countries"],
+        key='compare_type',
+        horizontal=True,
+    )
 
-    state1_data = state_scores[state_scores['State'] == state1_selected].iloc[0]
-    state2_data = state_scores[state_scores['State'] == state2_selected].iloc[0]
-    
-    percentiles1, percentiles2 = {}, {}
-    if score_type == "Percentiles":
-        percentiles1 = compute_percentile(state_scores, state1_data, trait_names)
-        percentiles2 = compute_percentile(state_scores, state2_data, trait_names)
-        state1_scores = list(percentiles1.values())
-        state2_scores = list(percentiles2.values())
-    else:
-        state1_scores = [state1_data[trait] for trait in trait_names]
-        state2_scores = [state2_data[trait] for trait in trait_names]
+    st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    state1_std = [state1_data[trait+'_std'] for trait in trait_names]
-    state2_std = [state2_data[trait+'_std'] for trait in trait_names]
+    if compare_type == "Global Cities":
+        city_scores = pd.read_csv('data/top_1000_city_data.csv')
+        city_options = city_scores['CityState'] + ", " + city_scores['Country']
+        d1 = int(np.where(city_options == "Los Angeles, California, United States")[0][0])
+        d2 = int(np.where(city_options == "Amsterdam, Netherlands")[0][0])
 
-    state1_count = state_scores[state_scores['State'] == state1_selected]['Count'].values[0]
-    state2_count = state_scores[state_scores['State'] == state2_selected]['Count'].values[0]
+        c1, c2, c3 = st.columns(3)
+        sel1 = c1.selectbox("First city", city_options, index=d1, key='gc_1')
+        sel2 = c2.selectbox("Second city", city_options, index=d2, key='gc_2')
+        cmp_score_type = c3.selectbox("Score type", ["Percentiles", "Normalized Scores"], key='gc_st')
 
-    if st.button('Submit', key='state_comparison_button'):
-        with st.spinner('Generating comparison...'):
-            plot_comparison(state1_scores, state2_scores, state1_std, state2_std, state1_selected, state2_selected, state1_count, state2_count, list(trait_names.values()), score_type, comparison_type.lower())
-            if score_type == 'Percentiles':
-                comparison_paragraph = generate_personality_comparison(state1_selected, state2_selected, percentiles1, percentiles2, trait_names, comparison_type)
-                st.write(f"**Comparing {state1_selected} and {state2_selected}:** {comparison_paragraph}")
+        cs1, cc1 = sel1.rsplit(', ', 1)
+        cs2, cc2 = sel2.rsplit(', ', 1)
+        d_a = city_scores[(city_scores['CityState'] == cs1) & (city_scores['Country'] == cc1)].iloc[0]
+        d_b = city_scores[(city_scores['CityState'] == cs2) & (city_scores['Country'] == cc2)].iloc[0]
 
-elif comparison_type == "US Cities":
-    st.header("US City Comparison")
-    us_city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+        pct1, pct2 = {}, {}
+        if cmp_score_type == "Percentiles":
+            pct1 = compute_percentile(city_scores, d_a, trait_names)
+            pct2 = compute_percentile(city_scores, d_b, trait_names)
+            scores1, scores2 = list(pct1.values()), list(pct2.values())
+        else:
+            scores1 = [d_a[t] for t in trait_names]
+            scores2 = [d_b[t] for t in trait_names]
 
-    us_city_options = us_city_scores['City']
+        std1 = [d_a[t + '_std'] for t in trait_names]
+        std2 = [d_b[t + '_std'] for t in trait_names]
+        n1 = int(d_a['Count'])
+        n2 = int(d_b['Count'])
+        label1, label2 = sel1, sel2
 
-    default_city1_index = np.where(us_city_options == "New York, New York")[0][0]
-    default_city2_index = np.where(us_city_options == "Los Angeles, California")[0][0]
+    elif compare_type == "Countries":
+        country_scores = pd.read_csv('data/country_data.csv')
+        country_scores = country_scores[country_scores['Count'] > THRESHOLD_USERS]
+        countries = country_scores['Country'].unique()
+        d1 = int(np.where(countries == "United States")[0][0])
+        d2 = int(np.where(countries == "Russia")[0][0])
 
-    col1, col2, col3 = st.columns(3)
-    city1_selected = col1.selectbox("Select the first US city:", us_city_options, index=int(default_city1_index), key='us_city1')
-    city2_selected = col2.selectbox("Select the second US city:", us_city_options, index=int(default_city2_index), key='us_city2')
-    score_type = col3.selectbox("Score Type:", ["Percentiles", "Normalized Scores"], index=0, key='us_city_score_type')
+        c1, c2, c3 = st.columns(3)
+        sel1 = c1.selectbox("First country", countries, index=d1, key='cc_1')
+        sel2 = c2.selectbox("Second country", countries, index=d2, key='cc_2')
+        cmp_score_type = c3.selectbox("Score type", ["Percentiles", "Normalized Scores"], key='cc_st')
 
-    city1_data = us_city_scores[us_city_scores['City'] == city1_selected].iloc[0]
-    city2_data = us_city_scores[us_city_scores['City'] == city2_selected].iloc[0]
-    
-    percentiles1, percentiles2 = {}, {}
-    if score_type == "Percentiles":
-        percentiles1 = compute_percentile(us_city_scores, city1_data, trait_names)
-        percentiles2 = compute_percentile(us_city_scores, city2_data, trait_names)
-        city1_scores = list(percentiles1.values())
-        city2_scores = list(percentiles2.values())
-    else:
-        city1_scores = [city1_data[trait] for trait in trait_names]
-        city2_scores = [city2_data[trait] for trait in trait_names]
+        d_a = country_scores[country_scores['Country'] == sel1].iloc[0]
+        d_b = country_scores[country_scores['Country'] == sel2].iloc[0]
 
-    city1_std = [city1_data[trait+'_std'] for trait in trait_names]
-    city2_std = [city2_data[trait+'_std'] for trait in trait_names]
+        pct1, pct2 = {}, {}
+        if cmp_score_type == "Percentiles":
+            pct1 = compute_percentile(country_scores, d_a, trait_names)
+            pct2 = compute_percentile(country_scores, d_b, trait_names)
+            scores1, scores2 = list(pct1.values()), list(pct2.values())
+        else:
+            scores1 = [d_a[t] for t in trait_names]
+            scores2 = [d_b[t] for t in trait_names]
 
-    city1_count = us_city_scores[us_city_scores['City'] == city1_selected]['Count'].values[0]
-    city2_count = us_city_scores[us_city_scores['City'] == city2_selected]['Count'].values[0]
+        std1 = [d_a[t + '_std'] for t in trait_names]
+        std2 = [d_b[t + '_std'] for t in trait_names]
+        n1 = int(d_a['Count'])
+        n2 = int(d_b['Count'])
+        label1, label2 = sel1, sel2
 
-    if st.button('Submit', key='us_city_comparison_button'):
-        with st.spinner('Generating comparison...'):
-            plot_comparison(city1_scores, city2_scores, city1_std, city2_std, city1_selected, city2_selected, city1_count, city2_count, list(trait_names.values()), score_type, comparison_type.lower())
-            if score_type == 'Percentiles':
-                comparison_paragraph = generate_personality_comparison(city1_selected, city2_selected, percentiles1, percentiles2, trait_names, comparison_type)
-                st.write(f"**Comparing {city1_selected} and {city2_selected}:** {comparison_paragraph}")
+    elif compare_type == "US States":
+        state_scores = pd.read_csv('data/us_state_viz_improved.csv')
+        state_scores = state_scores[state_scores['Count'] > THRESHOLD_USERS]
+        states = state_scores['State'].unique()
+        d1 = int(np.where(states == "California")[0][0])
+        d2 = int(np.where(states == "Texas")[0][0])
+
+        c1, c2, c3 = st.columns(3)
+        sel1 = c1.selectbox("First state", states, index=d1, key='us_1')
+        sel2 = c2.selectbox("Second state", states, index=d2, key='us_2')
+        cmp_score_type = c3.selectbox("Score type", ["Percentiles", "Normalized Scores"], key='us_st')
+
+        d_a = state_scores[state_scores['State'] == sel1].iloc[0]
+        d_b = state_scores[state_scores['State'] == sel2].iloc[0]
+
+        pct1, pct2 = {}, {}
+        if cmp_score_type == "Percentiles":
+            pct1 = compute_percentile(state_scores, d_a, trait_names)
+            pct2 = compute_percentile(state_scores, d_b, trait_names)
+            scores1, scores2 = list(pct1.values()), list(pct2.values())
+        else:
+            scores1 = [d_a[t] for t in trait_names]
+            scores2 = [d_b[t] for t in trait_names]
+
+        std1 = [d_a[t + '_std'] for t in trait_names]
+        std2 = [d_b[t + '_std'] for t in trait_names]
+        n1 = int(d_a['Count'])
+        n2 = int(d_b['Count'])
+        label1, label2 = sel1, sel2
+
+    else:  # US Cities
+        us_city_scores = pd.read_csv('data/us_city_viz_improved.csv')
+        opts = us_city_scores['City']
+        d1 = int(np.where(opts == "New York, New York")[0][0])
+        d2 = int(np.where(opts == "Los Angeles, California")[0][0])
+
+        c1, c2, c3 = st.columns(3)
+        sel1 = c1.selectbox("First US city", opts, index=d1, key='usc_1')
+        sel2 = c2.selectbox("Second US city", opts, index=d2, key='usc_2')
+        cmp_score_type = c3.selectbox("Score type", ["Percentiles", "Normalized Scores"], key='usc_st')
+
+        d_a = us_city_scores[us_city_scores['City'] == sel1].iloc[0]
+        d_b = us_city_scores[us_city_scores['City'] == sel2].iloc[0]
+
+        pct1, pct2 = {}, {}
+        if cmp_score_type == "Percentiles":
+            pct1 = compute_percentile(us_city_scores, d_a, trait_names)
+            pct2 = compute_percentile(us_city_scores, d_b, trait_names)
+            scores1, scores2 = list(pct1.values()), list(pct2.values())
+        else:
+            scores1 = [d_a[t] for t in trait_names]
+            scores2 = [d_b[t] for t in trait_names]
+
+        std1 = [d_a[t + '_std'] for t in trait_names]
+        std2 = [d_b[t + '_std'] for t in trait_names]
+        n1 = int(d_a['Count'])
+        n2 = int(d_b['Count'])
+        label1, label2 = sel1, sel2
+
+    compare_submit = st.button('Compare', key='compare_button')
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if compare_submit:
+        with st.spinner('Generating comparison…'):
+            plot_comparison(
+                scores1, scores2, std1, std2, label1, label2, n1, n2,
+                list(trait_names.values()), cmp_score_type, compare_type.lower(),
+            )
+            if cmp_score_type == 'Percentiles':
+                narrative = generate_personality_comparison(
+                    label1, label2, pct1, pct2, trait_names, compare_type,
+                )
+                st.markdown(
+                    f"""
+                    <div class="card" style="margin-top:8px;">
+                      <div style="font-weight:600;color:#293241;margin-bottom:6px;">
+                        Comparing {label1} and {label2}
+                      </div>
+                      <div style="color:#334155;line-height:1.6;">{narrative}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+
+# ---------- Footer ----------
+st.markdown(
+    """
+    <div class="footer">
+      Built by <a href="https://www.truity.com/" target="_blank" rel="noopener">Truity</a> ·
+      <a href="https://www.truity.com/test/big-five-personality-test" target="_blank" rel="noopener">Take the Big Five test</a> ·
+      <a href="https://github.com/camberg23/global-personality" target="_blank" rel="noopener">Source on GitHub</a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
